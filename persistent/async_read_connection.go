@@ -1,7 +1,11 @@
 package persistent
 
+import (
+	"github.com/EventStore/EventStore-Client-Go/messages"
+)
+
 type AsyncReadConnection interface {
-	RegisterHandler(handler EventAppearedHandler)
-	Start(retryCount uint8) error
-	Stop()
+	Start()
+	Stop() error
+	Updates() <-chan messages.RecordedEvent
 }

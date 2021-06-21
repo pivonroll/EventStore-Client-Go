@@ -358,8 +358,8 @@ func (client *Client) ConnectToPersistentSubscription(
 	streamName []byte,
 	eventAppeared persistent.EventAppearedHandler,
 	subscriptionDropped persistent.SubscriptionDroppedHandler,
-) (persistent.Connection, error) {
-	return client.persistentSubscriptionClient.SubscribeToStreamAsync(
+) (persistent.SyncReadConnection, error) {
+	return client.persistentSubscriptionClient.SubscribeToStreamSync(
 		ctx,
 		bufferSize,
 		groupName,

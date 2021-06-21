@@ -16,9 +16,7 @@ func (client clientImpl) SubscribeToStreamAsync(
 	bufferSize int32,
 	groupName string,
 	streamName []byte,
-	eventAppeared EventAppearedHandler,
-	subscriptionDropped SubscriptionDroppedHandler,
-) (Connection, error) {
+) (AsyncReadConnection, error) {
 	readClient, err := client.persistentSubscriptionClient.Read(ctx)
 	if err != nil {
 		return nil, fmt.Errorf("failed to init persisitent subscription client. Reason %v", err)
@@ -36,18 +34,28 @@ func (client clientImpl) SubscribeToStreamAsync(
 	switch readResult.Content.(type) {
 	case *persistentProto.ReadResp_SubscriptionConfirmation_:
 		{
-			return newSubscriptionConnection(
+			asyncConnection := newAsyncConnectionImpl(
 				readClient,
-				readResult.GetSubscriptionConfirmation().SubscriptionId,
-				eventAppeared,
-				subscriptionDropped), nil
+				readResult.GetSubscriptionConfirmation().SubscriptionId)
+
+			return asyncConnection, nil
 		}
 	}
 
 	return nil, fmt.Errorf("failed to connect to persistent subscription")
 }
 
-func (client clientImpl) SubscribeToAllAsync(ctx context.Context) (Connection, error) {
+func (client clientImpl) SubscribeToStreamSync(ctx context.Context,
+	bufferSize int32,
+	groupName string,
+	streamName []byte,
+	eventAppeared EventAppearedHandler,
+	subscriptionDropped SubscriptionDroppedHandler,
+) (SyncReadConnection, error) {
+	panic("implement me")
+}
+
+func (client clientImpl) SubscribeToAllAsync(ctx context.Context) (SyncReadConnection, error) {
 	panic("implement me")
 }
 

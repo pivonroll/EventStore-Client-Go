@@ -7,6 +7,7 @@ package persistent
 import (
 	reflect "reflect"
 
+	messages "github.com/EventStore/EventStore-Client-Go/messages"
 	gomock "github.com/golang/mock/gomock"
 )
 
@@ -33,40 +34,42 @@ func (m *MockAsyncReadConnection) EXPECT() *MockAsyncReadConnectionMockRecorder 
 	return m.recorder
 }
 
-// RegisterHandler mocks base method.
-func (m *MockAsyncReadConnection) RegisterHandler(handler EventAppearedHandler) {
-	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "RegisterHandler", handler)
-}
-
-// RegisterHandler indicates an expected call of RegisterHandler.
-func (mr *MockAsyncReadConnectionMockRecorder) RegisterHandler(handler interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "RegisterHandler", reflect.TypeOf((*MockAsyncReadConnection)(nil).RegisterHandler), handler)
-}
-
 // Start mocks base method.
-func (m *MockAsyncReadConnection) Start(retryCount uint8) error {
+func (m *MockAsyncReadConnection) Start() {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Start", retryCount)
-	ret0, _ := ret[0].(error)
-	return ret0
+	m.ctrl.Call(m, "Start")
 }
 
 // Start indicates an expected call of Start.
-func (mr *MockAsyncReadConnectionMockRecorder) Start(retryCount interface{}) *gomock.Call {
+func (mr *MockAsyncReadConnectionMockRecorder) Start() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockAsyncReadConnection)(nil).Start), retryCount)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Start", reflect.TypeOf((*MockAsyncReadConnection)(nil).Start))
 }
 
 // Stop mocks base method.
-func (m *MockAsyncReadConnection) Stop() {
+func (m *MockAsyncReadConnection) Stop() error {
 	m.ctrl.T.Helper()
-	m.ctrl.Call(m, "Stop")
+	ret := m.ctrl.Call(m, "Stop")
+	ret0, _ := ret[0].(error)
+	return ret0
 }
 
 // Stop indicates an expected call of Stop.
 func (mr *MockAsyncReadConnectionMockRecorder) Stop() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Stop", reflect.TypeOf((*MockAsyncReadConnection)(nil).Stop))
+}
+
+// Updates mocks base method.
+func (m *MockAsyncReadConnection) Updates() <-chan messages.RecordedEvent {
+	m.ctrl.T.Helper()
+	ret := m.ctrl.Call(m, "Updates")
+	ret0, _ := ret[0].(<-chan messages.RecordedEvent)
+	return ret0
+}
+
+// Updates indicates an expected call of Updates.
+func (mr *MockAsyncReadConnectionMockRecorder) Updates() *gomock.Call {
+	mr.mock.ctrl.T.Helper()
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Updates", reflect.TypeOf((*MockAsyncReadConnection)(nil).Updates))
 }
