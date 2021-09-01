@@ -10,7 +10,7 @@ import (
 )
 
 type clientImpl struct {
-	inner                        connection.GrpcClient
+	grpcClient                   connection.GrpcClient
 	persistentSubscriptionClient persistentProto.PersistentSubscriptionsClient
 	syncReadConnectionFactory    SyncReadConnectionFactory
 	messageAdapterProvider       messageAdapterProvider
@@ -33,7 +33,7 @@ func (client clientImpl) SubscribeToStreamSync(
 	var headers, trailers metadata.MD
 	readClient, err := client.persistentSubscriptionClient.Read(ctx, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return nil, NewError(SubscribeToStreamSync_FailedToInitPersistentSubscriptionClientErr, err)
 	}
 
@@ -68,7 +68,7 @@ func (client clientImpl) CreateStreamSubscription(ctx context.Context, handle co
 	var headers, trailers metadata.MD
 	_, err := client.persistentSubscriptionClient.Create(ctx, createSubscriptionConfig, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return NewError(CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr, err)
 	}
 
@@ -99,7 +99,7 @@ func (client clientImpl) CreateAllSubscription(ctx context.Context, handle conne
 	var headers, trailers metadata.MD
 	_, err = client.persistentSubscriptionClient.Create(ctx, protoConfig, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return NewError(CreateAllSubscription_FailedToCreatePermanentSubscriptionErr, err)
 	}
 
@@ -113,7 +113,7 @@ func (client clientImpl) UpdateStreamSubscription(ctx context.Context, handle co
 	var headers, trailers metadata.MD
 	_, err := client.persistentSubscriptionClient.Update(ctx, updateSubscriptionConfig, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return NewError(UpdateStreamSubscription_FailedToUpdateErr, err)
 	}
 
@@ -128,7 +128,7 @@ func (client clientImpl) UpdateAllSubscription(ctx context.Context, handle conne
 	var headers, trailers metadata.MD
 	_, err := client.persistentSubscriptionClient.Update(ctx, updateSubscriptionConfig, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return NewError(UpdateAllSubscription_FailedToUpdateErr, err)
 	}
 
@@ -142,7 +142,7 @@ func (client clientImpl) DeleteStreamSubscription(ctx context.Context, handle co
 	var headers, trailers metadata.MD
 	_, err := client.persistentSubscriptionClient.Delete(ctx, deleteSubscriptionOptions, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return NewError(DeleteStreamSubscription_FailedToDeleteErr, err)
 	}
 
@@ -156,7 +156,7 @@ func (client clientImpl) DeleteAllSubscription(ctx context.Context, handle conne
 	var headers, trailers metadata.MD
 	_, err := client.persistentSubscriptionClient.Delete(ctx, deleteSubscriptionOptions, grpc.Header(&headers), grpc.Trailer(&trailers))
 	if err != nil {
-		err = client.inner.HandleError(handle, headers, trailers, err)
+		err = client.grpcClient.HandleError(handle, headers, trailers, err)
 		return NewError(DeleteAllSubscription_FailedToDeleteErr, err)
 	}
 
@@ -165,7 +165,7 @@ func (client clientImpl) DeleteAllSubscription(ctx context.Context, handle conne
 
 func NewClient(inner connection.GrpcClient, client persistentProto.PersistentSubscriptionsClient) Client {
 	return clientImpl{
-		inner:                        inner,
+		grpcClient:                   inner,
 		persistentSubscriptionClient: client,
 		syncReadConnectionFactory:    SyncReadConnectionFactoryImpl{},
 		messageAdapterProvider:       messageAdapterProviderImpl{},
