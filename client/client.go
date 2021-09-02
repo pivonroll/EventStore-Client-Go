@@ -599,6 +599,32 @@ func (client *Client) ListAllProjections(
 	return projectionsClient.ListAllProjections(ctx, handle)
 }
 
+func (client *Client) ListContinuousProjections(
+	ctx context.Context) ([]projections.StatisticsClientResponse, error) {
+	handle, err := client.grpcClient.GetConnectionHandle()
+	if err != nil {
+		return nil, err
+	}
+
+	projectionsClient := client.projectionClientFactory.CreateClient(client.grpcClient,
+		projectionsProto.NewProjectionsClient(handle.Connection()))
+
+	return projectionsClient.ListContinuousProjections(ctx, handle)
+}
+
+func (client *Client) ListOneTimeProjections(
+	ctx context.Context) ([]projections.StatisticsClientResponse, error) {
+	handle, err := client.grpcClient.GetConnectionHandle()
+	if err != nil {
+		return nil, err
+	}
+
+	projectionsClient := client.projectionClientFactory.CreateClient(client.grpcClient,
+		projectionsProto.NewProjectionsClient(handle.Connection()))
+
+	return projectionsClient.ListOneTimeProjections(ctx, handle)
+}
+
 func readInternal(
 	context context.Context,
 	client connection.GrpcClient,
