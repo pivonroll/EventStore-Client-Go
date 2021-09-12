@@ -4,9 +4,9 @@ import (
 	"context"
 	"math"
 
-	"github.com/EventStore/EventStore-Client-Go/client/filtering"
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	"github.com/EventStore/EventStore-Client-Go/position"
+	"github.com/pivonroll/EventStore-Client-Go/client/filtering"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	"github.com/pivonroll/EventStore-Client-Go/position"
 )
 
 type (

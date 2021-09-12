@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	"github.com/EventStore/EventStore-Client-Go/streamrevision"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	"github.com/pivonroll/EventStore-Client-Go/streamrevision"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -18,7 +18,6 @@ func TestCanDeleteStream(t *testing.T) {
 	defer client.Close()
 
 	deleteResult, err := client.DeleteStream(context.Background(), "dataset20M-1800", streamrevision.NewStreamRevision(1999))
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -35,7 +34,6 @@ func TestCanTombstoneStream(t *testing.T) {
 	defer client.Close()
 
 	deleteResult, err := client.TombstoneStream(context.Background(), "dataset20M-1800", streamrevision.NewStreamRevision(1999))
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}

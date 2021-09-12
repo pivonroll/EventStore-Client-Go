@@ -3,8 +3,8 @@ package projections
 //go:generate mockgen -source=client_factory.go -destination=client_factory_mock.go -package=projections
 
 import (
-	"github.com/EventStore/EventStore-Client-Go/connection"
-	"github.com/EventStore/EventStore-Client-Go/protos/projections"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
 type ClientFactory interface {

@@ -5,7 +5,7 @@ package projections
 import (
 	"context"
 
-	"github.com/EventStore/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
 )
 
 type Client interface {

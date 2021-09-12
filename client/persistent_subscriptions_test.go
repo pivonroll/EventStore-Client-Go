@@ -6,10 +6,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/client"
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	"github.com/EventStore/EventStore-Client-Go/persistent"
-	stream_revision "github.com/EventStore/EventStore-Client-Go/streamrevision"
+	"github.com/pivonroll/EventStore-Client-Go/client"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	"github.com/pivonroll/EventStore-Client-Go/persistent"
+	stream_revision "github.com/pivonroll/EventStore-Client-Go/streamrevision"
 	"github.com/stretchr/testify/require"
 )
 

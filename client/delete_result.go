@@ -1,6 +1,6 @@
 package client
 
-import position "github.com/EventStore/EventStore-Client-Go/position"
+import position "github.com/pivonroll/EventStore-Client-Go/position"
 
 // DeleteResult ...
 type DeleteResult struct {

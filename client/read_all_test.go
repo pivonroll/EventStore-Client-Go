@@ -7,10 +7,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/stream_position"
+	"github.com/pivonroll/EventStore-Client-Go/stream_position"
 
-	direction "github.com/EventStore/EventStore-Client-Go/direction"
-	position "github.com/EventStore/EventStore-Client-Go/position"
+	direction "github.com/pivonroll/EventStore-Client-Go/direction"
+	position "github.com/pivonroll/EventStore-Client-Go/position"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -36,7 +36,6 @@ func TestReadAllEventsForwardsFromZeroPosition(t *testing.T) {
 	numberOfEvents := uint64(numberOfEventsToRead)
 
 	stream, err := client.ReadAllEvents(context, direction.Forwards, stream_position.Start{}, numberOfEvents, true)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -44,7 +43,6 @@ func TestReadAllEventsForwardsFromZeroPosition(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -83,7 +81,6 @@ func TestReadAllEventsForwardsFromNonZeroPosition(t *testing.T) {
 	numberOfEvents := uint64(numberOfEventsToRead)
 
 	stream, err := client.ReadAllEvents(context, direction.Forwards, stream_position.Position{Value: position.Position{Commit: 1788, Prepare: 1788}}, numberOfEvents, true)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -91,7 +88,6 @@ func TestReadAllEventsForwardsFromNonZeroPosition(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -130,7 +126,6 @@ func TestReadAllEventsBackwardsFromZeroPosition(t *testing.T) {
 	numberOfEvents := uint64(numberOfEventsToRead)
 
 	stream, err := client.ReadAllEvents(context, direction.Backwards, stream_position.End{}, numberOfEvents, true)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -138,7 +133,6 @@ func TestReadAllEventsBackwardsFromZeroPosition(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -177,7 +171,6 @@ func TestReadAllEventsBackwardsFromNonZeroPosition(t *testing.T) {
 	numberOfEvents := uint64(numberOfEventsToRead)
 
 	stream, err := client.ReadAllEvents(context, direction.Backwards, stream_position.Position{Value: position.Position{Commit: 3386, Prepare: 3386}}, numberOfEvents, true)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -185,7 +178,6 @@ func TestReadAllEventsBackwardsFromNonZeroPosition(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}

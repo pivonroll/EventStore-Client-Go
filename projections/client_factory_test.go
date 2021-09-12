@@ -3,9 +3,9 @@ package projections
 import (
 	"testing"
 
-	"github.com/EventStore/EventStore-Client-Go/connection"
-	"github.com/EventStore/EventStore-Client-Go/protos/projections"
 	"github.com/golang/mock/gomock"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 	"github.com/stretchr/testify/require"
 )
 

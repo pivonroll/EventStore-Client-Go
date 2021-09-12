@@ -6,18 +6,18 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/stream_position"
+	"github.com/pivonroll/EventStore-Client-Go/stream_position"
 
-	"github.com/EventStore/EventStore-Client-Go/client/filtering"
-	direction "github.com/EventStore/EventStore-Client-Go/direction"
-	messages "github.com/EventStore/EventStore-Client-Go/messages"
-	position "github.com/EventStore/EventStore-Client-Go/position"
-	shared "github.com/EventStore/EventStore-Client-Go/protos/shared"
-	api "github.com/EventStore/EventStore-Client-Go/protos/streams"
-	"github.com/EventStore/EventStore-Client-Go/streamrevision"
-	stream_revision "github.com/EventStore/EventStore-Client-Go/streamrevision"
-	system_metadata "github.com/EventStore/EventStore-Client-Go/systemmetadata"
 	"github.com/gofrs/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/client/filtering"
+	direction "github.com/pivonroll/EventStore-Client-Go/direction"
+	messages "github.com/pivonroll/EventStore-Client-Go/messages"
+	position "github.com/pivonroll/EventStore-Client-Go/position"
+	shared "github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	api "github.com/pivonroll/EventStore-Client-Go/protos/streams"
+	"github.com/pivonroll/EventStore-Client-Go/streamrevision"
+	stream_revision "github.com/pivonroll/EventStore-Client-Go/streamrevision"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
 // ToAppendHeader ...
@@ -403,6 +403,7 @@ func RecordedEventFromProto(result *api.ReadResp_ReadEvent) messages.RecordedEve
 	recordedEvent := result.GetEvent()
 	return GetRecordedEventFromProto(recordedEvent)
 }
+
 func GetRecordedEventFromProto(recordedEvent *api.ReadResp_ReadEvent_RecordedEvent) messages.RecordedEvent {
 	streamIdentifier := recordedEvent.GetStreamIdentifier()
 	return messages.RecordedEvent{

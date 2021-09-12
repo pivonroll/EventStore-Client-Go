@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"io"
 
-	protoutils "github.com/EventStore/EventStore-Client-Go/internal/protoutils"
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	"github.com/EventStore/EventStore-Client-Go/position"
-	api "github.com/EventStore/EventStore-Client-Go/protos/streams"
-	system_metadata "github.com/EventStore/EventStore-Client-Go/systemmetadata"
+	protoutils "github.com/pivonroll/EventStore-Client-Go/internal/protoutils"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	"github.com/pivonroll/EventStore-Client-Go/position"
+	api "github.com/pivonroll/EventStore-Client-Go/protos/streams"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
 type Subscription struct {

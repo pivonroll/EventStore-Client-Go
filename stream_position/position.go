@@ -1,6 +1,6 @@
 package stream_position
 
-import pos "github.com/EventStore/EventStore-Client-Go/position"
+import pos "github.com/pivonroll/EventStore-Client-Go/position"
 
 type Revision struct {
 	Value uint64
@@ -10,11 +10,9 @@ type Position struct {
 	Value pos.Position
 }
 
-type Start struct {
-}
+type Start struct{}
 
-type End struct {
-}
+type End struct{}
 
 type StreamPosition interface {
 	AcceptRegularVisitor(visitor RegularStreamVisitor)

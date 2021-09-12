@@ -3,10 +3,10 @@ package persistent
 import (
 	"testing"
 
-	"github.com/EventStore/EventStore-Client-Go/client/filtering"
-	"github.com/EventStore/EventStore-Client-Go/position"
-	"github.com/EventStore/EventStore-Client-Go/protos/persistent"
-	"github.com/EventStore/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/client/filtering"
+	"github.com/pivonroll/EventStore-Client-Go/position"
+	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"github.com/stretchr/testify/require"
 )
 

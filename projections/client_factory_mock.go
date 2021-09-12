@@ -7,9 +7,9 @@ package projections
 import (
 	reflect "reflect"
 
-	connection "github.com/EventStore/EventStore-Client-Go/connection"
-	projections "github.com/EventStore/EventStore-Client-Go/protos/projections"
 	gomock "github.com/golang/mock/gomock"
+	connection "github.com/pivonroll/EventStore-Client-Go/connection"
+	projections "github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
 // MockClientFactory is a mock of ClientFactory interface.

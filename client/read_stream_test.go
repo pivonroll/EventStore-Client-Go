@@ -9,12 +9,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	"github.com/EventStore/EventStore-Client-Go/stream_position"
-	"github.com/EventStore/EventStore-Client-Go/streamrevision"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	"github.com/pivonroll/EventStore-Client-Go/stream_position"
+	"github.com/pivonroll/EventStore-Client-Go/streamrevision"
 
-	direction "github.com/EventStore/EventStore-Client-Go/direction"
 	uuid "github.com/gofrs/uuid"
+	direction "github.com/pivonroll/EventStore-Client-Go/direction"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
@@ -67,7 +67,6 @@ func TestReadStreamEventsForwardsFromZeroPosition(t *testing.T) {
 	streamId := "dataset20M-1800"
 
 	stream, err := client.ReadStreamEvents(context, direction.Forwards, streamId, stream_position.Start{}, numberOfEvents, true)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -75,7 +74,6 @@ func TestReadStreamEventsForwardsFromZeroPosition(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -118,7 +116,6 @@ func TestReadStreamEventsBackwardsFromEndPosition(t *testing.T) {
 	streamId := "dataset20M-1800"
 
 	stream, err := client.ReadStreamEvents(context, direction.Backwards, streamId, stream_position.End{}, numberOfEvents, true)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -126,7 +123,6 @@ func TestReadStreamEventsBackwardsFromEndPosition(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}

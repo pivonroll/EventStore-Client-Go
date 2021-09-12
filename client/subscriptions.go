@@ -6,10 +6,10 @@ import (
 	"log"
 	"sync"
 
-	"github.com/EventStore/EventStore-Client-Go/internal/protoutils"
-	"github.com/EventStore/EventStore-Client-Go/position"
-	api "github.com/EventStore/EventStore-Client-Go/protos/streams"
-	"github.com/EventStore/EventStore-Client-Go/subscription"
+	"github.com/pivonroll/EventStore-Client-Go/internal/protoutils"
+	"github.com/pivonroll/EventStore-Client-Go/position"
+	api "github.com/pivonroll/EventStore-Client-Go/protos/streams"
+	"github.com/pivonroll/EventStore-Client-Go/subscription"
 )
 
 type request struct {

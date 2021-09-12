@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	messages "github.com/EventStore/EventStore-Client-Go/messages"
 	gomock "github.com/golang/mock/gomock"
+	messages "github.com/pivonroll/EventStore-Client-Go/messages"
 )
 
 // MockhandlerTest is a mock of handlerTest interface.

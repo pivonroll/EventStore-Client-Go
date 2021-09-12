@@ -8,12 +8,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/stream_position"
+	"github.com/pivonroll/EventStore-Client-Go/stream_position"
 
-	"github.com/EventStore/EventStore-Client-Go/client/filtering"
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	stream_revision "github.com/EventStore/EventStore-Client-Go/streamrevision"
 	uuid "github.com/gofrs/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/client/filtering"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	stream_revision "github.com/pivonroll/EventStore-Client-Go/streamrevision"
 	"github.com/stretchr/testify/require"
 )
 

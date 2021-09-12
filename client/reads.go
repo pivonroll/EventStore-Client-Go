@@ -6,11 +6,11 @@ import (
 	"io"
 	"sync"
 
-	"github.com/EventStore/EventStore-Client-Go/connection"
-	"github.com/EventStore/EventStore-Client-Go/errors"
-	"github.com/EventStore/EventStore-Client-Go/internal/protoutils"
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	api "github.com/EventStore/EventStore-Client-Go/protos/streams"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/internal/protoutils"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	api "github.com/pivonroll/EventStore-Client-Go/protos/streams"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -82,7 +82,6 @@ func NewReadStream(params ReadStreamParams) *ReadStream {
 			}
 
 			result, err := params.inner.Recv()
-
 			if err != nil {
 				if err != io.EOF {
 					err = params.client.HandleError(params.handle, params.headers, params.trailers, err)
@@ -114,7 +113,6 @@ func NewReadStream(params ReadStreamParams) *ReadStream {
 				}
 			}
 		}
-
 	}()
 
 	return &ReadStream{

@@ -3,8 +3,8 @@ package persistent
 //go:generate mockgen -source=client_factory.go -destination=client_factory_mock.go -package=persistent
 
 import (
-	"github.com/EventStore/EventStore-Client-Go/connection"
-	persistentProto "github.com/EventStore/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
+	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 )
 
 type ClientFactory interface {

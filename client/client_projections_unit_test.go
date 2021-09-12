@@ -5,15 +5,15 @@ import (
 	"errors"
 	"testing"
 
-	projectionsProto "github.com/EventStore/EventStore-Client-Go/protos/projections"
+	projectionsProto "github.com/pivonroll/EventStore-Client-Go/protos/projections"
 
 	"google.golang.org/grpc"
 
 	"github.com/stretchr/testify/require"
 
-	"github.com/EventStore/EventStore-Client-Go/connection"
-	"github.com/EventStore/EventStore-Client-Go/projections"
 	"github.com/golang/mock/gomock"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/projections"
 )
 
 func TestClient_CreateProjection(t *testing.T) {

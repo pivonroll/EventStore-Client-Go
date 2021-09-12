@@ -8,13 +8,13 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/EventStore/EventStore-Client-Go/stream_position"
+	"github.com/pivonroll/EventStore-Client-Go/stream_position"
 
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 
-	"github.com/EventStore/EventStore-Client-Go/client"
-	"github.com/EventStore/EventStore-Client-Go/direction"
+	"github.com/pivonroll/EventStore-Client-Go/client"
+	"github.com/pivonroll/EventStore-Client-Go/direction"
 )
 
 func TestTLSDefaults(t *testing.T) {

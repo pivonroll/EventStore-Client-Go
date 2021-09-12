@@ -5,9 +5,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/messages"
-	stream_revision "github.com/EventStore/EventStore-Client-Go/streamrevision"
 	"github.com/gofrs/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/messages"
+	stream_revision "github.com/pivonroll/EventStore-Client-Go/streamrevision"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -32,7 +32,6 @@ func Test_CloseConnection(t *testing.T) {
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5)*time.Second)
 	defer cancel()
 	_, err := client.AppendToStream(context, streamID.String(), stream_revision.StreamRevisionNoStream, proposedEvents)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}

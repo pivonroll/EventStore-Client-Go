@@ -8,8 +8,8 @@ import (
 	context "context"
 	reflect "reflect"
 
-	connection "github.com/EventStore/EventStore-Client-Go/connection"
 	gomock "github.com/golang/mock/gomock"
+	connection "github.com/pivonroll/EventStore-Client-Go/connection"
 )
 
 // MockClient is a mock of Client interface.

@@ -10,10 +10,10 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/errors"
-	gossipApi "github.com/EventStore/EventStore-Client-Go/protos/gossip"
-	"github.com/EventStore/EventStore-Client-Go/protos/shared"
 	"github.com/gofrs/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/errors"
+	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/gossip"
+	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -106,7 +106,6 @@ func (msg getConnection) handle(state *connectionState) {
 	// Means we need to create a grpc connection.
 	if state.correlation == uuid.Nil {
 		conn, err := discoverNode(state.config)
-
 		if err != nil {
 			state.lastError = err
 			resp := newErroredConnectionHandle(err)
@@ -115,7 +114,6 @@ func (msg getConnection) handle(state *connectionState) {
 		}
 
 		id, err := uuid.NewV4()
-
 		if err != nil {
 			state.lastError = fmt.Errorf("error when trying to generate a random UUID: %v", err)
 			return
@@ -233,7 +231,6 @@ func (msg reconnect) handle(state *connectionState) {
 
 		log.Printf("[info] Connecting to leader node %s ...", msg.endpoint.String())
 		conn, err := createGrpcConnection(&state.config, msg.endpoint.String())
-
 		if err != nil {
 			log.Printf("[error] exception when connecting to suggested node %s", msg.endpoint.String())
 			state.correlation = uuid.Nil
@@ -241,7 +238,6 @@ func (msg reconnect) handle(state *connectionState) {
 		}
 
 		id, err := uuid.NewV4()
-
 		if err != nil {
 			log.Printf("[error] exception when generating a correlation id after reconnected to %s : %v", msg.endpoint.String(), err)
 			state.correlation = uuid.Nil
@@ -322,6 +318,7 @@ func (b basicAuth) GetRequestMetadata(tx context.Context, in ...string) (map[str
 func (basicAuth) RequireTransportSecurity() bool {
 	return false
 }
+
 func allowedNodeState() []gossipApi.MemberInfo_VNodeState {
 	return []gossipApi.MemberInfo_VNodeState{
 		gossipApi.MemberInfo_Follower,
@@ -364,7 +361,6 @@ func discoverNode(conf Configuration) (*grpc.ClientConn, error) {
 				context, cancel := context.WithTimeout(context.Background(), time.Duration(conf.GossipTimeout)*time.Second)
 				defer cancel()
 				info, err := client.Read(context, &shared.Empty{})
-
 				if err != nil {
 					log.Printf("[warn] Error when reading gossip from candidate %s: %v", candidate, err)
 					continue
@@ -372,7 +368,6 @@ func discoverNode(conf Configuration) (*grpc.ClientConn, error) {
 
 				info.Members = shuffleMembers(info.Members)
 				selected, err := pickBestCandidate(info, conf.NodePreference)
-
 				if err != nil {
 					log.Printf("[warn] Eror when picking best candidate out of %s gossip response: %v", candidate, err)
 					continue

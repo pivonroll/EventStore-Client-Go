@@ -8,14 +8,14 @@ import (
 	"testing"
 	"time"
 
-	"github.com/EventStore/EventStore-Client-Go/stream_position"
+	"github.com/pivonroll/EventStore-Client-Go/stream_position"
 
-	"github.com/EventStore/EventStore-Client-Go/client"
-	direction "github.com/EventStore/EventStore-Client-Go/direction"
-	client_errors "github.com/EventStore/EventStore-Client-Go/errors"
-	messages "github.com/EventStore/EventStore-Client-Go/messages"
-	stream_revision "github.com/EventStore/EventStore-Client-Go/streamrevision"
 	uuid "github.com/gofrs/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/client"
+	direction "github.com/pivonroll/EventStore-Client-Go/direction"
+	client_errors "github.com/pivonroll/EventStore-Client-Go/errors"
+	messages "github.com/pivonroll/EventStore-Client-Go/messages"
+	stream_revision "github.com/pivonroll/EventStore-Client-Go/streamrevision"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -69,13 +69,11 @@ func TestAppendToStreamSingleEventNoStream(t *testing.T) {
 	context, cancel := context.WithTimeout(context.Background(), time.Duration(5)*time.Second)
 	defer cancel()
 	_, err := client.AppendToStream(context, streamID.String(), stream_revision.StreamRevisionNoStream, proposedEvents)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
 
 	stream, err := client.ReadStreamEvents(context, direction.Forwards, streamID.String(), stream_position.Start{}, 1, false)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}
@@ -83,7 +81,6 @@ func TestAppendToStreamSingleEventNoStream(t *testing.T) {
 	defer stream.Close()
 
 	events, err := collectStreamEvents(stream)
-
 	if err != nil {
 		t.Fatalf("Unexpected failure %+v", err)
 	}

@@ -5,17 +5,17 @@ import (
 	"errors"
 	"testing"
 
-	"github.com/EventStore/EventStore-Client-Go/client/filtering"
-	"github.com/EventStore/EventStore-Client-Go/position"
+	"github.com/pivonroll/EventStore-Client-Go/client/filtering"
+	"github.com/pivonroll/EventStore-Client-Go/position"
 
-	persistent2 "github.com/EventStore/EventStore-Client-Go/protos/persistent"
+	persistent2 "github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 
 	"google.golang.org/grpc"
 
-	"github.com/EventStore/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/connection"
 
-	"github.com/EventStore/EventStore-Client-Go/persistent"
 	"github.com/golang/mock/gomock"
+	"github.com/pivonroll/EventStore-Client-Go/persistent"
 	"github.com/stretchr/testify/require"
 )
 
