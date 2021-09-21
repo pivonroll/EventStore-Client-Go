@@ -6,22 +6,7 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
-
-	"github.com/gofrs/uuid"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/metadata"
 )
-
-type ConnectionHandle interface {
-	Id() uuid.UUID
-	Connection() *grpc.ClientConn
-}
-
-type GrpcClient interface {
-	HandleError(handle ConnectionHandle, headers metadata.MD, trailers metadata.MD, err error) error
-	GetConnectionHandle() (ConnectionHandle, error)
-	Close()
-}
 
 type EndPoint struct {
 	Host string
@@ -54,7 +39,6 @@ func ParseEndPoint(s string) (*EndPoint, error) {
 		ip := net.ParseIP(tokens[0])
 		if ip == nil {
 			_, err := url.Parse(tokens[0])
-
 			if err != nil {
 				return nil, fmt.Errorf("invalid hostname [%s]", tokens[0])
 			}
@@ -71,7 +55,6 @@ func ParseEndPoint(s string) (*EndPoint, error) {
 		ip := net.ParseIP(s)
 		if ip == nil {
 			_, err := url.Parse(s)
-
 			if err != nil {
 				return nil, fmt.Errorf("invalid hostname [%s]", s)
 			}
@@ -82,14 +65,4 @@ func ParseEndPoint(s string) (*EndPoint, error) {
 	}
 
 	return endpoint, nil
-}
-
-func NewGrpcClient(config Configuration) GrpcClient {
-	channel := make(chan msg)
-
-	go connectionStateMachine(config, channel)
-
-	return &grpcClientImpl{
-		channel: channel,
-	}
 }
