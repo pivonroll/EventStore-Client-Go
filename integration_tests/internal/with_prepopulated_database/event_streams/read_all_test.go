@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/stretchr/testify/require"
 )
@@ -32,7 +33,7 @@ func Test_ReadAllEvents(t *testing.T) {
 
 		events, err := client.ReadEventsFromStreamAll(ctx,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAllStart{}, numberOfEvents, true)
+			stream_revision.ReadPositionAllStart{}, numberOfEvents, true)
 		require.NoError(t, err)
 
 		for i := 0; i < numberOfEventsToRead; i++ {
@@ -64,7 +65,7 @@ func Test_ReadAllEvents(t *testing.T) {
 
 		events, err := client.ReadEventsFromStreamAll(ctx,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAll{
+			stream_revision.ReadPositionAll{
 				CommitPosition:  1788,
 				PreparePosition: 1788,
 			},
@@ -100,7 +101,7 @@ func Test_ReadAllEvents(t *testing.T) {
 
 		events, err := client.ReadEventsFromStreamAll(ctx,
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			numberOfEvents, true)
 		require.NoError(t, err)
 
@@ -133,7 +134,7 @@ func Test_ReadAllEvents(t *testing.T) {
 
 		events, err := client.ReadEventsFromStreamAll(ctx,
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAll{
+			stream_revision.ReadPositionAll{
 				CommitPosition:  3386,
 				PreparePosition: 3386,
 			},

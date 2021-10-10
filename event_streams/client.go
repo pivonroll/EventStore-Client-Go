@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 )
@@ -26,7 +27,7 @@ type Client interface {
 	AppendToStream(
 		ctx context.Context,
 		streamId string,
-		expectedStreamRevision IsWriteStreamRevision,
+		expectedStreamRevision stream_revision.IsWriteStreamRevision,
 		events []ProposedEvent,
 	) (AppendResponse, errors.Error)
 
@@ -35,7 +36,7 @@ type Client interface {
 	// If any error occurs error will be returned with appropriate code set.
 	BatchAppendToStream(ctx context.Context,
 		streamId string,
-		expectedStreamRevision IsWriteStreamRevision,
+		expectedStreamRevision stream_revision.IsWriteStreamRevision,
 		events ProposedEventList,
 		chunkSize uint64,
 		deadline time.Time,
@@ -48,7 +49,7 @@ type Client interface {
 	// If any error occurs error will be returned with appropriate code set.
 	BatchAppendToStreamWithCorrelationId(ctx context.Context,
 		streamId string,
-		expectedStreamRevision IsWriteStreamRevision,
+		expectedStreamRevision stream_revision.IsWriteStreamRevision,
 		correlationId uuid.UUID,
 		events ProposedEventList,
 		chunkSize uint64,
@@ -62,7 +63,7 @@ type Client interface {
 	SetStreamMetadata(
 		ctx context.Context,
 		streamID string,
-		expectedStreamRevision IsWriteStreamRevision,
+		expectedStreamRevision stream_revision.IsWriteStreamRevision,
 		metadata StreamMetadata,
 	) (AppendResponse, errors.Error)
 
@@ -83,7 +84,7 @@ type Client interface {
 	DeleteStream(
 		ctx context.Context,
 		streamID string,
-		revision IsWriteStreamRevision,
+		revision stream_revision.IsWriteStreamRevision,
 	) (DeleteResponse, errors.Error)
 
 	// TombstoneStream performs a hard-delete on a stream.
@@ -91,7 +92,7 @@ type Client interface {
 	TombstoneStream(
 		ctx context.Context,
 		streamID string,
-		revision IsWriteStreamRevision,
+		revision stream_revision.IsWriteStreamRevision,
 	) (TombstoneResponse, errors.Error)
 
 	// ReadStreamEvents reads events from a given stream.
@@ -105,7 +106,7 @@ type Client interface {
 		ctx context.Context,
 		streamID string,
 		direction ReadDirection,
-		revision IsReadStreamRevision,
+		revision stream_revision.IsReadStreamRevision,
 		count uint64,
 		resolveLinks bool,
 	) (ResolvedEventList, errors.Error)
@@ -120,7 +121,7 @@ type Client interface {
 	ReadEventsFromStreamAll(
 		ctx context.Context,
 		direction ReadDirection,
-		position IsReadPositionAll,
+		position stream_revision.IsReadPositionAll,
 		count uint64,
 		resolveLinks bool,
 	) (ResolvedEventList, errors.Error)
@@ -136,7 +137,7 @@ type Client interface {
 		ctx context.Context,
 		streamID string,
 		direction ReadDirection,
-		revision IsReadStreamRevision,
+		revision stream_revision.IsReadStreamRevision,
 		count uint64,
 		resolveLinks bool,
 	) (StreamReader, errors.Error)
@@ -151,7 +152,7 @@ type Client interface {
 	GetStreamReaderForStreamAll(
 		ctx context.Context,
 		direction ReadDirection,
-		position IsReadPositionAll,
+		position stream_revision.IsReadPositionAll,
 		count uint64,
 		resolveLinks bool,
 	) (StreamReader, errors.Error)
@@ -165,7 +166,7 @@ type Client interface {
 	SubscribeToStream(
 		ctx context.Context,
 		streamID string,
-		revision IsReadStreamRevision,
+		revision stream_revision.IsReadStreamRevision,
 		resolveLinks bool,
 	) (StreamReader, errors.Error)
 
@@ -179,7 +180,7 @@ type Client interface {
 	// Todo add documentation for resolveLinks
 	SubscribeToFilteredStreamAll(
 		ctx context.Context,
-		position IsReadPositionAll,
+		position stream_revision.IsReadPositionAll,
 		resolveLinks bool,
 		filter Filter,
 	) (StreamReader, errors.Error)
@@ -192,7 +193,7 @@ type Client interface {
 	// Todo add documentation for resolveLinks
 	SubscribeToStreamAll(
 		ctx context.Context,
-		position IsReadPositionAll,
+		position stream_revision.IsReadPositionAll,
 		resolveLinks bool,
 	) (StreamReader, errors.Error)
 }

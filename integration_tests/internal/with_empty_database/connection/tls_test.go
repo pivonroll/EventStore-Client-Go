@@ -11,6 +11,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/client"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/test_utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,7 +23,7 @@ func TestTLSDefaults(t *testing.T) {
 
 	_, err := eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 	require.Error(t, err)
@@ -56,7 +57,7 @@ func TestTLSDefaultsWithCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 	require.NoError(t, err)
@@ -75,7 +76,7 @@ func TestTLSWithoutCertificateAndVerify(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 	require.NoError(t, err)
@@ -93,7 +94,7 @@ func TestTLSWithoutCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 
@@ -117,7 +118,7 @@ func TestTLSWithCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.NoError(t, err)
@@ -139,7 +140,7 @@ func TestTLSWithCertificateFromAbsoluteFile(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.NoError(t, err)
@@ -159,7 +160,7 @@ func TestTLSWithCertificateFromRelativeFile(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.NoError(t, err)
@@ -181,7 +182,7 @@ func TestTLSWithInvalidCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.Error(t, err)

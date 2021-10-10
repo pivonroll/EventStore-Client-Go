@@ -3,6 +3,7 @@ package event_streams
 import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 type subscribeToStreamRequest struct {
@@ -59,19 +60,19 @@ func (this subscribeToStreamRequest) buildStreamOptionAll(all subscribeRequestSt
 	}
 
 	switch all.Position.(type) {
-	case ReadPositionAll:
-		allPosition := all.Position.(ReadPositionAll)
+	case stream_revision.ReadPositionAll:
+		allPosition := all.Position.(stream_revision.ReadPositionAll)
 		result.All.AllOption = &streams2.ReadReq_Options_AllOptions_Position{
 			Position: &streams2.ReadReq_Options_Position{
 				CommitPosition:  allPosition.CommitPosition,
 				PreparePosition: allPosition.PreparePosition,
 			},
 		}
-	case ReadPositionAllStart:
+	case stream_revision.ReadPositionAllStart:
 		result.All.AllOption = &streams2.ReadReq_Options_AllOptions_Start{
 			Start: &shared.Empty{},
 		}
-	case ReadPositionAllEnd:
+	case stream_revision.ReadPositionAllEnd:
 		result.All.AllOption = &streams2.ReadReq_Options_AllOptions_End{
 			End: &shared.Empty{},
 		}
@@ -92,16 +93,16 @@ func (this subscribeToStreamRequest) buildStreamOptions(
 	}
 
 	switch streamOptions.Revision.(type) {
-	case ReadStreamRevision:
-		streamRevision := streamOptions.Revision.(ReadStreamRevision)
+	case stream_revision.ReadStreamRevision:
+		streamRevision := streamOptions.Revision.(stream_revision.ReadStreamRevision)
 		result.Stream.RevisionOption = &streams2.ReadReq_Options_StreamOptions_Revision{
 			Revision: streamRevision.Revision,
 		}
-	case ReadStreamRevisionStart:
+	case stream_revision.ReadStreamRevisionStart:
 		result.Stream.RevisionOption = &streams2.ReadReq_Options_StreamOptions_Start{
 			Start: &shared.Empty{},
 		}
-	case ReadStreamRevisionEnd:
+	case stream_revision.ReadStreamRevisionEnd:
 		result.Stream.RevisionOption = &streams2.ReadReq_Options_StreamOptions_End{
 			End: &shared.Empty{},
 		}
@@ -129,7 +130,7 @@ type subscribeRequestStreamOptions struct {
 	// ReadStreamRevision
 	// ReadStreamRevisionStart
 	// ReadStreamRevisionEnd
-	Revision IsReadStreamRevision
+	Revision stream_revision.IsReadStreamRevision
 }
 
 func (this subscribeRequestStreamOptions) isSubscribeRequestStreamOptions() {}
@@ -138,7 +139,7 @@ type subscribeRequestStreamOptionsAll struct {
 	// ReadPositionAll
 	// ReadPositionAllStart
 	// ReadPositionAllEnd
-	Position IsReadPositionAll
+	Position stream_revision.IsReadPositionAll
 }
 
 func (this subscribeRequestStreamOptionsAll) isSubscribeRequestStreamOptions() {}

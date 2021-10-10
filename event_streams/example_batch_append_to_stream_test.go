@@ -38,7 +38,7 @@ func ExampleClientImpl_BatchAppendToStream_streamDoesNotExist() {
 	// batch append to a stream which does not exist
 	writeResult, err := client.BatchAppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{firstEvent},
 		1,
 		deadline)
@@ -78,7 +78,7 @@ func ExampleClientImpl_BatchAppendToStream_streamExists() {
 	// create a stream by appending one event to it
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{firstEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -100,7 +100,7 @@ func ExampleClientImpl_BatchAppendToStream_streamExists() {
 	// batch append to a stream which exists with expected revision
 	batchWriteResult, err := client.BatchAppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevision{Revision: 0}, // there is already one event in the stream
+		stream_revision.WriteStreamRevision{Revision: 0}, // there is already one event in the stream
 		[]event_streams.ProposedEvent{secondEvent},
 		1,
 		deadline)
@@ -144,7 +144,7 @@ func ExampleClientImpl_BatchAppendToStreamWithCorrelationId() {
 	// batch append to a stream with correlation id
 	writeResult, err := client.BatchAppendToStreamWithCorrelationId(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		correlationId,
 		[]event_streams.ProposedEvent{firstEvent},
 		1,

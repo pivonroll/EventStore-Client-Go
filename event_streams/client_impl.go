@@ -9,6 +9,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -49,7 +50,7 @@ const (
 func (client *ClientImpl) AppendToStream(
 	ctx context.Context,
 	streamID string,
-	expectedStreamRevision IsWriteStreamRevision,
+	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	events []ProposedEvent,
 ) (AppendResponse, errors.Error) {
 	return client.appendToStreamWithError(ctx, appendRequestContentOptions{
@@ -78,7 +79,7 @@ const (
 // If any error occurs error will be returned with appropriate code set.
 func (client *ClientImpl) BatchAppendToStream(ctx context.Context,
 	streamId string,
-	expectedStreamRevision IsWriteStreamRevision,
+	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	events ProposedEventList,
 	chunkSize uint64,
 	deadline time.Time,
@@ -102,7 +103,7 @@ func (client *ClientImpl) BatchAppendToStream(ctx context.Context,
 // If any error occurs error will be returned with appropriate code set.
 func (client *ClientImpl) BatchAppendToStreamWithCorrelationId(ctx context.Context,
 	streamId string,
-	expectedStreamRevision IsWriteStreamRevision,
+	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	correlationId uuid.UUID,
 	events ProposedEventList,
 	chunkSize uint64,
@@ -165,7 +166,7 @@ func (client *ClientImpl) BatchAppendToStreamWithCorrelationId(ctx context.Conte
 func (client *ClientImpl) SetStreamMetadata(
 	ctx context.Context,
 	streamID string,
-	expectedStreamRevision IsWriteStreamRevision,
+	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	metadata StreamMetadata) (AppendResponse, errors.Error) {
 	streamMetadataEvent := newMetadataEvent(metadata)
 
@@ -183,7 +184,7 @@ func (client *ClientImpl) GetStreamMetadata(
 	events, err := client.readStreamEvents(ctx, readRequest{
 		streamOption: readRequestStreamOptions{
 			StreamIdentifier: getMetaStreamOf(streamId),
-			Revision:         ReadStreamRevisionEnd{},
+			Revision:         stream_revision.ReadStreamRevisionEnd{},
 		},
 		direction:    ReadDirectionBackward,
 		resolveLinks: false,
@@ -228,7 +229,8 @@ const FailedToDeleteStreamErr errors.ErrorCode = "FailedToDeleteStreamErr"
 func (client *ClientImpl) DeleteStream(
 	ctx context.Context,
 	streamID string,
-	revision IsWriteStreamRevision) (DeleteResponse, errors.Error) {
+	revision stream_revision.IsWriteStreamRevision,
+) (DeleteResponse, errors.Error) {
 	return client.deleteStream(ctx, deleteRequest{
 		streamId:               streamID,
 		expectedStreamRevision: revision,
@@ -241,7 +243,8 @@ func (client *ClientImpl) DeleteStream(
 func (client *ClientImpl) TombstoneStream(
 	ctx context.Context,
 	streamID string,
-	revision IsWriteStreamRevision) (TombstoneResponse, errors.Error) {
+	revision stream_revision.IsWriteStreamRevision,
+) (TombstoneResponse, errors.Error) {
 	return client.tombstoneStream(ctx, tombstoneRequest{
 		streamId:               streamID,
 		expectedStreamRevision: revision,
@@ -264,7 +267,7 @@ func (client *ClientImpl) GetStreamReader(
 	ctx context.Context,
 	streamID string,
 	direction ReadDirection,
-	revision IsReadStreamRevision,
+	revision stream_revision.IsReadStreamRevision,
 	count uint64,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (StreamReader, errors.Error) {
@@ -291,7 +294,7 @@ func (client *ClientImpl) GetStreamReader(
 func (client *ClientImpl) GetStreamReaderForStreamAll(
 	ctx context.Context,
 	direction ReadDirection,
-	position IsReadPositionAll,
+	position stream_revision.IsReadPositionAll,
 	count uint64,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (StreamReader, errors.Error) {
@@ -330,7 +333,7 @@ func (client *ClientImpl) GetStreamReaderForStreamAll(
 func (client *ClientImpl) SubscribeToStream(
 	ctx context.Context,
 	streamID string,
-	revision IsReadStreamRevision,
+	revision stream_revision.IsReadStreamRevision,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (StreamReader, errors.Error) {
 	return client.subscribeToStream(ctx, subscribeToStreamRequest{
@@ -366,7 +369,7 @@ func (client *ClientImpl) SubscribeToStream(
 // If you only want to receive new content from stream $all, set revision to ReadPositionAllEnd.
 func (client *ClientImpl) SubscribeToFilteredStreamAll(
 	ctx context.Context,
-	position IsReadPositionAll,
+	position stream_revision.IsReadPositionAll,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 	filter Filter,
 ) (StreamReader, errors.Error) {
@@ -399,7 +402,7 @@ func (client *ClientImpl) SubscribeToFilteredStreamAll(
 // If you only want to receive new content, set revision to ReadPositionAllEnd.
 func (client *ClientImpl) SubscribeToStreamAll(
 	ctx context.Context,
-	position IsReadPositionAll,
+	position stream_revision.IsReadPositionAll,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (StreamReader, errors.Error) {
 	return client.subscribeToStream(ctx, subscribeToStreamRequest{
@@ -430,7 +433,7 @@ func (client *ClientImpl) ReadStreamEvents(
 	ctx context.Context,
 	streamID string,
 	direction ReadDirection,
-	revision IsReadStreamRevision,
+	revision stream_revision.IsReadStreamRevision,
 	count uint64,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (ResolvedEventList, errors.Error) {
@@ -464,7 +467,7 @@ const (
 func (client *ClientImpl) ReadEventsFromStreamAll(
 	ctx context.Context,
 	direction ReadDirection,
-	position IsReadPositionAll,
+	position stream_revision.IsReadPositionAll,
 	count uint64,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (ResolvedEventList, errors.Error) {

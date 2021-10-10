@@ -3,27 +3,28 @@ package persistent
 import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
-// CreateAllRequest is a struct with all data necessary to create a persistent subscription group.
-type CreateAllRequest struct {
+// SubscriptionGroupForStreamAllRequest is a struct with all data necessary to create a persistent subscription group.
+type SubscriptionGroupForStreamAllRequest struct {
 	GroupName string // name of the persistent subscription group
 	// AllPosition
 	// AllPositionStart
 	// AllPositionEnd
-	Position isAllPosition // position from which we want to start to receive events from a stream $all
+	Position stream_revision.IsReadPositionAll // position from which we want to start to receive events from a stream $all
 	// CreateRequestAllNoFilter
 	// CreateRequestAllFilter
 	Filter   isCreateRequestAllFilter      // filter for messages from stream $all
 	Settings CreateOrUpdateRequestSettings // setting for a persistent subscription group
 }
 
-func (request CreateAllRequest) build() *persistent.CreateReq {
+func (request SubscriptionGroupForStreamAllRequest) build() *persistent.CreateReq {
 	streamOption := &persistent.CreateReq_Options_All{
 		All: &persistent.CreateReq_AllOptions{},
 	}
 
-	request.Position.buildCreateRequestPosition(streamOption.All)
+	buildCreateRequestPosition(request.Position, streamOption.All)
 	request.Filter.build(streamOption.All)
 	protoSettings := request.Settings.buildCreateRequestSettings()
 
@@ -36,6 +37,28 @@ func (request CreateAllRequest) build() *persistent.CreateReq {
 	}
 
 	return result
+}
+
+func buildCreateRequestPosition(
+	position stream_revision.IsReadPositionAll,
+	protoOptions *persistent.CreateReq_AllOptions) {
+	switch position.(type) {
+	case stream_revision.ReadPositionAllStart:
+		protoOptions.AllOption = &persistent.CreateReq_AllOptions_Start{
+			Start: &shared.Empty{},
+		}
+	case stream_revision.ReadPositionAll:
+		protoOptions.AllOption = &persistent.CreateReq_AllOptions_Position{
+			Position: &persistent.CreateReq_Position{
+				CommitPosition:  position.(stream_revision.ReadPositionAll).CommitPosition,
+				PreparePosition: position.(stream_revision.ReadPositionAll).PreparePosition,
+			},
+		}
+	case stream_revision.ReadPositionAllEnd:
+		protoOptions.AllOption = &persistent.CreateReq_AllOptions_End{
+			End: &shared.Empty{},
+		}
+	}
 }
 
 type isCreateRequestAllFilter interface {

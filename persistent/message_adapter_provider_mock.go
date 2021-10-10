@@ -33,16 +33,16 @@ func (m *MockmessageAdapterProvider) EXPECT() *MockmessageAdapterProviderMockRec
 	return m.recorder
 }
 
-// GetMessageAdapter mocks base method.
-func (m *MockmessageAdapterProvider) GetMessageAdapter() messageAdapter {
+// getMessageAdapter mocks base method.
+func (m *MockmessageAdapterProvider) getMessageAdapter() messageAdapter {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "GetMessageAdapter")
+	ret := m.ctrl.Call(m, "getMessageAdapter")
 	ret0, _ := ret[0].(messageAdapter)
 	return ret0
 }
 
-// GetMessageAdapter indicates an expected call of GetMessageAdapter.
-func (mr *MockmessageAdapterProviderMockRecorder) GetMessageAdapter() *gomock.Call {
+// getMessageAdapter indicates an expected call of getMessageAdapter.
+func (mr *MockmessageAdapterProviderMockRecorder) getMessageAdapter() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "GetMessageAdapter", reflect.TypeOf((*MockmessageAdapterProvider)(nil).GetMessageAdapter))
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "getMessageAdapter", reflect.TypeOf((*MockmessageAdapterProvider)(nil).getMessageAdapter))
 }

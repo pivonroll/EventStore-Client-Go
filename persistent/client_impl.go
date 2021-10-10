@@ -50,7 +50,7 @@ func (client clientImpl) SubscribeToStreamSync(
 		return nil, err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	var headers, trailers metadata.MD
 	ctx, cancel := context.WithCancel(ctx)
@@ -81,10 +81,10 @@ func (client clientImpl) SubscribeToStreamSync(
 	switch readResult.Content.(type) {
 	case *persistentProto.ReadResp_SubscriptionConfirmation_:
 		{
-			asyncConnection := client.syncReadConnectionFactory.Create(
+			asyncConnection := client.syncReadConnectionFactory.create(
 				readClient,
 				readResult.GetSubscriptionConfirmation().SubscriptionId,
-				client.messageAdapterProvider.GetMessageAdapter(),
+				client.messageAdapterProvider.getMessageAdapter(),
 				cancel)
 
 			return asyncConnection, nil
@@ -105,13 +105,13 @@ const CreateStreamSubscription_FailedToCreateErr errors.ErrorCode = "CreateStrea
 // You must have admin permissions to create a persistent subscription group.
 func (client clientImpl) CreateSubscriptionGroupForStream(
 	ctx context.Context,
-	request CreateOrUpdateStreamRequest) errors.Error {
+	request SubscriptionGroupForStreamRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	var headers, trailers metadata.MD
 	_, protoErr := persistentSubscriptionClient.Create(ctx, request.BuildCreateStreamRequest(),
@@ -135,13 +135,13 @@ const CreateAllSubscription_FailedToCreateErr errors.ErrorCode = "CreateAllSubsc
 // You must have admin permissions to create a persistent subscription group.
 func (client clientImpl) CreateSubscriptionGroupForStreamAll(
 	ctx context.Context,
-	request CreateAllRequest) errors.Error {
+	request SubscriptionGroupForStreamAllRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	var headers, trailers metadata.MD
 	_, protoErr := persistentSubscriptionClient.Create(ctx, request.build(),
@@ -166,13 +166,13 @@ const UpdateStreamSubscription_FailedToUpdateErr errors.ErrorCode = "UpdateStrea
 // You must have admin permissions to update a persistent subscription group.
 func (client clientImpl) UpdateSubscriptionGroupForStream(
 	ctx context.Context,
-	request CreateOrUpdateStreamRequest) errors.Error {
+	request SubscriptionGroupForStreamRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	var headers, trailers metadata.MD
 	_, protoErr := persistentSubscriptionClient.Update(ctx, request.BuildUpdateStreamRequest(),
@@ -197,13 +197,13 @@ const UpdateAllSubscription_FailedToUpdateErr errors.ErrorCode = "UpdateAllSubsc
 // You must have admin permissions to update a persistent subscription group.
 func (client clientImpl) UpdateSubscriptionGroupForStreamAll(
 	ctx context.Context,
-	request UpdateAllRequest) errors.Error {
+	request UpdateSubscriptionGroupForStreamAllRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	var headers, trailers metadata.MD
 	_, protoErr := persistentSubscriptionClient.Update(ctx, request.Build(),
@@ -227,16 +227,21 @@ const DeleteStreamSubscription_FailedToDeleteErr errors.ErrorCode = "DeleteStrea
 // You must have admin permissions to delete a persistent subscription group.
 func (client clientImpl) DeleteSubscriptionGroupForStream(
 	ctx context.Context,
-	request DeleteRequest) errors.Error {
+	streamId string,
+	groupName string) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	var headers, trailers metadata.MD
-	_, protoErr := persistentSubscriptionClient.Delete(ctx, request.Build(),
+	request := deleteSubscriptionGroupForStreamRequest{
+		StreamId:  streamId,
+		GroupName: groupName,
+	}
+	_, protoErr := persistentSubscriptionClient.Delete(ctx, request.build(),
 		grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
 		err := client.grpcClient.HandleError(handle, headers, trailers, protoErr,
@@ -263,7 +268,7 @@ func (client clientImpl) DeleteSubscriptionGroupForStreamAll(
 		return err
 	}
 
-	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.Create(handle.Connection())
+	persistentSubscriptionClient := client.grpcSubscriptionClientFactory.create(handle.Connection())
 
 	protoRequest := deleteRequestAllOptionsProto(groupName)
 	var headers, trailers metadata.MD

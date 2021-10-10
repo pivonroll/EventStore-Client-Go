@@ -67,7 +67,7 @@ func (reader *eventReaderImpl) Ack(messages ...ReadResponseEvent) errors.Error {
 
 	var ids []uuid.UUID
 	for _, event := range messages {
-		ids = append(ids, event.GetOriginalEvent().EventID)
+		ids = append(ids, event.GetOriginalEvent().EventId)
 	}
 
 	protoErr := reader.protoClient.Send(&persistent.ReadReq{
@@ -100,7 +100,7 @@ func (reader *eventReaderImpl) Nack(reason string,
 
 	ids := []uuid.UUID{}
 	for _, event := range messages {
-		ids = append(ids, event.GetOriginalEvent().EventID)
+		ids = append(ids, event.GetOriginalEvent().EventId)
 	}
 
 	err := reader.protoClient.Send(&persistent.ReadReq{

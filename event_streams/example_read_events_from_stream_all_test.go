@@ -30,7 +30,7 @@ func ExampleClientImpl_ReadEventsFromStreamAll_readEventsFromStart() {
 	// as admin user we can access them too
 	readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionForward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		5,
 		false)
 	if err != nil {
@@ -77,7 +77,7 @@ func ExampleClientImpl_ReadEventsFromStreamAll_readEventsBackwardsFromEnd() {
 	// create a stream with 10 events
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		eventsToWrite)
 	if err != nil {
 		log.Fatalln(err)
@@ -87,7 +87,7 @@ func ExampleClientImpl_ReadEventsFromStreamAll_readEventsBackwardsFromEnd() {
 
 	readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionForward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		count,
 		false)
 	if err != nil {

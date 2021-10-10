@@ -50,10 +50,10 @@ func Test_MessageAdapter(t *testing.T) {
 	}
 
 	expectedMessage := &RecordedEvent{
-		EventID:     id,
+		EventId:     id,
 		EventType:   "some event type",
 		ContentType: "some content type",
-		StreamID:    "stream identifier",
+		StreamId:    "stream identifier",
 		EventNumber: 5,
 		Position: position.Position{
 			Commit:  20,

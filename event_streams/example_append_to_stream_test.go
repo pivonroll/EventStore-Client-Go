@@ -36,7 +36,7 @@ func ExampleClientImpl_AppendToStream_withNoStreamWhenStreamDoesNotExist() {
 
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -71,7 +71,7 @@ func ExampleClientImpl_AppendToStream_withAnyWhenStreamDoesNotExist() {
 
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -108,7 +108,7 @@ func ExampleClientImpl_AppendToStream_withExactStreamRevisionWhenStreamExist() {
 	// Create a stream by appending one event to it
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{firstEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -128,7 +128,7 @@ func ExampleClientImpl_AppendToStream_withExactStreamRevisionWhenStreamExist() {
 	}
 	writeResult, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevision{Revision: 0}, // 0 because stream has one event, like an index in a slice
+		stream_revision.WriteStreamRevision{Revision: 0}, // 0 because stream has one event, like an index in a slice
 		[]event_streams.ProposedEvent{secondEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -165,7 +165,7 @@ func ExampleClientImpl_AppendToStream_withAnyStreamRevisionWhenStreamExist() {
 	// Create a stream by appending one event to it
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{firstEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -185,7 +185,7 @@ func ExampleClientImpl_AppendToStream_withAnyStreamRevisionWhenStreamExist() {
 	}
 	writeResult, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		[]event_streams.ProposedEvent{secondEvent})
 	if err != nil {
 		log.Fatalln(err)

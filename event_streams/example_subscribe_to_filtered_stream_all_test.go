@@ -57,7 +57,7 @@ func ExampleClientImpl_SubscribeToFilteredStreamAll() {
 	// create other stream with 10 events
 	_, err := client.AppendToStream(context.Background(),
 		otherStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		otherStreamEvents)
 	if err != nil {
 		log.Fatalln(err)
@@ -66,7 +66,7 @@ func ExampleClientImpl_SubscribeToFilteredStreamAll() {
 	// create first stream which content we will read
 	_, err = client.AppendToStream(context.Background(),
 		prefixStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		prefixStreamEvents)
 	if err != nil {
 		log.Fatalln(err)
@@ -75,7 +75,7 @@ func ExampleClientImpl_SubscribeToFilteredStreamAll() {
 	// subscribe to stream $all and filter only events written to
 	// streams with prefix my_first_prefix and my_second_prefix
 	streamReader, err := client.SubscribeToFilteredStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false,
 		event_streams.Filter{
 			FilterBy: event_streams.FilterByStreamId{
@@ -124,7 +124,7 @@ func ExampleClientImpl_SubscribeToFilteredStreamAll() {
 		// create stream with prefix my_second_prefix with 10 events in it
 		_, err = client.AppendToStream(context.Background(),
 			newPrefixStream,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			newPrefixStreamEvents)
 		if err != nil {
 			log.Fatalln(err)

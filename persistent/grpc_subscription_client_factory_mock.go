@@ -35,16 +35,16 @@ func (m *MockgrpcSubscriptionClientFactory) EXPECT() *MockgrpcSubscriptionClient
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockgrpcSubscriptionClientFactory) Create(arg0 *grpc.ClientConn) persistent.PersistentSubscriptionsClient {
+// create mocks base method.
+func (m *MockgrpcSubscriptionClientFactory) create(arg0 *grpc.ClientConn) persistent.PersistentSubscriptionsClient {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", arg0)
+	ret := m.ctrl.Call(m, "create", arg0)
 	ret0, _ := ret[0].(persistent.PersistentSubscriptionsClient)
 	return ret0
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockgrpcSubscriptionClientFactoryMockRecorder) Create(arg0 interface{}) *gomock.Call {
+// create indicates an expected call of create.
+func (mr *MockgrpcSubscriptionClientFactoryMockRecorder) create(arg0 interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockgrpcSubscriptionClientFactory)(nil).Create), arg0)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "create", reflect.TypeOf((*MockgrpcSubscriptionClientFactory)(nil).create), arg0)
 }

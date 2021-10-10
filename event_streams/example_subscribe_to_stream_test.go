@@ -39,7 +39,7 @@ func ExampleClientImpl_SubscribeToStream_streamDoesNotExist() {
 	// as soon as stream is created we will start to receive content from it.
 	streamReader, err := client.SubscribeToStream(context.Background(),
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -75,7 +75,7 @@ func ExampleClientImpl_SubscribeToStream_streamDoesNotExist() {
 	// create a stream with one event written to it
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		event_streams.ProposedEventList{proposedEvent})
 
 	wg.Wait()
@@ -105,7 +105,7 @@ func ExampleClientImpl_SubscribeToStream_streamExists() {
 	}
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		event_streams.ProposedEventList{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -114,7 +114,7 @@ func ExampleClientImpl_SubscribeToStream_streamExists() {
 	// subscribe to a stream fro start
 	streamReader, err := client.SubscribeToStream(context.Background(),
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -167,7 +167,7 @@ func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
 	// create a subscription to a stream, from start of the stream
 	streamReader, err := client.SubscribeToStream(ctx,
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -184,7 +184,7 @@ func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
 
 	_, err = client.TombstoneStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -240,7 +240,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 	// create a stream with 3 events in it
 	_, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		beforeEvents)
 	if err != nil {
 		log.Fatalln(err)
@@ -249,7 +249,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 	// create a stream subscription from start of the stream
 	streamReader, err := client.SubscribeToStream(ctx,
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -288,7 +288,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		afterEvents)
 
 	cancelWait.Wait() // wait until subscription receives all events

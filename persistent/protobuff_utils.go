@@ -12,12 +12,6 @@ import (
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
-func eventIDFromProto(recordedEvent *persistent.ReadResp_ReadEvent_RecordedEvent) uuid.UUID {
-	id := recordedEvent.GetId()
-	idString := id.GetString_()
-	return uuid.MustParse(idString)
-}
-
 func toProtoUUID(id uuid.UUID) *shared.UUID {
 	return &shared.UUID{
 		Value: &shared.UUID_String_{

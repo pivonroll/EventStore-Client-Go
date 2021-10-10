@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -351,10 +352,10 @@ func Test_Client_CreateStreamSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
+	config := SubscriptionGroupForStreamRequest{
 		StreamId:  "some name",
 		GroupName: "some group",
-		Revision:  StreamRevision{Revision: 10},
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
 		Settings:  DefaultRequestSettings,
 	}
 
@@ -392,10 +393,10 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
+	config := SubscriptionGroupForStreamRequest{
 		StreamId:  "some name",
 		GroupName: "some group",
-		Revision:  StreamRevision{Revision: 10},
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
 		Settings:  DefaultRequestSettings,
 	}
 
@@ -459,11 +460,11 @@ func Test_Client_CreateAllSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateAllRequest{
+	config := SubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position: AllPosition{
-			Commit:  10,
-			Prepare: 20,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
 		},
 		Filter: CreateRequestAllFilter{
 			FilterBy:                     CreateRequestAllFilterByEventType,
@@ -508,11 +509,11 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateAllRequest{
+	config := SubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position: AllPosition{
-			Commit:  10,
-			Prepare: 20,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
 		},
 		Filter: CreateRequestAllFilter{
 			FilterBy:                     CreateRequestAllFilterByEventType,
@@ -582,10 +583,10 @@ func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
+	config := SubscriptionGroupForStreamRequest{
 		StreamId:  "some name",
 		GroupName: "some group",
-		Revision:  StreamRevision{Revision: 10},
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
 		Settings:  DefaultRequestSettings,
 	}
 
@@ -623,10 +624,10 @@ func Test_Client_UpdateStreamSubscription_Failure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
+	config := SubscriptionGroupForStreamRequest{
 		StreamId:  "some name",
 		GroupName: "some group",
-		Revision:  StreamRevision{Revision: 10},
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
 		Settings:  DefaultRequestSettings,
 	}
 
@@ -690,10 +691,13 @@ func Test_Client_UpdateAllSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := UpdateAllRequest{
+	config := UpdateSubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position:  AllPosition{Commit: 10, Prepare: 20},
-		Settings:  DefaultRequestSettings,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
+		},
+		Settings: DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -730,10 +734,13 @@ func Test_Client_UpdateAllSubscription_Failure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := UpdateAllRequest{
+	config := UpdateSubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position:  AllPosition{Commit: 10, Prepare: 20},
-		Settings:  DefaultRequestSettings,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
+		},
+		Settings: DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -796,7 +803,7 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := DeleteRequest{
+	config := deleteSubscriptionGroupForStreamRequest{
 		StreamId:  "some stream name",
 		GroupName: "some group name",
 	}
@@ -804,7 +811,7 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
 	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 
 	grpcClientConn := &grpc.ClientConn{}
@@ -824,7 +831,7 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteSubscriptionGroupForStream(ctx, config)
+	err := client.DeleteSubscriptionGroupForStream(ctx, "some stream name", "some group name")
 	require.NoError(t, err)
 }
 
@@ -835,7 +842,7 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := DeleteRequest{
+	config := deleteSubscriptionGroupForStreamRequest{
 		StreamId:  "some stream name",
 		GroupName: "some group name",
 	}
@@ -844,7 +851,7 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 	handle := connection.NewMockConnectionHandle(ctrl)
 	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	expectedHeader := metadata.MD{
@@ -889,7 +896,7 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteSubscriptionGroupForStream(ctx, config)
+	err := client.DeleteSubscriptionGroupForStream(ctx, "some stream name", "some group name")
 	require.Equal(t, DeleteStreamSubscription_FailedToDeleteErr, err.Code())
 }
 

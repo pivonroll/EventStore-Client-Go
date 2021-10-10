@@ -35,7 +35,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 	// create a stream with one event
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -44,7 +44,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 	// put tombstone on a stream
 	tombstoneResult, err := client.TombstoneStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+		stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 
 	tombstonePosition, isPosition := tombstoneResult.GetPosition()
 
@@ -79,7 +79,7 @@ func ExampleClientImpl_TombstoneStream_streamDoesNotExist() {
 	// tombstone a non-existing stream
 	tombstoneResult, err := client.TombstoneStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	tombstonePosition, isPosition := tombstoneResult.GetPosition()
 
 	// result of a hard-delete must be a position

@@ -4,6 +4,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 type appendRequest struct {
@@ -54,23 +55,23 @@ func (this *appendRequest) buildExpectedStreamRevision(
 	options *streams2.AppendReq_Options_,
 	content appendRequestContentOptions) {
 	switch content.expectedStreamRevision.(type) {
-	case WriteStreamRevision:
-		revision := content.expectedStreamRevision.(WriteStreamRevision)
+	case stream_revision.WriteStreamRevision:
+		revision := content.expectedStreamRevision.(stream_revision.WriteStreamRevision)
 
 		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_Revision{
 			Revision: revision.Revision,
 		}
-	case WriteStreamRevisionNoStream:
+	case stream_revision.WriteStreamRevisionNoStream:
 		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_NoStream{
 			NoStream: &shared.Empty{},
 		}
 
-	case WriteStreamRevisionAny:
+	case stream_revision.WriteStreamRevisionAny:
 		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_Any{
 			Any: &shared.Empty{},
 		}
 
-	case WriteStreamRevisionStreamExists:
+	case stream_revision.WriteStreamRevisionStreamExists:
 		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_StreamExists{
 			StreamExists: &shared.Empty{},
 		}
@@ -87,7 +88,7 @@ type appendRequestContentOptions struct {
 	// WriteStreamRevisionNoStream
 	// WriteStreamRevisionAny
 	// WriteStreamRevisionStreamExists
-	expectedStreamRevision IsWriteStreamRevision
+	expectedStreamRevision stream_revision.IsWriteStreamRevision
 }
 
 func (this appendRequestContentOptions) isAppendRequestContent() {}

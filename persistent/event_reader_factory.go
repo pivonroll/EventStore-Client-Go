@@ -10,7 +10,7 @@ import (
 )
 
 type eventReaderFactory interface {
-	Create(client persistent.PersistentSubscriptions_ReadClient,
+	create(client persistent.PersistentSubscriptions_ReadClient,
 		subscriptionId string,
 		messageAdapter messageAdapter,
 		cancel context.CancelFunc,
@@ -19,7 +19,7 @@ type eventReaderFactory interface {
 
 type eventReaderFactoryImpl struct{}
 
-func (factory eventReaderFactoryImpl) Create(
+func (factory eventReaderFactoryImpl) create(
 	client persistent.PersistentSubscriptions_ReadClient,
 	subscriptionId string,
 	messageAdapter messageAdapter,

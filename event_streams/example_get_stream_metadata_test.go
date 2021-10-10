@@ -38,7 +38,7 @@ func ExampleClientImpl_GetStreamMetadata_isEmptyIfStreamHasNoMetadata() {
 	// create a stream with one event
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -81,7 +81,7 @@ func ExampleClientImpl_GetStreamMetadata_streamHasMetadata() {
 	// write metadata for a stream
 	_, err = client.SetStreamMetadata(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		expectedStreamMetadata,
 	)
 	if err != nil {

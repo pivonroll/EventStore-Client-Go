@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of sot-deleting a stream which exists.
@@ -35,7 +36,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 	// create a stream with one event
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -44,7 +45,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 	// soft-delete a stream
 	deleteResult, err := client.DeleteStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+		stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 
 	deletePosition, isPosition := deleteResult.GetPosition()
 
@@ -78,7 +79,7 @@ func ExampleClientImpl_DeleteStream_streamDoesNotExist() {
 	// delete a non-existing stream
 	deleteResult, err := client.DeleteStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	deletePosition, isPosition := deleteResult.GetPosition()
 
 	// result of a soft-delete must be a position

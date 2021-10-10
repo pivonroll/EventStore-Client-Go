@@ -35,16 +35,16 @@ func (m *MockeventReaderFactory) EXPECT() *MockeventReaderFactoryMockRecorder {
 	return m.recorder
 }
 
-// Create mocks base method.
-func (m *MockeventReaderFactory) Create(client persistent.PersistentSubscriptions_ReadClient, subscriptionId string, messageAdapter messageAdapter, cancel context.CancelFunc) EventReader {
+// create mocks base method.
+func (m *MockeventReaderFactory) create(client persistent.PersistentSubscriptions_ReadClient, subscriptionId string, messageAdapter messageAdapter, cancel context.CancelFunc) EventReader {
 	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", client, subscriptionId, messageAdapter, cancel)
+	ret := m.ctrl.Call(m, "create", client, subscriptionId, messageAdapter, cancel)
 	ret0, _ := ret[0].(EventReader)
 	return ret0
 }
 
-// Create indicates an expected call of Create.
-func (mr *MockeventReaderFactoryMockRecorder) Create(client, subscriptionId, messageAdapter, cancel interface{}) *gomock.Call {
+// create indicates an expected call of create.
+func (mr *MockeventReaderFactoryMockRecorder) create(client, subscriptionId, messageAdapter, cancel interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockeventReaderFactory)(nil).Create), client, subscriptionId, messageAdapter, cancel)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "create", reflect.TypeOf((*MockeventReaderFactory)(nil).create), client, subscriptionId, messageAdapter, cancel)
 }

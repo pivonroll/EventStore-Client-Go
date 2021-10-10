@@ -5,10 +5,9 @@ import (
 	"testing"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 )
 
 func Test_TombstoneStream(t *testing.T) {
@@ -17,7 +16,7 @@ func Test_TombstoneStream(t *testing.T) {
 
 	result, err := client.TombstoneStream(context.Background(),
 		"dataset20M-1800",
-		event_streams.WriteStreamRevision{Revision: 1999})
+		stream_revision.WriteStreamRevision{Revision: 1999})
 	require.NoError(t, err)
 
 	position, isPosition := result.GetPosition()
@@ -27,7 +26,7 @@ func Test_TombstoneStream(t *testing.T) {
 
 	_, err = client.AppendToStream(context.Background(),
 		"dataset20M-1800",
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		testCreateEvents(1))
 	require.Equal(t, errors.StreamDeletedErr, err.Code())
 }

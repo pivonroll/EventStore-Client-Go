@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/ptr"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/stretchr/testify/require"
@@ -24,7 +25,7 @@ func Test_DeleteStream_WithTimeout(t *testing.T) {
 		timeoutCtx, cancelFunc := context.WithTimeout(ctx, 0)
 		_, err := client.DeleteStream(timeoutCtx,
 			streamName,
-			event_streams.WriteStreamRevisionAny{})
+			stream_revision.WriteStreamRevisionAny{})
 		require.Equal(t, errors.DeadlineExceededErr, err.Code())
 
 		defer cancelFunc()
@@ -37,7 +38,7 @@ func Test_DeleteStream_WithTimeout(t *testing.T) {
 		timeoutCtx, cancelFunc := context.WithTimeout(ctx, 0)
 		_, err := client.DeleteStream(timeoutCtx,
 			streamName,
-			event_streams.WriteStreamRevision{
+			stream_revision.WriteStreamRevision{
 				Revision: 0,
 			})
 		require.Equal(t, errors.DeadlineExceededErr, err.Code())
@@ -55,7 +56,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		_, err := client.DeleteStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{})
+			stream_revision.WriteStreamRevisionNoStream{})
 		require.NoError(t, err)
 	})
 
@@ -64,7 +65,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		_, err := client.DeleteStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionAny{})
+			stream_revision.WriteStreamRevisionAny{})
 		require.NoError(t, err)
 	})
 
@@ -73,7 +74,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		_, err := client.DeleteStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevision{Revision: 0})
+			stream_revision.WriteStreamRevision{Revision: 0})
 		require.Equal(t, errors.WrongExpectedStreamRevisionErr, err.Code())
 	})
 
@@ -84,13 +85,13 @@ func Test_DeleteStream(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			[]event_streams.ProposedEvent{event})
 		require.NoError(t, err)
 
 		deleteResult, err := client.DeleteStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		tombstonePosition, isTombstonePosition := deleteResult.GetPosition()
@@ -103,17 +104,17 @@ func Test_DeleteStream(t *testing.T) {
 
 	type AppendAfterDeleteAnyNoStream struct {
 		name     string
-		revision event_streams.IsWriteStreamRevision
+		revision stream_revision.IsWriteStreamRevision
 	}
 
 	revisions := []AppendAfterDeleteAnyNoStream{
 		{
 			name:     "Any",
-			revision: event_streams.WriteStreamRevisionAny{},
+			revision: stream_revision.WriteStreamRevisionAny{},
 		},
 		{
 			name:     "No Stream",
-			revision: event_streams.WriteStreamRevisionNoStream{},
+			revision: stream_revision.WriteStreamRevisionNoStream{},
 		},
 	}
 
@@ -123,13 +124,13 @@ func Test_DeleteStream(t *testing.T) {
 
 			writeResult, err := client.AppendToStream(context.Background(),
 				streamId,
-				event_streams.WriteStreamRevisionNoStream{},
+				stream_revision.WriteStreamRevisionNoStream{},
 				testCreateEvents(1))
 			require.NoError(t, err)
 
 			_, err = client.DeleteStream(context.Background(),
 				streamId,
-				event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+				stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 			require.NoError(t, err)
 
 			events := testCreateEvents(3)
@@ -145,7 +146,7 @@ func Test_DeleteStream(t *testing.T) {
 			readEvents, err := client.ReadStreamEvents(context.Background(),
 				streamId,
 				event_streams.ReadDirectionForward,
-				event_streams.ReadStreamRevisionStart{},
+				stream_revision.ReadStreamRevisionStart{},
 				event_streams.ReadCountMax,
 				false)
 			require.NoError(t, err)
@@ -167,20 +168,20 @@ func Test_DeleteStream(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(1))
 		require.NoError(t, err)
 
 		_, err = client.DeleteStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		events := testCreateEvents(3)
 
 		writeResult, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{ // Focus of the test
+			stream_revision.WriteStreamRevision{ // Focus of the test
 				Revision: writeResult.GetCurrentRevision(),
 			},
 			events)
@@ -191,7 +192,7 @@ func Test_DeleteStream(t *testing.T) {
 		readEvents, err := client.ReadStreamEvents(context.Background(),
 			streamId,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			event_streams.ReadCountMax,
 			false)
 		require.NoError(t, err)
@@ -212,7 +213,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(2))
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
@@ -235,7 +236,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		streamMetadataResponse, err := client.SetStreamMetadata(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			streamMetadata)
 		require.NoError(t, err)
 		require.EqualValues(t, 0, streamMetadataResponse.GetCurrentRevision())
@@ -243,7 +244,7 @@ func Test_DeleteStream(t *testing.T) {
 		events := testCreateEvents(3)
 		writeResult, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{ // Focus of the test
+			stream_revision.WriteStreamRevision{ // Focus of the test
 				Revision: 1,
 			},
 			events)
@@ -252,7 +253,7 @@ func Test_DeleteStream(t *testing.T) {
 		readEvents, err := client.ReadStreamEvents(context.Background(),
 			streamId,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			event_streams.ReadCountMax,
 			false)
 		require.NoError(t, err)
@@ -272,25 +273,25 @@ func Test_DeleteStream(t *testing.T) {
 		streamId := "can_be_hard_deleted"
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(2))
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
 
 		_, err = client.DeleteStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		_, err = client.TombstoneStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionAny{})
+			stream_revision.WriteStreamRevisionAny{})
 		require.NoError(t, err)
 
 		_, err = client.ReadStreamEvents(context.Background(),
 			streamId,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			event_streams.ReadCountMax,
 			false)
 		require.Equal(t, errors.StreamDeletedErr, err.Code())
@@ -300,7 +301,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		_, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionAny{},
+			stream_revision.WriteStreamRevisionAny{},
 			testCreateEvents(1))
 		require.Equal(t, errors.StreamDeletedErr, err.Code())
 	})
@@ -309,26 +310,26 @@ func Test_DeleteStream(t *testing.T) {
 		streamId := "allows_recreating_for_first_write_only"
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(2))
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
 
 		_, err = client.DeleteStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		writeResult, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(3))
 		require.NoError(t, err)
 		require.EqualValues(t, 4, writeResult.GetCurrentRevision())
 
 		writeResult, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(1))
 		require.Equal(t, event_streams.WrongExpectedVersionErr, err.Code())
 	})
@@ -337,21 +338,21 @@ func Test_DeleteStream(t *testing.T) {
 		streamId := "appends_multiple_writes_expected_version_any"
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(2))
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
 
 		_, err = client.DeleteStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		firstEvents := testCreateEvents(3)
 
 		writeResult, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionAny{},
+			stream_revision.WriteStreamRevisionAny{},
 			firstEvents)
 		require.NoError(t, err)
 		require.EqualValues(t, 4, writeResult.GetCurrentRevision())
@@ -359,7 +360,7 @@ func Test_DeleteStream(t *testing.T) {
 		secondEvents := testCreateEvents(2)
 		writeResult, err = client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionAny{},
+			stream_revision.WriteStreamRevisionAny{},
 			secondEvents)
 		require.NoError(t, err)
 		require.EqualValues(t, 6, writeResult.GetCurrentRevision())
@@ -367,7 +368,7 @@ func Test_DeleteStream(t *testing.T) {
 		readEvents, err := client.ReadStreamEvents(context.Background(),
 			streamId,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			event_streams.ReadCountMax,
 			false)
 		require.NoError(t, err)
@@ -385,7 +386,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		_, err := client.DeleteStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{})
+			stream_revision.WriteStreamRevisionNoStream{})
 		require.NoError(t, err)
 
 		truncateBefore := event_streams.ReadCountMax
@@ -406,7 +407,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		streamMetadataResponse, err := client.SetStreamMetadata(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: 0},
+			stream_revision.WriteStreamRevision{Revision: 0},
 			streamMetadata)
 		require.NoError(t, err)
 		require.EqualValues(t, 1, streamMetadataResponse.GetCurrentRevision())
@@ -415,7 +416,7 @@ func Test_DeleteStream(t *testing.T) {
 			_, err = client.ReadStreamEvents(context.Background(),
 				streamId,
 				event_streams.ReadDirectionForward,
-				event_streams.ReadStreamRevisionStart{},
+				stream_revision.ReadStreamRevisionStart{},
 				event_streams.ReadCountMax,
 				false)
 			return err != nil && err.Code() == errors.StreamNotFoundErr
@@ -435,14 +436,14 @@ func Test_DeleteStream(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testCreateEvents(2))
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
 
 		_, err = client.DeleteStream(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		streamMetadata := event_streams.StreamMetadata{
@@ -462,7 +463,7 @@ func Test_DeleteStream(t *testing.T) {
 
 		streamMetadataResponse, err := client.SetStreamMetadata(context.Background(),
 			streamId,
-			event_streams.WriteStreamRevision{Revision: 0},
+			stream_revision.WriteStreamRevision{Revision: 0},
 			streamMetadata)
 		require.NoError(t, err)
 		require.EqualValues(t, 1, streamMetadataResponse.GetCurrentRevision())
@@ -471,7 +472,7 @@ func Test_DeleteStream(t *testing.T) {
 			readEvents, err := client.ReadStreamEvents(context.Background(),
 				streamId,
 				event_streams.ReadDirectionForward,
-				event_streams.ReadStreamRevisionStart{},
+				stream_revision.ReadStreamRevisionStart{},
 				event_streams.ReadCountMax,
 				false)
 			require.NoError(t, err)
@@ -496,6 +497,6 @@ func Test_DeleteStream_WithIncorrectCredentials(t *testing.T) {
 
 	_, err := client.DeleteStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }

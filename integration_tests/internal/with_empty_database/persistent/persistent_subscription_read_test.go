@@ -6,8 +6,8 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
-	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/pivonroll/EventStore-Client-Go/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
@@ -23,13 +23,13 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 		pushEventsToStream(t, eventStreamsClient, streamID, firstEvent, secondEvent, thirdEvent)
 
 		groupName := "GroupAckToReceiveNewEvents"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionStart{},
+			Revision:  stream_revision.ReadStreamRevisionStart{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -66,13 +66,13 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 		pushEventsToStream(t, eventStreamsClient, streamID, firstEvent, secondEvent, thirdEvent)
 
 		groupName := "GroupNackToReceiveNewEvents"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionStart{},
+			Revision:  stream_revision.ReadStreamRevisionStart{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -107,13 +107,13 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 		pushEventsToStream(t, eventStreamsClient, streamID, firstEvent)
 
 		groupName := "GroupNackToReceiveNewEvents_Cancelled"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionStart{},
+			Revision:  stream_revision.ReadStreamRevisionStart{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -148,13 +148,13 @@ func Test_PersistentSubscription_OldConnectionsAreDroppedAfterUpdate(t *testing.
 	pushEventsToStream(t, eventStreamsClient, streamID, firstEvent, secondEvent, thirdEvent)
 
 	groupName := "GroupOldConnectionsAreDropped"
-	request := persistent.CreateOrUpdateStreamRequest{
+	request := persistent.SubscriptionGroupForStreamRequest{
 		StreamId:  streamID,
 		GroupName: groupName,
-		Revision:  persistent.StreamRevisionStart{},
+		Revision:  stream_revision.ReadStreamRevisionStart{},
 		Settings:  persistent.DefaultRequestSettings,
 	}
-	err := client.CreateStreamSubscription(
+	err := client.CreateSubscriptionGroupForStream(
 		context.Background(),
 		request,
 	)
@@ -179,7 +179,7 @@ func Test_PersistentSubscription_OldConnectionsAreDroppedAfterUpdate(t *testing.
 
 	oldReadConnection := readConnectionClient
 
-	err = client.UpdateStreamSubscription(context.Background(),
+	err = client.UpdateSubscriptionGroupForStream(context.Background(),
 		request)
 	require.NoError(t, err)
 
@@ -216,13 +216,13 @@ func Test_PersistentSubscription_AckToReceiveNewEventsStartFromSamePositionWithR
 	pushEventsToStream(t, eventStreamsClient, streamID, firstEvent, secondEvent, thirdEvent)
 
 	groupName := "GroupAckToReceiveNewEventsWithReconnectFromStart"
-	request := persistent.CreateOrUpdateStreamRequest{
+	request := persistent.SubscriptionGroupForStreamRequest{
 		StreamId:  streamID,
 		GroupName: groupName,
-		Revision:  persistent.StreamRevisionStart{},
+		Revision:  stream_revision.ReadStreamRevisionStart{},
 		Settings:  persistent.DefaultRequestSettings,
 	}
-	err := client.CreateStreamSubscription(
+	err := client.CreateSubscriptionGroupForStream(
 		context.Background(),
 		request,
 	)
@@ -245,8 +245,8 @@ func Test_PersistentSubscription_AckToReceiveNewEventsStartFromSamePositionWithR
 	err = readConnectionClient.Ack(secondReadEvent)
 	require.NoError(t, err)
 
-	request.Revision = persistent.StreamRevision{Revision: 1}
-	err = client.UpdateStreamSubscription(context.Background(),
+	request.Revision = stream_revision.ReadStreamRevision{Revision: 1}
+	err = client.UpdateSubscriptionGroupForStream(context.Background(),
 		request)
 	require.NoError(t, err)
 
@@ -258,12 +258,12 @@ func Test_PersistentSubscription_AckToReceiveNewEventsStartFromSamePositionWithR
 	firstReadEvent, err = readConnectionClient.ReadOne()
 	require.NoError(t, err)
 	require.NotNil(t, firstReadEvent.Event)
-	require.Equal(t, secondEvent.EventId, firstReadEvent.Event.EventID)
+	require.Equal(t, secondEvent.EventId, firstReadEvent.Event.EventId)
 
 	secondReadEvent, err = readConnectionClient.ReadOne()
 	require.NoError(t, err)
 	require.NotNil(t, secondReadEvent)
-	require.Equal(t, thirdEvent.EventId, secondReadEvent.Event.EventID)
+	require.Equal(t, thirdEvent.EventId, secondReadEvent.Event.EventId)
 }
 
 func Test_PersistentSubscription_AckToReceiveNewEventsWithReconnect_Bug_ReceivesFirstEvent(t *testing.T) {
@@ -281,13 +281,13 @@ func Test_PersistentSubscription_AckToReceiveNewEventsWithReconnect_Bug_Receives
 	settings.MinCheckpointCount = 2
 
 	groupName := "GroupAckToReceiveNewEventsWithReconnect"
-	request := persistent.CreateOrUpdateStreamRequest{
+	request := persistent.SubscriptionGroupForStreamRequest{
 		StreamId:  streamID,
 		GroupName: groupName,
-		Revision:  persistent.StreamRevisionStart{},
+		Revision:  stream_revision.ReadStreamRevisionStart{},
 		Settings:  settings,
 	}
-	err := client.CreateStreamSubscription(
+	err := client.CreateSubscriptionGroupForStream(
 		context.Background(),
 		request,
 	)
@@ -329,7 +329,7 @@ func Test_PersistentSubscription_AckToReceiveNewEventsWithReconnect_Bug_Receives
 	require.NoError(t, err)
 
 	require.NotNil(t, thirdReadEvent.Event)
-	require.Equal(t, thirdEvent.EventId, thirdReadEvent.Event.EventID)
+	require.Equal(t, thirdEvent.EventId, thirdReadEvent.Event.EventId)
 }
 
 func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
@@ -343,13 +343,13 @@ func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
 		// create persistent stream connection with Revision set to Start
 		streamID := "StartFromBeginning_AppendEventsAfterwards"
 		groupName := "Group StartFromBeginning_AppendEventsAfterwards"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionStart{},
+			Revision:  stream_revision.ReadStreamRevisionStart{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -366,7 +366,7 @@ func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
 		// assert Event Number == stream Start
 		// assert Event.ID == first event ID (readEvent.EventId == events[0].EventId)
 		require.EqualValues(t, 0, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[0].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[0].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 
 	t.Run("StartFromTwo_AppendEventsAfterwards", func(t *testing.T) {
@@ -375,13 +375,13 @@ func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
 		// create persistent stream connection with position set to Position(2)
 		streamID := "StartFromTwo_AppendEventsAfterwards"
 		groupName := "Group StartFromTwo_AppendEventsAfterwards"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevision{Revision: 2},
+			Revision:  stream_revision.ReadStreamRevision{Revision: 2},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -400,7 +400,7 @@ func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
 		// assert readEvent.EventNumber == stream position 2
 		// assert readEvent.ID == events[2].EventId
 		require.EqualValues(t, 2, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[2].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[2].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 }
 
@@ -418,13 +418,13 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 
 		// create persistent stream connection with Revision set to Start
 		groupName := "Group StartFromBeginning_AndEventsInIt"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionStart{},
+			Revision:  stream_revision.ReadStreamRevisionStart{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -441,7 +441,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// assert Event Number == stream Start
 		// assert Event.ID == first event ID (readEvent.EventId == events[0].EventId)
 		require.EqualValues(t, 0, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[0].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[0].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 
 	t.Run("StartFromEnd_EventsInItAndAppendEventsAfterwards", func(t *testing.T) {
@@ -454,13 +454,13 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 
 		// create persistent stream connection with Revision set to End
 		groupName := "Group StartFromEnd_EventsInItAndAppendEventsAfterwards"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionEnd{},
+			Revision:  stream_revision.ReadStreamRevisionEnd{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -469,7 +469,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// append 1 event to StreamsClient.AppendToStreamAsync(Stream, new WriteStreamRevision(9), event[10])
 		_, err = eventStreamsClient.AppendToStream(context.Background(),
 			streamID,
-			event_streams.WriteStreamRevision{Revision: 9},
+			stream_revision.WriteStreamRevision{Revision: 9},
 			events[10:])
 		require.NoError(t, err)
 
@@ -484,7 +484,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// assert readEvent.EventNumber == stream position 10
 		// assert readEvent.ID == events[10].EventId
 		require.EqualValues(t, 10, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[10].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[10].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 
 	t.Run("StartFromEnd_EventsInIt", func(t *testing.T) {
@@ -496,13 +496,13 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		pushEventsToStream(t, eventStreamsClient, streamID, events[:10]...)
 		// create persistent stream connection with position set to End
 		groupName := "Group StartFromEnd_EventsInIt"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevisionEnd{},
+			Revision:  stream_revision.ReadStreamRevisionEnd{},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -551,13 +551,13 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 
 		// create persistent stream connection with start position set to Position(10)
 		groupName := "Group StartFrom10_EventsInItAppendEventsAfterwards"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevision{Revision: 10},
+			Revision:  stream_revision.ReadStreamRevision{Revision: 10},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -567,7 +567,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		_, err = eventStreamsClient.AppendToStream(
 			context.Background(),
 			streamID,
-			event_streams.WriteStreamRevision{Revision: 9},
+			stream_revision.WriteStreamRevision{Revision: 9},
 			events[10:])
 		require.NoError(t, err)
 
@@ -582,7 +582,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// assert readEvent.EventNumber == stream position 10
 		// assert readEvent.ID == events[10].EventId
 		require.EqualValues(t, 10, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[10].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[10].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 
 	t.Run("StartFrom4_EventsInIt", func(t *testing.T) {
@@ -595,13 +595,13 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 
 		// create persistent stream connection with start position set to Position(4)
 		groupName := "Group StartFrom4_EventsInIt"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevision{Revision: 4},
+			Revision:  stream_revision.ReadStreamRevision{Revision: 4},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -611,7 +611,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		_, err = eventStreamsClient.AppendToStream(
 			context.Background(),
 			streamID,
-			event_streams.WriteStreamRevision{Revision: 9},
+			stream_revision.WriteStreamRevision{Revision: 9},
 			events[10:])
 		require.NoError(t, err)
 
@@ -626,7 +626,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// assert readEvent.EventNumber == stream position 4
 		// assert readEvent.ID == events[4].EventId
 		require.EqualValues(t, 4, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[4].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[4].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 
 	t.Run("StartFromHigherRevisionThenEventsInStream_EventsInItAppendEventsAfterwards", func(t *testing.T) {
@@ -640,13 +640,13 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 
 		// create persistent stream connection with start position set to Position(11)
 		groupName := "Group StartFromHigherRevisionThenEventsInStream_EventsInItAppendEventsAfterwards"
-		request := persistent.CreateOrUpdateStreamRequest{
+		request := persistent.SubscriptionGroupForStreamRequest{
 			StreamId:  streamID,
 			GroupName: groupName,
-			Revision:  persistent.StreamRevision{Revision: 11},
+			Revision:  stream_revision.ReadStreamRevision{Revision: 11},
 			Settings:  persistent.DefaultRequestSettings,
 		}
-		err := client.CreateStreamSubscription(
+		err := client.CreateSubscriptionGroupForStream(
 			context.Background(),
 			request,
 		)
@@ -656,7 +656,7 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		_, err = eventStreamsClient.AppendToStream(
 			context.Background(),
 			streamID,
-			event_streams.WriteStreamRevision{Revision: 10},
+			stream_revision.WriteStreamRevision{Revision: 10},
 			events[11:])
 		require.NoError(t, err)
 
@@ -671,6 +671,6 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// assert readEvent.EventNumber == stream position 11
 		// assert readEvent.ID == events[11].EventId
 		require.EqualValues(t, 11, readEvent.GetOriginalEvent().EventNumber)
-		require.Equal(t, events[11].EventId, readEvent.GetOriginalEvent().EventID)
+		require.Equal(t, events[11].EventId, readEvent.GetOriginalEvent().EventId)
 	})
 }

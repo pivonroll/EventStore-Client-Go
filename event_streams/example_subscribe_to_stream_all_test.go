@@ -57,7 +57,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 	// create a stream with some events in it
 	_, err := client.AppendToStream(context.Background(),
 		firstStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		beforeEvents)
 	if err != nil {
 		log.Fatalln(err)
@@ -65,7 +65,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 
 	// create a subscription to a stream
 	streamReader, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -96,7 +96,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 	// append some events to a stream after a listening go routine has started
 	_, err = client.AppendToStream(context.Background(),
 		secondStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		afterEvents)
 	if err != nil {
 		log.Fatalln(err)

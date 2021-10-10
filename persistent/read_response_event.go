@@ -23,10 +23,10 @@ func (responseEvent ReadResponseEvent) GetOriginalEvent() *RecordedEvent {
 }
 
 type RecordedEvent struct {
-	EventID        uuid.UUID
+	EventId        uuid.UUID
 	EventType      string
 	ContentType    string
-	StreamID       string
+	StreamId       string
 	EventNumber    uint64
 	Position       position.Position
 	CreatedDate    time.Time

@@ -8,12 +8,12 @@ import (
 )
 
 type grpcSubscriptionClientFactory interface {
-	Create(*grpc.ClientConn) persistentProto.PersistentSubscriptionsClient
+	create(*grpc.ClientConn) persistentProto.PersistentSubscriptionsClient
 }
 
 type grpcSubscriptionClientFactoryImpl struct{}
 
-func (factory grpcSubscriptionClientFactoryImpl) Create(
+func (factory grpcSubscriptionClientFactoryImpl) create(
 	conn *grpc.ClientConn) persistentProto.PersistentSubscriptionsClient {
 	return persistentProto.NewPersistentSubscriptionsClient(conn)
 }

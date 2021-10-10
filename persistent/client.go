@@ -6,6 +6,7 @@ import (
 	"context"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Client interface to interact with persistent subscriptions in EventStoreDB.
@@ -28,7 +29,7 @@ type Client interface {
 	// You must have admin permissions to create a persistent subscription group.
 	CreateSubscriptionGroupForStream(
 		ctx context.Context,
-		request CreateOrUpdateStreamRequest,
+		request SubscriptionGroupForStreamRequest,
 	) errors.Error
 	// CreateSubscriptionGroupForStreamAll creates a persistent subscription group to stream $all.
 	// Persistent subscription to stream $all is identified by group name.
@@ -36,7 +37,7 @@ type Client interface {
 	// You must have admin permissions to create a persistent subscription group.
 	CreateSubscriptionGroupForStreamAll(
 		ctx context.Context,
-		request CreateAllRequest,
+		request SubscriptionGroupForStreamAllRequest,
 	) errors.Error
 	// UpdateSubscriptionGroupForStream updates a persistent subscription group.
 	// Once settings for a persistent subscription group is updated,
@@ -45,7 +46,7 @@ type Client interface {
 	// You must have admin permissions to update a persistent subscription group.
 	UpdateSubscriptionGroupForStream(
 		ctx context.Context,
-		request CreateOrUpdateStreamRequest,
+		request SubscriptionGroupForStreamRequest,
 	) errors.Error
 	// UpdateSubscriptionGroupForStreamAll updates a persistent subscription group for stream $all.
 	// Once settings for a persistent subscription group is updated,
@@ -54,7 +55,9 @@ type Client interface {
 	// You must have admin permissions to update a persistent subscription group.
 	UpdateSubscriptionGroupForStreamAll(
 		ctx context.Context,
-		request UpdateAllRequest,
+		GroupName string,
+		Position stream_revision.IsReadPositionAll,
+		Settings CreateOrUpdateRequestSettings,
 	) errors.Error
 	// DeleteSubscriptionGroupForStream deletes a persistent subscription group for stream.
 	// Once persistent subscription group is deleted, all existing connections will be dropped.
@@ -62,7 +65,8 @@ type Client interface {
 	// You must have admin permissions to delete a persistent subscription group.
 	DeleteSubscriptionGroupForStream(
 		ctx context.Context,
-		deleteOptions DeleteRequest,
+		streamId string,
+		groupName string,
 	) errors.Error
 	// DeleteSubscriptionGroupForStreamAll deletes a persistent subscription group for stream $all.
 	// Once persistent subscription group is deleted, all existing connections will be dropped.

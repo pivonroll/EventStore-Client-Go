@@ -1,6 +1,7 @@
 package persistent
 
 import (
+	"github.com/pivonroll/EventStore-Client-Go/protobuf_uuid"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 	"github.com/pivonroll/EventStore-Client-Go/ptr"
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
@@ -51,10 +52,10 @@ func newRecordedEventFromProto(
 	streamIdentifier := recordedEvent.GetStreamIdentifier()
 
 	return RecordedEvent{
-		EventID:        eventIDFromProto(recordedEvent),
+		EventId:        protobuf_uuid.GetUUID(recordedEvent.GetId()),
 		EventType:      recordedEvent.Metadata[system_metadata.SystemMetadataKeysType],
 		ContentType:    getContentTypeFromProto(recordedEvent),
-		StreamID:       string(streamIdentifier.StreamName),
+		StreamId:       string(streamIdentifier.StreamName),
 		EventNumber:    recordedEvent.GetStreamRevision(),
 		CreatedDate:    createdFromProto(recordedEvent),
 		Position:       positionFromProto(recordedEvent),

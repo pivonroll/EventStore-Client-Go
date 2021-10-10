@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 
@@ -28,21 +29,21 @@ func Test_ReadAll_Backwards(t *testing.T) {
 
 	_, err := client.SetStreamMetadata(context.Background(),
 		string(systemmetadata.AllStream),
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		streamMetaData,
 	)
 	require.NoError(t, err)
 
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		events)
 	require.NoError(t, err)
 
 	t.Run("Return Empty If Reading From Start", func(t *testing.T) {
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			1,
 			false)
 		require.NoError(t, err)
@@ -55,7 +56,7 @@ func Test_ReadAll_Backwards(t *testing.T) {
 		defer cancelFunc()
 		_, err = client.ReadEventsFromStreamAll(timeoutCtx,
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			1,
 			false)
 		require.Equal(t, errors.DeadlineExceededErr, err.Code())
@@ -65,7 +66,7 @@ func Test_ReadAll_Backwards(t *testing.T) {
 		count := uint64(len(events)) * 2
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			count,
 			false)
 		require.NoError(t, err)
@@ -76,7 +77,7 @@ func Test_ReadAll_Backwards(t *testing.T) {
 		count := uint64(len(events))
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			count,
 			false)
 		require.NoError(t, err)
@@ -89,7 +90,7 @@ func Test_ReadAll_Backwards(t *testing.T) {
 	t.Run("Return Single Event", func(t *testing.T) {
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			1,
 			false)
 		require.NoError(t, err)
@@ -103,7 +104,7 @@ func Test_ReadAll_Backwards(t *testing.T) {
 		maxCount := len(events) / 2
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionBackward,
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			uint64(maxCount),
 			false)
 		require.NoError(t, err)
@@ -127,21 +128,21 @@ func Test_ReadAll_Forwards(t *testing.T) {
 
 	_, err := client.SetStreamMetadata(context.Background(),
 		string(systemmetadata.AllStream),
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		streamMetaData,
 	)
 	require.NoError(t, err)
 
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		events)
 	require.NoError(t, err)
 
 	t.Run("Return Empty If Reading From End", func(t *testing.T) {
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			1,
 			false)
 		require.NoError(t, err)
@@ -152,7 +153,7 @@ func Test_ReadAll_Forwards(t *testing.T) {
 		count := uint64(len(events)) * 2
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			count,
 			false)
 		require.NoError(t, err)
@@ -163,7 +164,7 @@ func Test_ReadAll_Forwards(t *testing.T) {
 		count := uint64(len(events)) * 2
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			count,
 			false)
 		require.NoError(t, err)
@@ -177,7 +178,7 @@ func Test_ReadAll_Forwards(t *testing.T) {
 	t.Run("Return Single Event", func(t *testing.T) {
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			1,
 			false)
 		require.NoError(t, err)
@@ -188,7 +189,7 @@ func Test_ReadAll_Forwards(t *testing.T) {
 		maxCount := len(events) / 2
 		readEvents, err := client.ReadEventsFromStreamAll(context.Background(),
 			event_streams.ReadDirectionForward,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			uint64(maxCount),
 			false)
 		require.NoError(t, err)
@@ -203,7 +204,7 @@ func Test_ReadAll_WithIncorrectCredentials(t *testing.T) {
 
 	_, err := client.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionForward,
-		event_streams.ReadPositionAllEnd{},
+		stream_revision.ReadPositionAllEnd{},
 		1,
 		false)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())

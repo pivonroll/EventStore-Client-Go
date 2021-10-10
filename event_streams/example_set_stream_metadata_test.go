@@ -37,7 +37,7 @@ func ExampleClientImpl_SetStreamMetadata_onNonExistingStream() {
 	// write metadata for a stream
 	_, err = client.SetStreamMetadata(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		expectedStreamMetadata,
 	)
 	if err != nil {
@@ -89,7 +89,7 @@ func ExampleClientImpl_SetStreamMetadata_whenStreamExists() {
 	// create a stream with one event
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -105,7 +105,7 @@ func ExampleClientImpl_SetStreamMetadata_whenStreamExists() {
 	// write metadata for a stream
 	_, err = client.SetStreamMetadata(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		expectedStreamMetadata,
 	)
 	if err != nil {

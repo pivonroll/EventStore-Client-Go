@@ -7,6 +7,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/client"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,20 +21,20 @@ func Test_NotLeaderExceptionButWorkAfterRetry(t *testing.T) {
 
 	persistentSubscriptionClient := persistent.ClientFactoryImpl{}.Create(grpcClient)
 
-	persistentCreateConfig := persistent.CreateOrUpdateStreamRequest{
+	persistentCreateConfig := persistent.SubscriptionGroupForStreamRequest{
 		StreamId:  "myfoobar_123456",
 		GroupName: "a_group",
-		Revision: persistent.StreamRevision{
+		Revision: stream_revision.ReadStreamRevision{
 			Revision: 0,
 		},
 		Settings: persistent.DefaultRequestSettings,
 	}
 
-	err = persistentSubscriptionClient.CreateStreamSubscription(context.Background(),
+	err = persistentSubscriptionClient.CreateSubscriptionGroupForStream(context.Background(),
 		persistentCreateConfig)
 	require.Error(t, err)
 
 	// It should work now as the client automatically reconnected to the leader node.
-	err = persistentSubscriptionClient.CreateStreamSubscription(context.Background(), persistentCreateConfig)
+	err = persistentSubscriptionClient.CreateSubscriptionGroupForStream(context.Background(), persistentCreateConfig)
 	require.NoError(t, err)
 }

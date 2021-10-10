@@ -7,6 +7,7 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
@@ -45,7 +46,7 @@ func pushEventsToStream(t *testing.T,
 	_, err := eventStreamsClient.AppendToStream(
 		context.Background(),
 		streamID,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		events)
 
 	require.NoError(t, err)
