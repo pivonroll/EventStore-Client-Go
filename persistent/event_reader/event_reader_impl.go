@@ -1,4 +1,4 @@
-package persistent
+package event_reader
 
 import (
 	"context"
@@ -8,22 +8,29 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_action"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 )
 
+// MAX_ACK_COUNT is maximum number of messages which can be acknowledged.
 const MAX_ACK_COUNT = 2000
 
 type eventReaderImpl struct {
 	protoClient        persistent.PersistentSubscriptions_ReadClient
 	subscriptionId     string
-	messageAdapter     messageAdapter
+	messageAdapter     message_adapter.MessageAdapter
 	readRequestChannel chan chan readResponse
 	cancel             context.CancelFunc
 	once               sync.Once
 }
 
-func (reader *eventReaderImpl) ReadOne() (ReadResponseEvent, errors.Error) {
+// ReadOne reads one message from persistent subscription.
+// Reads will block one the buffer size for persistent subscription is reached.
+// Buffer size is specified when we are connecting to a persistent subscription.
+func (reader *eventReaderImpl) ReadOne() (persistent_event.ReadResponseEvent, errors.Error) {
 	channel := make(chan readResponse)
 
 	reader.readRequestChannel <- channel
@@ -32,31 +39,35 @@ func (reader *eventReaderImpl) ReadOne() (ReadResponseEvent, errors.Error) {
 	return resp.ReadResponseEvent, resp.Error
 }
 
-func (reader *eventReaderImpl) readOne() (ReadResponseEvent, errors.Error) {
+func (reader *eventReaderImpl) readOne() (persistent_event.ReadResponseEvent, errors.Error) {
 	protoResponse, protoErr := reader.protoClient.Recv()
 	if protoErr != nil {
 		if protoErr == io.EOF {
-			return ReadResponseEvent{}, errors.NewError(errors.EndOfStream, protoErr)
+			return persistent_event.ReadResponseEvent{}, errors.NewError(errors.EndOfStream, protoErr)
 		}
 		trailer := reader.protoClient.Trailer()
 		err := connection.GetErrorFromProtoException(trailer, protoErr)
 		if err != nil {
-			return ReadResponseEvent{}, err
+			return persistent_event.ReadResponseEvent{}, err
 		}
-		return ReadResponseEvent{}, errors.NewError(errors.FatalError, protoErr)
+		return persistent_event.ReadResponseEvent{}, errors.NewError(errors.FatalError, protoErr)
 	}
 
-	result := reader.messageAdapter.fromProtoResponse(protoResponse.GetEvent())
+	result := reader.messageAdapter.FromProtoResponse(protoResponse.GetEvent())
 	return result, nil
 }
 
+// Close closes the connection to a persistent subscription.
 func (reader *eventReaderImpl) Close() {
 	reader.once.Do(reader.cancel)
 }
 
 const Exceeds_Max_Message_Count_Err errors.ErrorCode = "Exceeds_Max_Message_Count_Err"
 
-func (reader *eventReaderImpl) Ack(messages ...ReadResponseEvent) errors.Error {
+// Ack sends Ack signal for a message.
+// Maximum of 2000 messages can be acknowledged at once.
+// If number of messages exceeds the maximum error Exceeds_Max_Message_Count_Err will be returned.
+func (reader *eventReaderImpl) Ack(messages ...persistent_event.ReadResponseEvent) errors.Error {
 	if len(messages) == 0 {
 		return nil
 	}
@@ -92,8 +103,10 @@ func (reader *eventReaderImpl) Ack(messages ...ReadResponseEvent) errors.Error {
 	return nil
 }
 
+// Nack sends Nack signal for a message.
+// Client must also specify a reason why message was nack-ed.
 func (reader *eventReaderImpl) Nack(reason string,
-	action Nack_Action, messages ...ReadResponseEvent) error {
+	action persistent_action.Nack_Action, messages ...persistent_event.ReadResponseEvent) error {
 	if len(messages) == 0 {
 		return nil
 	}
@@ -143,14 +156,15 @@ func messageIdSliceToProto(messageIds ...uuid.UUID) []*shared.UUID {
 }
 
 type readResponse struct {
-	ReadResponseEvent ReadResponseEvent
+	ReadResponseEvent persistent_event.ReadResponseEvent
 	Error             errors.Error
 }
 
-func newEventReader(
+// NewEventReader creates a new event reader
+func NewEventReader(
 	client persistent.PersistentSubscriptions_ReadClient,
 	subscriptionId string,
-	messageAdapter messageAdapter,
+	messageAdapter message_adapter.MessageAdapter,
 	cancel context.CancelFunc,
 ) EventReader {
 	channel := make(chan chan readResponse)

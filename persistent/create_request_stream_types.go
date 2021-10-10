@@ -6,14 +6,16 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
+// SubscriptionGroupForStreamRequest is a set of data sent to EventStoreDB when a persistent subscription group
+// for a stream is created.
 type SubscriptionGroupForStreamRequest struct {
-	StreamId  string
-	GroupName string
-	Revision  stream_revision.IsReadStreamRevision
-	Settings  CreateOrUpdateRequestSettings
+	StreamId  string                               // stream for which we are creating persistent subscription group
+	GroupName string                               // name of the group
+	Revision  stream_revision.IsReadStreamRevision // revision of the stream from which the group will start to receive events
+	Settings  SubscriptionGroupSettings            // settings for a persistent subscription group
 }
 
-func (request SubscriptionGroupForStreamRequest) BuildCreateStreamRequest() *persistent.CreateReq {
+func (request SubscriptionGroupForStreamRequest) buildCreateRequest() *persistent.CreateReq {
 	streamOption := &persistent.CreateReq_StreamOptions{
 		StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamId)},
 		RevisionOption:   nil,
@@ -54,7 +56,7 @@ func buildCreateRequestRevision(
 	}
 }
 
-func (request SubscriptionGroupForStreamRequest) BuildUpdateStreamRequest() *persistent.UpdateReq {
+func (request SubscriptionGroupForStreamRequest) buildUpdateRequest() *persistent.UpdateReq {
 	streamOption := &persistent.UpdateReq_StreamOptions{
 		StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamId)},
 		RevisionOption:   nil,

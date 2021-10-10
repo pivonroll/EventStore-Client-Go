@@ -6,6 +6,7 @@ import (
 	"log"
 
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/google/uuid"
 
@@ -13,7 +14,7 @@ import (
 )
 
 // Example of appending an event to a stream which does not exist with WriteStreamRevisionNoStream.
-func ExampleClientImpl_AppendToStream_withNoStreamWhenStreamDoesNotExist() {
+func ExampleClient_AppendToStream_withNoStreamWhenStreamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -23,7 +24,7 @@ func ExampleClientImpl_AppendToStream_withNoStreamWhenStreamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -48,7 +49,7 @@ func ExampleClientImpl_AppendToStream_withNoStreamWhenStreamDoesNotExist() {
 }
 
 // Example of appending an event to a stream which does not exist with WriteStreamRevisionAny.
-func ExampleClientImpl_AppendToStream_withAnyWhenStreamDoesNotExist() {
+func ExampleClient_AppendToStream_withAnyWhenStreamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -58,7 +59,7 @@ func ExampleClientImpl_AppendToStream_withAnyWhenStreamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -83,7 +84,7 @@ func ExampleClientImpl_AppendToStream_withAnyWhenStreamDoesNotExist() {
 }
 
 // Example of appending an event to an existing stream with exact expected stream revision.
-func ExampleClientImpl_AppendToStream_withExactStreamRevisionWhenStreamExist() {
+func ExampleClient_AppendToStream_withExactStreamRevisionWhenStreamExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -93,7 +94,7 @@ func ExampleClientImpl_AppendToStream_withExactStreamRevisionWhenStreamExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -140,7 +141,7 @@ func ExampleClientImpl_AppendToStream_withExactStreamRevisionWhenStreamExist() {
 }
 
 // Example of appending an event to an existing stream with WriteStreamRevisionAny.
-func ExampleClientImpl_AppendToStream_withAnyStreamRevisionWhenStreamExist() {
+func ExampleClient_AppendToStream_withAnyStreamRevisionWhenStreamExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -150,7 +151,7 @@ func ExampleClientImpl_AppendToStream_withAnyStreamRevisionWhenStreamExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 

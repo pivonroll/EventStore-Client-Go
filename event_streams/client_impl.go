@@ -1,3 +1,8 @@
+// Header
+
+// Package event_streams provides interaction with EventStoreDb event streams.
+// Before accessing streams a grpc connection needs to be established with EventStore through
+// github.com/pivonroll/EventStore-Client-Go/connection package.
 package event_streams
 
 import (
@@ -14,8 +19,21 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-// ClientImpl is an implementation of a Client interface which can interact with EventStoreDB streams.
-type ClientImpl struct {
+// NewClient create a new event streams client
+func NewClient(grpcClient connection.GrpcClient) *Client {
+	return &Client{
+		grpcClient:               grpcClient,
+		readClientFactory:        streamReaderFactoryImpl{},
+		tombstoneResponseAdapter: tombstoneResponseAdapterImpl{},
+		deleteResponseAdapter:    deleteResponseAdapterImpl{},
+		appendResponseAdapter:    appendResponseAdapterImpl{},
+		readResponseAdapter:      readResponseAdapterImpl{},
+		batchResponseAdapter:     batchResponseAdapterImpl{},
+	}
+}
+
+// Client is an implementation of a Client interface which can interact with EventStoreDB streams.
+type Client struct {
 	grpcClient               connection.GrpcClient
 	deleteResponseAdapter    deleteResponseAdapter
 	tombstoneResponseAdapter tombstoneResponseAdapter
@@ -47,7 +65,7 @@ const (
 // If appending of one event fails EventStoreDb will roll back the whole transaction.
 //
 // If any error occurs error will be returned with appropriate code set.
-func (client *ClientImpl) AppendToStream(
+func (client *Client) AppendToStream(
 	ctx context.Context,
 	streamID string,
 	expectedStreamRevision stream_revision.IsWriteStreamRevision,
@@ -77,7 +95,7 @@ const (
 // If batch append of one chunk fails EventStoreDb will roll back the whole transaction.
 //
 // If any error occurs error will be returned with appropriate code set.
-func (client *ClientImpl) BatchAppendToStream(ctx context.Context,
+func (client *Client) BatchAppendToStream(ctx context.Context,
 	streamId string,
 	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	events ProposedEventList,
@@ -101,7 +119,7 @@ func (client *ClientImpl) BatchAppendToStream(ctx context.Context,
 // If batch append of one chunk fails EventStoreDb will roll back the whole transaction.
 //
 // If any error occurs error will be returned with appropriate code set.
-func (client *ClientImpl) BatchAppendToStreamWithCorrelationId(ctx context.Context,
+func (client *Client) BatchAppendToStreamWithCorrelationId(ctx context.Context,
 	streamId string,
 	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	correlationId uuid.UUID,
@@ -163,7 +181,7 @@ func (client *ClientImpl) BatchAppendToStreamWithCorrelationId(ctx context.Conte
 //Stream's metadata are kept in a separate stream which begins with a prefix $$.
 //
 // For example: for stream my_card, it's metadata stream will be $my_card.
-func (client *ClientImpl) SetStreamMetadata(
+func (client *Client) SetStreamMetadata(
 	ctx context.Context,
 	streamID string,
 	expectedStreamRevision stream_revision.IsWriteStreamRevision,
@@ -177,7 +195,7 @@ func (client *ClientImpl) SetStreamMetadata(
 }
 
 // GetStreamMetadata reads stream's latest metadata.
-func (client *ClientImpl) GetStreamMetadata(
+func (client *Client) GetStreamMetadata(
 	ctx context.Context,
 	streamId string) (StreamMetadataResult, errors.Error) {
 
@@ -226,7 +244,7 @@ const FailedToDeleteStreamErr errors.ErrorCode = "FailedToDeleteStreamErr"
 // The only events which can be read from a soft-deleted stream are only the ones
 // which were written after a soft-delete. Any events written previous to soft-delete
 // are out of reach.
-func (client *ClientImpl) DeleteStream(
+func (client *Client) DeleteStream(
 	ctx context.Context,
 	streamID string,
 	revision stream_revision.IsWriteStreamRevision,
@@ -240,7 +258,7 @@ func (client *ClientImpl) DeleteStream(
 // TombstoneStream performs a hard-delete on a stream.
 //
 // After performing a hard-delete events cannot be written or read from a stream.
-func (client *ClientImpl) TombstoneStream(
+func (client *Client) TombstoneStream(
 	ctx context.Context,
 	streamID string,
 	revision stream_revision.IsWriteStreamRevision,
@@ -263,7 +281,7 @@ const FailedToTombstoneStreamErr errors.ErrorCode = "FailedToTombstoneStreamErr"
 //
 // Use count to specify how many events you want to be able to read through a reader.
 // Maximum number of events to read is ReadCountMax.
-func (client *ClientImpl) GetStreamReader(
+func (client *Client) GetStreamReader(
 	ctx context.Context,
 	streamID string,
 	direction ReadDirection,
@@ -291,7 +309,7 @@ func (client *ClientImpl) GetStreamReader(
 //
 // Use count to specify how many events you want to be able to read through a reader.
 // Maximum number of events to read is ReadCountMax.
-func (client *ClientImpl) GetStreamReaderForStreamAll(
+func (client *Client) GetStreamReaderForStreamAll(
 	ctx context.Context,
 	direction ReadDirection,
 	position stream_revision.IsReadPositionAll,
@@ -330,7 +348,7 @@ func (client *ClientImpl) GetStreamReaderForStreamAll(
 // content written to a stream after it.
 //
 // If you only want to receive new content, set revision to ReadStreamRevisionEnd.
-func (client *ClientImpl) SubscribeToStream(
+func (client *Client) SubscribeToStream(
 	ctx context.Context,
 	streamID string,
 	revision stream_revision.IsReadStreamRevision,
@@ -367,7 +385,7 @@ func (client *ClientImpl) SubscribeToStream(
 // then we will start to receive content only when that point (index) is reached.
 //
 // If you only want to receive new content from stream $all, set revision to ReadPositionAllEnd.
-func (client *ClientImpl) SubscribeToFilteredStreamAll(
+func (client *Client) SubscribeToFilteredStreamAll(
 	ctx context.Context,
 	position stream_revision.IsReadPositionAll,
 	resolveLinks bool, // Todo add documentation for resolveLinks
@@ -400,7 +418,7 @@ func (client *ClientImpl) SubscribeToFilteredStreamAll(
 // then we will start to receive content only when that point (index) is reached.
 //
 // If you only want to receive new content, set revision to ReadPositionAllEnd.
-func (client *ClientImpl) SubscribeToStreamAll(
+func (client *Client) SubscribeToStreamAll(
 	ctx context.Context,
 	position stream_revision.IsReadPositionAll,
 	resolveLinks bool, // Todo add documentation for resolveLinks
@@ -429,7 +447,7 @@ const (
 //
 // Use count to specify how many events you want to read.
 // Maximum number of events read is ReadCountMax.
-func (client *ClientImpl) ReadStreamEvents(
+func (client *Client) ReadStreamEvents(
 	ctx context.Context,
 	streamID string,
 	direction ReadDirection,
@@ -464,7 +482,7 @@ const (
 //
 // Use count to specify how many events you want to read.
 // Maximum number of events read is ReadCountMax.
-func (client *ClientImpl) ReadEventsFromStreamAll(
+func (client *Client) ReadEventsFromStreamAll(
 	ctx context.Context,
 	direction ReadDirection,
 	position stream_revision.IsReadPositionAll,
@@ -483,7 +501,7 @@ func (client *ClientImpl) ReadEventsFromStreamAll(
 	})
 }
 
-func (client *ClientImpl) tombstoneStream(
+func (client *Client) tombstoneStream(
 	context context.Context,
 	tombstoneRequest tombstoneRequest,
 ) (TombstoneResponse, errors.Error) {
@@ -505,7 +523,7 @@ func (client *ClientImpl) tombstoneStream(
 	return client.tombstoneResponseAdapter.Create(tombstoneResponse), nil
 }
 
-func (client *ClientImpl) appendToStreamWithError(
+func (client *Client) appendToStreamWithError(
 	ctx context.Context,
 	options appendRequestContentOptions,
 	events []ProposedEvent,
@@ -556,7 +574,7 @@ func (client *ClientImpl) appendToStreamWithError(
 	return client.appendResponseAdapter.CreateResponseWithError(response)
 }
 
-func (client *ClientImpl) readStreamEvents(
+func (client *Client) readStreamEvents(
 	ctx context.Context,
 	readRequest readRequest) (ResolvedEventList, errors.Error) {
 
@@ -616,7 +634,7 @@ func (client *ClientImpl) readStreamEvents(
 	return nil, readError
 }
 
-func (client *ClientImpl) subscribeToStream(
+func (client *Client) subscribeToStream(
 	ctx context.Context,
 	request subscribeToStreamRequest,
 ) (StreamReader, errors.Error) {
@@ -663,7 +681,7 @@ func (client *ClientImpl) subscribeToStream(
 	return nil, errors.NewErrorCode(errors.FatalError)
 }
 
-func (client *ClientImpl) getStreamEventsReader(
+func (client *Client) getStreamEventsReader(
 	ctx context.Context,
 	readRequest readRequest) (StreamReader, errors.Error) {
 
@@ -689,7 +707,7 @@ func (client *ClientImpl) getStreamEventsReader(
 	return readClient, nil
 }
 
-func (client *ClientImpl) deleteStream(
+func (client *Client) deleteStream(
 	context context.Context,
 	deleteRequest deleteRequest,
 ) (DeleteResponse, errors.Error) {

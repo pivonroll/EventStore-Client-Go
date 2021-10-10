@@ -7,10 +7,9 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/stretchr/testify/require"
-
-	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 )
 
 func Test_StreamSubscription_DeliversAllEventsInStreamAndListensForNewEvents(t *testing.T) {

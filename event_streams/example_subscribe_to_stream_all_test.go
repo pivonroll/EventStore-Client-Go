@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
@@ -17,7 +18,7 @@ import (
 //
 // We create two streams and write events to them.
 // Subscription to stream $all must catch all events written to those two streams.
-func ExampleClientImpl_SubscribeToStreamAll() {
+func ExampleClient_SubscribeToStreamAll() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -27,7 +28,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 		log.Fatalln(stdErr)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	createEvents := func(count uint32) event_streams.ProposedEventList {
 		result := make(event_streams.ProposedEventList, 10)

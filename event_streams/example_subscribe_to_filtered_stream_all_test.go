@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
@@ -18,7 +19,7 @@ import (
 // We create three streams and write events to them.
 // Subscription to stream $all with a filter which will filter only content
 // from two of the three streams. Content is filtered by prefix of the stream's ID.
-func ExampleClientImpl_SubscribeToFilteredStreamAll() {
+func ExampleClient_SubscribeToFilteredStreamAll() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -28,7 +29,7 @@ func ExampleClientImpl_SubscribeToFilteredStreamAll() {
 		log.Fatalln(stdErr)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	prefix1 := "my_first_prefix"
 	prefix2 := "my_second_prefix"

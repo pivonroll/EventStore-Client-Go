@@ -22,7 +22,7 @@ func initializeContainerAndClient(t *testing.T) (projections.Client,
 }
 
 func initializeClientAndEventStreamsClient(t *testing.T) (projections.Client,
-	event_streams.Client,
+	*event_streams.Client,
 	test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClient(t,
 		map[string]string{
@@ -31,7 +31,7 @@ func initializeClientAndEventStreamsClient(t *testing.T) (projections.Client,
 		})
 
 	client := projections.ClientFactoryImpl{}.Create(grpcClient)
-	eventStreamsClient := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	eventStreamsClient := event_streams.NewClient(grpcClient)
 
 	return client, eventStreamsClient, closeFunc
 }

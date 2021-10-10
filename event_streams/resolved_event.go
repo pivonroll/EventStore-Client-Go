@@ -79,7 +79,7 @@ type RecordedEvent struct {
 	EventNumber     uint64            // index number of an event in a stream
 	Position        position.Position // event's position in stream $all
 	CreatedDateTime time.Time         // a date and time when event was stored in a stream
-	Data            []byte            // user data stored in an event.
-	SystemMetadata  map[string]string // EventStoreDB's metadata set for an event.
-	UserMetadata    []byte            // user defined metadata.
+	Data            []byte            // user data stored in an event
+	SystemMetadata  map[string]string // EventStoreDB's metadata set for an event
+	UserMetadata    []byte            // user defined metadata
 }

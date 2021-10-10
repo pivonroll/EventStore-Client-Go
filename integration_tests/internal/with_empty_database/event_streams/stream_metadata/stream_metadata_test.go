@@ -7,6 +7,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/pivonroll/EventStore-Client-Go/ptr"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 

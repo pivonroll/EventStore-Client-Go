@@ -10,10 +10,11 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/pivonroll/EventStore-Client-Go/ptr"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of setting metadata for a stream which does not exist.
-func ExampleClientImpl_SetStreamMetadata_onNonExistingStream() {
+func ExampleClient_SetStreamMetadata_onNonExistingStream() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -23,7 +24,7 @@ func ExampleClientImpl_SetStreamMetadata_onNonExistingStream() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -64,7 +65,7 @@ func ExampleClientImpl_SetStreamMetadata_onNonExistingStream() {
 }
 
 // Example of setting metadata for an existing stream.
-func ExampleClientImpl_SetStreamMetadata_whenStreamExists() {
+func ExampleClient_SetStreamMetadata_whenStreamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -74,7 +75,7 @@ func ExampleClientImpl_SetStreamMetadata_whenStreamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 

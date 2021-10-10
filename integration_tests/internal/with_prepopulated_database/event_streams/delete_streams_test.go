@@ -4,9 +4,8 @@ import (
 	"context"
 	"testing"
 
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
-
-	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 )
 
 func Test_DeleteStream(t *testing.T) {

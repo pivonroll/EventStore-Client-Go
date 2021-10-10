@@ -6,16 +6,14 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
+// UpdateSubscriptionGroupForStreamAllRequest is a set of data necessary to update a subscription to stream $all.
 type UpdateSubscriptionGroupForStreamAllRequest struct {
-	GroupName string
-	// AllPosition
-	// AllPositionStart
-	// AllPositionEnd
-	Position stream_revision.IsReadPositionAll
-	Settings CreateOrUpdateRequestSettings
+	GroupName string                            // name of the persistent subscription group
+	Position  stream_revision.IsReadPositionAll // position from which we want to start to receive events from a stream $all
+	Settings  SubscriptionGroupSettings         // setting for a persistent subscription group
 }
 
-func (request UpdateSubscriptionGroupForStreamAllRequest) Build() *persistent.UpdateReq {
+func (request UpdateSubscriptionGroupForStreamAllRequest) build() *persistent.UpdateReq {
 	streamOption := &persistent.UpdateReq_Options_All{
 		All: &persistent.UpdateReq_AllOptions{},
 	}

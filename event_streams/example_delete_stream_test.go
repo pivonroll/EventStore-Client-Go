@@ -12,7 +12,7 @@ import (
 )
 
 // Example of sot-deleting a stream which exists.
-func ExampleClientImpl_DeleteStream_streamExists() {
+func ExampleClient_DeleteStream_streamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -22,7 +22,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -62,7 +62,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 }
 
 // Example of soft-deleting a stream which does not exist.
-func ExampleClientImpl_DeleteStream_streamDoesNotExist() {
+func ExampleClient_DeleteStream_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -72,7 +72,7 @@ func ExampleClientImpl_DeleteStream_streamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 

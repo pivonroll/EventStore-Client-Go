@@ -10,10 +10,11 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/pivonroll/EventStore-Client-Go/ptr"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of reading metadata for a stream which has no metadata set.
-func ExampleClientImpl_GetStreamMetadata_isEmptyIfStreamHasNoMetadata() {
+func ExampleClient_GetStreamMetadata_isEmptyIfStreamHasNoMetadata() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -23,7 +24,7 @@ func ExampleClientImpl_GetStreamMetadata_isEmptyIfStreamHasNoMetadata() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -57,7 +58,7 @@ func ExampleClientImpl_GetStreamMetadata_isEmptyIfStreamHasNoMetadata() {
 }
 
 // Example of reading metadata for a stream which has metadata.
-func ExampleClientImpl_GetStreamMetadata_streamHasMetadata() {
+func ExampleClient_GetStreamMetadata_streamHasMetadata() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -67,7 +68,7 @@ func ExampleClientImpl_GetStreamMetadata_streamHasMetadata() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 

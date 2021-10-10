@@ -34,13 +34,13 @@ func testCreateEvents(count uint32) event_streams.ProposedEventList {
 	return result
 }
 
-func pushEventToStream(t *testing.T, eventStreamsClient event_streams.Client, streamID string) {
+func pushEventToStream(t *testing.T, eventStreamsClient *event_streams.Client, streamID string) {
 	testEvent := testCreateEvent()
 	pushEventsToStream(t, eventStreamsClient, streamID, testEvent)
 }
 
 func pushEventsToStream(t *testing.T,
-	eventStreamsClient event_streams.Client,
+	eventStreamsClient *event_streams.Client,
 	streamID string,
 	events ...event_streams.ProposedEvent) {
 	_, err := eventStreamsClient.AppendToStream(

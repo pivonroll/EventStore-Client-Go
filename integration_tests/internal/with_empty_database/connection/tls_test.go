@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/client"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
@@ -44,7 +43,7 @@ func TestTLSDefaultsWithCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s",
+	config, err := connection.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s",
 		container.Endpoint))
 	require.NoError(t, err)
 
@@ -67,7 +66,7 @@ func TestTLSWithoutCertificateAndVerify(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(
+	config, err := connection.ParseConnectionString(
 		fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=false", container.Endpoint))
 	require.NoError(t, err)
 
@@ -86,7 +85,7 @@ func TestTLSWithoutCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
+	config, err := connection.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
 	require.NoError(t, err)
 
 	grpcClient := connection.NewGrpcClient(*config)
@@ -106,7 +105,7 @@ func TestTLSWithCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
+	config, err := connection.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
 	require.NoError(t, err)
 
 	certificatePool := testGetCertificatePoolForFile(t, joinRootPathAndFilePath("certs/node/node.crt"))
@@ -132,7 +131,7 @@ func TestTLSWithCertificateFromAbsoluteFile(t *testing.T) {
 	require.NoError(t, err)
 
 	s := fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true&tlsCAFile=%s", container.Endpoint, absPath)
-	config, err := client.ParseConnectionString(s)
+	config, err := connection.ParseConnectionString(s)
 	require.NoError(t, err)
 
 	grpcClient := connection.NewGrpcClient(*config)
@@ -150,7 +149,7 @@ func TestTLSWithCertificateFromRelativeFile(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(
+	config, err := connection.ParseConnectionString(
 		fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true&tlsCAFile=%s",
 			container.Endpoint, joinRootPathAndFilePath("certs/node/node.crt")))
 	require.NoError(t, err)
@@ -170,7 +169,7 @@ func TestTLSWithInvalidCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(
+	config, err := connection.ParseConnectionString(
 		fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
 	require.NoError(t, err)
 

@@ -9,11 +9,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of reading events from start of stream $all.
 // At the beginning of stream $all we can find system events.
-func ExampleClientImpl_ReadEventsFromStreamAll_readEventsFromStart() {
+func ExampleClient_ReadEventsFromStreamAll_readEventsFromStart() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -23,7 +24,7 @@ func ExampleClientImpl_ReadEventsFromStreamAll_readEventsFromStart() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	// read events from stream $all
 	// at the beginning of stream $all are some system events
@@ -48,7 +49,7 @@ func ExampleClientImpl_ReadEventsFromStreamAll_readEventsFromStart() {
 //
 // That does not guarantee that system events are not going to be appended after user events
 // if some system operation is triggered.
-func ExampleClientImpl_ReadEventsFromStreamAll_readEventsBackwardsFromEnd() {
+func ExampleClient_ReadEventsFromStreamAll_readEventsBackwardsFromEnd() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -58,7 +59,7 @@ func ExampleClientImpl_ReadEventsFromStreamAll_readEventsBackwardsFromEnd() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 

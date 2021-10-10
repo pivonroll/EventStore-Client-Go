@@ -8,10 +8,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of putting a tombstone on an existing stream.
-func ExampleClientImpl_TombstoneStream_streamExists() {
+func ExampleClient_TombstoneStream_streamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -21,7 +22,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamName := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -62,7 +63,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 }
 
 // Example of trying to put a tombstone on a stream which does not exist.
-func ExampleClientImpl_TombstoneStream_streamDoesNotExist() {
+func ExampleClient_TombstoneStream_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -72,7 +73,7 @@ func ExampleClientImpl_TombstoneStream_streamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamName := "some_stream"
 

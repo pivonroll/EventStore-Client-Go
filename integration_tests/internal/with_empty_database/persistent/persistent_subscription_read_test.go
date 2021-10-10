@@ -7,13 +7,14 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_action"
 	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
 func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
-	client, eventStreamsClient, closeFunc := initializeContainerAndClient(t, nil)
-	defer closeFunc()
+	client, eventStreamsClient, _ := initializeContainerAndClient(t, nil)
+	// defer closeFunc()
 
 	t.Run("AckToReceiveNewEvents", func(t *testing.T) {
 		streamID := "AckToReceiveNewEvents"
@@ -92,7 +93,7 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 
 		// since buffer size is two, after reading two outstanding messages
 		// we must acknowledge a message in order to receive third one
-		protoErr := readConnectionClient.Nack("test reason", persistent.Nack_Park, firstReadEvent)
+		protoErr := readConnectionClient.Nack("test reason", persistent_action.Nack_Park, firstReadEvent)
 		require.NoError(t, protoErr)
 
 		thirdReadEvent, err := readConnectionClient.ReadOne()

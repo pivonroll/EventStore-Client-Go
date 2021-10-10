@@ -9,11 +9,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example demonstrates how to do a batch append to a stream which does not exist.
 // Correlation id for events will auto be generated.
-func ExampleClientImpl_BatchAppendToStream_streamDoesNotExist() {
+func ExampleClient_BatchAppendToStream_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -23,7 +24,7 @@ func ExampleClientImpl_BatchAppendToStream_streamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 	streamId := "some_stream"
 
 	firstEvent := event_streams.ProposedEvent{
@@ -54,7 +55,7 @@ func ExampleClientImpl_BatchAppendToStream_streamDoesNotExist() {
 
 // Example demonstrates how to do a batch append to a stream which does exist.
 // Correlation id for events will auto be generated.
-func ExampleClientImpl_BatchAppendToStream_streamExists() {
+func ExampleClient_BatchAppendToStream_streamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -64,7 +65,7 @@ func ExampleClientImpl_BatchAppendToStream_streamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 	streamId := "some_stream"
 
 	firstEvent := event_streams.ProposedEvent{
@@ -118,7 +119,7 @@ func ExampleClientImpl_BatchAppendToStream_streamExists() {
 }
 
 // Example demonstrates how to do a batch append to a stream with correlation id.
-func ExampleClientImpl_BatchAppendToStreamWithCorrelationId() {
+func ExampleClient_BatchAppendToStreamWithCorrelationId() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -128,7 +129,7 @@ func ExampleClientImpl_BatchAppendToStreamWithCorrelationId() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 	streamId := "some_stream"
 
 	firstEvent := event_streams.ProposedEvent{

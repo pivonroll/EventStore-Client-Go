@@ -17,26 +17,22 @@ func ParseConnectionString(str string) (*connection.Configuration, error) {
 
 // Client ...
 type Client struct {
-	grpcClient                connection.GrpcClient
-	Config                    *connection.Configuration
-	persistentClientFactory   persistent.ClientFactory
-	projectionClientFactory   projections.ClientFactory
-	eventStreamsClientFactory event_streams.ClientFactory
-	userManagementFactory     user_management.ClientFactory
-	operationsClientFactory   operations.ClientFactory
+	grpcClient              connection.GrpcClient
+	Config                  *connection.Configuration
+	projectionClientFactory projections.ClientFactory
+	userManagementFactory   user_management.ClientFactory
+	operationsClientFactory operations.ClientFactory
 }
 
 // NewClient ...
 func NewClient(configuration *connection.Configuration) (*Client, error) {
 	grpcClient := connection.NewGrpcClient(*configuration)
 	return &Client{
-		grpcClient:                grpcClient,
-		Config:                    configuration,
-		persistentClientFactory:   persistent.ClientFactoryImpl{},
-		projectionClientFactory:   projections.ClientFactoryImpl{},
-		eventStreamsClientFactory: event_streams.ClientFactoryImpl{},
-		userManagementFactory:     user_management.ClientFactoryImpl{},
-		operationsClientFactory:   operations.ClientFactoryImpl{},
+		grpcClient:              grpcClient,
+		Config:                  configuration,
+		projectionClientFactory: projections.ClientFactoryImpl{},
+		userManagementFactory:   user_management.ClientFactoryImpl{},
+		operationsClientFactory: operations.ClientFactoryImpl{},
 	}, nil
 }
 
@@ -53,12 +49,12 @@ func (client *Client) UserManagement() user_management.Client {
 	return client.userManagementFactory.Create(client.grpcClient)
 }
 
-func (client *Client) EventStreams() event_streams.Client {
-	return client.eventStreamsClientFactory.Create(client.grpcClient)
+func (client *Client) EventStreams() *event_streams.Client {
+	return event_streams.NewClient(client.grpcClient)
 }
 
-func (client *Client) PersistentSubscriptions() persistent.Client {
-	return client.persistentClientFactory.Create(client.grpcClient)
+func (client *Client) PersistentSubscriptions() *persistent.Client {
+	return persistent.NewClient(client.grpcClient)
 }
 
 func (client *Client) Operations() operations.Client {

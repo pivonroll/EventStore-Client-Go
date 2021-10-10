@@ -16,26 +16,29 @@ const (
 	ConsumerStrategy_Pinned           ConsumerStrategy = 2
 )
 
-type CreateOrUpdateRequestSettings struct {
-	ResolveLinks          bool
-	ExtraStatistics       bool
-	MaxRetryCount         int32
-	MinCheckpointCount    int32
-	MaxCheckpointCount    int32
-	MaxSubscriberCount    int32
-	LiveBufferSize        int32
-	ReadBatchSize         int32
-	HistoryBufferSize     int32
-	NamedConsumerStrategy ConsumerStrategy
+// SubscriptionGroupSettings are settings for a persistent subscription group.
+//
+// You can read more at https://developers.eventstore.com/clients/grpc/persistent-subscriptions.html#persistent-subscription-settings
+type SubscriptionGroupSettings struct {
+	ResolveLinks          bool             // whether the subscription should resolve link events to their linked events.
+	ExtraStatistics       bool             // whether to track latency statistics on this subscription.
+	MaxRetryCount         int32            // the maximum number of retries (due to timeout) before a message is considered to be parked.
+	MinCheckpointCount    int32            // the minimum number of messages to process before a checkpoint may be written.
+	MaxCheckpointCount    int32            // the maximum number of messages not checkpointed before forcing a checkpoint.
+	MaxSubscriberCount    int32            // the maximum number of subscribers allowed.
+	LiveBufferSize        int32            // the size of the buffer (in-memory) listening to live messages as they happen before paging occurs.
+	ReadBatchSize         int32            // the number of events read at a time when paging through history.
+	HistoryBufferSize     int32            // the number of events to cache when paging through history.
+	NamedConsumerStrategy ConsumerStrategy // the strategy to use for distributing events to client consumers.
 	// MessageTimeoutInMs
 	// MessageTimeoutInTicks
-	MessageTimeout isCreateRequestMessageTimeout
+	MessageTimeout isCreateRequestMessageTimeout // the amount of time after which to consider a message as timed out and retried.
 	// CheckpointAfterMs
 	// CheckpointAfterTicks
-	CheckpointAfter isCreateRequestCheckpointAfter
+	CheckpointAfter isCreateRequestCheckpointAfter // the amount of time to try to checkpoint after.
 }
 
-func (settings CreateOrUpdateRequestSettings) buildCreateRequestSettings() *persistent.CreateReq_Settings {
+func (settings SubscriptionGroupSettings) buildCreateRequestSettings() *persistent.CreateReq_Settings {
 	result := &persistent.CreateReq_Settings{
 		ResolveLinks:          settings.ResolveLinks,
 		ExtraStatistics:       settings.ExtraStatistics,
@@ -55,7 +58,7 @@ func (settings CreateOrUpdateRequestSettings) buildCreateRequestSettings() *pers
 	return result
 }
 
-func (settings CreateOrUpdateRequestSettings) buildUpdateRequestSettings() *persistent.UpdateReq_Settings {
+func (settings SubscriptionGroupSettings) buildUpdateRequestSettings() *persistent.UpdateReq_Settings {
 	result := &persistent.UpdateReq_Settings{
 		ResolveLinks:          settings.ResolveLinks,
 		ExtraStatistics:       settings.ExtraStatistics,
@@ -75,7 +78,10 @@ func (settings CreateOrUpdateRequestSettings) buildUpdateRequestSettings() *pers
 	return result
 }
 
-var DefaultRequestSettings = CreateOrUpdateRequestSettings{
+// DefaultRequestSettings are the default values for any persistent subscription group.
+// Settings are recommended by EventStoreDB.
+// More info can be found at https://developers.eventstore.com/clients/grpc/persistent-subscriptions.html#persistent-subscription-settings
+var DefaultRequestSettings = SubscriptionGroupSettings{
 	ResolveLinks:          false,
 	ExtraStatistics:       false,
 	MaxRetryCount:         10,
@@ -100,6 +106,7 @@ type isCreateRequestMessageTimeout interface {
 	buildUpdateRequestSettings(*persistent.UpdateReq_Settings)
 }
 
+// MessageTimeoutInMs is the amount of time (in milliseconds) after which to consider a message as timed out and retried.
 type MessageTimeoutInMs struct {
 	MilliSeconds int32
 }
@@ -121,6 +128,8 @@ func (c MessageTimeoutInMs) buildUpdateRequestSettings(
 	}
 }
 
+// MessageTimeoutInTicks is the amount of time (in .NET ticks) after which to consider a message as timed out and retried.
+// A single tick represents one hundred nanoseconds.
 type MessageTimeoutInTicks struct {
 	Ticks int64
 }
@@ -148,6 +157,8 @@ type isCreateRequestCheckpointAfter interface {
 	buildUpdateRequestSettings(*persistent.UpdateReq_Settings)
 }
 
+// CheckpointAfterTicks is the amount of time (in .NET ticks) to try to checkpoint after.
+// A single tick represents one hundred nanoseconds.
 type CheckpointAfterTicks struct {
 	Ticks int64
 }
@@ -169,6 +180,7 @@ func (c CheckpointAfterTicks) buildUpdateRequestSettings(
 	}
 }
 
+// CheckpointAfterMs is the amount of time (in milliseconds) to try to checkpoint after.
 type CheckpointAfterMs struct {
 	MilliSeconds int32
 }
