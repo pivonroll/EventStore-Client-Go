@@ -23,10 +23,10 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 		err := client.CreateStreamSubscription(
 			context.Background(),
 			persistent.CreateOrUpdateStreamRequest{
-				StreamName: streamID,
-				GroupName:  "Group WithDefaultSettings",
-				Revision:   persistent.StreamRevisionStart{},
-				Settings:   persistent.DefaultRequestSettings,
+				StreamId:  streamID,
+				GroupName: "Group WithDefaultSettings",
+				Revision:  persistent.StreamRevisionStart{},
+				Settings:  persistent.DefaultRequestSettings,
 			},
 		)
 
@@ -43,10 +43,10 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 		err := client.CreateStreamSubscription(
 			context.Background(),
 			persistent.CreateOrUpdateStreamRequest{
-				StreamName: streamID,
-				GroupName:  "Group MessageTimeoutZero",
-				Revision:   persistent.StreamRevisionStart{},
-				Settings:   settings,
+				StreamId:  streamID,
+				GroupName: "Group MessageTimeoutZero",
+				Revision:  persistent.StreamRevisionStart{},
+				Settings:  settings,
 			},
 		)
 		require.NoError(t, err)
@@ -58,10 +58,10 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 		err := client.CreateStreamSubscription(
 			context.Background(),
 			persistent.CreateOrUpdateStreamRequest{
-				StreamName: streamID,
-				GroupName:  "Group StreamNotExits",
-				Revision:   persistent.StreamRevisionStart{},
-				Settings:   persistent.DefaultRequestSettings,
+				StreamId:  streamID,
+				GroupName: "Group StreamNotExits",
+				Revision:  persistent.StreamRevisionStart{},
+				Settings:  persistent.DefaultRequestSettings,
 			},
 		)
 
@@ -75,10 +75,10 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 		err := client.CreateStreamSubscription(
 			context.Background(),
 			persistent.CreateOrUpdateStreamRequest{
-				StreamName: streamID,
-				GroupName:  "Group FailsIfAlreadyExists",
-				Revision:   persistent.StreamRevisionStart{},
-				Settings:   persistent.DefaultRequestSettings,
+				StreamId:  streamID,
+				GroupName: "Group FailsIfAlreadyExists",
+				Revision:  persistent.StreamRevisionStart{},
+				Settings:  persistent.DefaultRequestSettings,
 			},
 		)
 
@@ -87,10 +87,10 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 		err = client.CreateStreamSubscription(
 			context.Background(),
 			persistent.CreateOrUpdateStreamRequest{
-				StreamName: streamID,
-				GroupName:  "Group FailsIfAlreadyExists",
-				Revision:   persistent.StreamRevisionStart{},
-				Settings:   persistent.DefaultRequestSettings,
+				StreamId:  streamID,
+				GroupName: "Group FailsIfAlreadyExists",
+				Revision:  persistent.StreamRevisionStart{},
+				Settings:  persistent.DefaultRequestSettings,
 			},
 		)
 
@@ -102,10 +102,10 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 		pushEventToStream(t, eventStreamsClient, streamID)
 
 		streamConfig := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  "Group AfterDeleting",
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: "Group AfterDeleting",
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 
 		err := client.CreateStreamSubscription(context.Background(), streamConfig)
@@ -114,8 +114,8 @@ func Test_CreatePersistentStreamSubscription(t *testing.T) {
 
 		err = client.DeleteStreamSubscription(context.Background(),
 			persistent.DeleteRequest{
-				StreamName: streamID,
-				GroupName:  streamConfig.GroupName,
+				StreamId:  streamID,
+				GroupName: streamConfig.GroupName,
 			})
 
 		require.NoError(t, err)
@@ -135,10 +135,10 @@ func Test_UpdatePersistentStreamSubscription(t *testing.T) {
 		pushEventToStream(t, eventStreamsClient, streamID)
 
 		streamConfig := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  "Group DefaultToNewSettings",
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: "Group DefaultToNewSettings",
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 
 		err := client.CreateStreamSubscription(context.Background(), streamConfig)
@@ -167,10 +167,10 @@ func Test_UpdatePersistentStreamSubscription(t *testing.T) {
 		streamID := "ErrorIfSubscriptionDoesNotExist"
 
 		streamConfig := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  "Group ErrorIfSubscriptionDoesNotExist",
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: "Group ErrorIfSubscriptionDoesNotExist",
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 
 		err := client.UpdateStreamSubscription(context.Background(), streamConfig)
@@ -188,10 +188,10 @@ func Test_DeletePersistentStreamSubscription(t *testing.T) {
 		pushEventToStream(t, eventStreamsClient, streamID)
 
 		streamConfig := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  "Group DeleteExisting",
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: "Group DeleteExisting",
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 
 		err := client.CreateStreamSubscription(context.Background(), streamConfig)
@@ -200,8 +200,8 @@ func Test_DeletePersistentStreamSubscription(t *testing.T) {
 
 		err = client.DeleteStreamSubscription(context.Background(),
 			persistent.DeleteRequest{
-				StreamName: streamID,
-				GroupName:  streamConfig.GroupName,
+				StreamId:  streamID,
+				GroupName: streamConfig.GroupName,
 			})
 
 		require.NoError(t, err)
@@ -210,8 +210,8 @@ func Test_DeletePersistentStreamSubscription(t *testing.T) {
 	t.Run("Error If Subscription Does Not Exist", func(t *testing.T) {
 		err := client.DeleteStreamSubscription(context.Background(),
 			persistent.DeleteRequest{
-				StreamName: "a",
-				GroupName:  "a",
+				StreamId:  "a",
+				GroupName: "a",
 			})
 
 		require.Error(t, err)
@@ -227,10 +227,10 @@ func TestPersistentSubscriptionClosing(t *testing.T) {
 	bufferSize := int32(2)
 
 	streamConfig := persistent.CreateOrUpdateStreamRequest{
-		StreamName: streamID,
-		GroupName:  "Group 1",
-		Revision:   persistent.StreamRevisionStart{},
-		Settings:   persistent.DefaultRequestSettings,
+		StreamId:  streamID,
+		GroupName: "Group 1",
+		Revision:  persistent.StreamRevisionStart{},
+		Settings:  persistent.DefaultRequestSettings,
 	}
 
 	err := client.CreateStreamSubscription(context.Background(), streamConfig)

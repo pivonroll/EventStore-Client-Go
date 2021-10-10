@@ -36,7 +36,7 @@ func (m *MockClient) EXPECT() *MockClientMockRecorder {
 }
 
 // CreateAllSubscription mocks base method.
-func (m *MockClient) CreateAllSubscription(ctx context.Context, request CreateAllRequest) errors.Error {
+func (m *MockClient) CreateSubscriptionGroupForStreamAll(ctx context.Context, request CreateAllRequest) errors.Error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateAllSubscription", ctx, request)
 	ret0, _ := ret[0].(errors.Error)
@@ -46,11 +46,11 @@ func (m *MockClient) CreateAllSubscription(ctx context.Context, request CreateAl
 // CreateAllSubscription indicates an expected call of CreateAllSubscription.
 func (mr *MockClientMockRecorder) CreateAllSubscription(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAllSubscription", reflect.TypeOf((*MockClient)(nil).CreateAllSubscription), ctx, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateAllSubscription", reflect.TypeOf((*MockClient)(nil).CreateSubscriptionGroupForStreamAll), ctx, request)
 }
 
 // CreateStreamSubscription mocks base method.
-func (m *MockClient) CreateStreamSubscription(ctx context.Context, request CreateOrUpdateStreamRequest) errors.Error {
+func (m *MockClient) CreateSubscriptionGroupForStream(ctx context.Context, request CreateOrUpdateStreamRequest) errors.Error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "CreateStreamSubscription", ctx, request)
 	ret0, _ := ret[0].(errors.Error)
@@ -60,11 +60,11 @@ func (m *MockClient) CreateStreamSubscription(ctx context.Context, request Creat
 // CreateStreamSubscription indicates an expected call of CreateStreamSubscription.
 func (mr *MockClientMockRecorder) CreateStreamSubscription(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateStreamSubscription", reflect.TypeOf((*MockClient)(nil).CreateStreamSubscription), ctx, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "CreateStreamSubscription", reflect.TypeOf((*MockClient)(nil).CreateSubscriptionGroupForStream), ctx, request)
 }
 
 // DeleteAllSubscription mocks base method.
-func (m *MockClient) DeleteAllSubscription(ctx context.Context, groupName string) errors.Error {
+func (m *MockClient) DeleteSubscriptionGroupForStreamAll(ctx context.Context, groupName string) errors.Error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteAllSubscription", ctx, groupName)
 	ret0, _ := ret[0].(errors.Error)
@@ -74,11 +74,11 @@ func (m *MockClient) DeleteAllSubscription(ctx context.Context, groupName string
 // DeleteAllSubscription indicates an expected call of DeleteAllSubscription.
 func (mr *MockClientMockRecorder) DeleteAllSubscription(ctx, groupName interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAllSubscription", reflect.TypeOf((*MockClient)(nil).DeleteAllSubscription), ctx, groupName)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteAllSubscription", reflect.TypeOf((*MockClient)(nil).DeleteSubscriptionGroupForStreamAll), ctx, groupName)
 }
 
 // DeleteStreamSubscription mocks base method.
-func (m *MockClient) DeleteStreamSubscription(ctx context.Context, deleteOptions DeleteRequest) errors.Error {
+func (m *MockClient) DeleteSubscriptionGroupForStream(ctx context.Context, deleteOptions DeleteRequest) errors.Error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "DeleteStreamSubscription", ctx, deleteOptions)
 	ret0, _ := ret[0].(errors.Error)
@@ -88,7 +88,7 @@ func (m *MockClient) DeleteStreamSubscription(ctx context.Context, deleteOptions
 // DeleteStreamSubscription indicates an expected call of DeleteStreamSubscription.
 func (mr *MockClientMockRecorder) DeleteStreamSubscription(ctx, deleteOptions interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStreamSubscription", reflect.TypeOf((*MockClient)(nil).DeleteStreamSubscription), ctx, deleteOptions)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "DeleteStreamSubscription", reflect.TypeOf((*MockClient)(nil).DeleteSubscriptionGroupForStream), ctx, deleteOptions)
 }
 
 // SubscribeToStreamSync mocks base method.
@@ -107,7 +107,7 @@ func (mr *MockClientMockRecorder) SubscribeToStreamSync(ctx, bufferSize, groupNa
 }
 
 // UpdateAllSubscription mocks base method.
-func (m *MockClient) UpdateAllSubscription(ctx context.Context, request UpdateAllRequest) errors.Error {
+func (m *MockClient) UpdateSubscriptionGroupForStreamAll(ctx context.Context, request UpdateAllRequest) errors.Error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateAllSubscription", ctx, request)
 	ret0, _ := ret[0].(errors.Error)
@@ -117,11 +117,11 @@ func (m *MockClient) UpdateAllSubscription(ctx context.Context, request UpdateAl
 // UpdateAllSubscription indicates an expected call of UpdateAllSubscription.
 func (mr *MockClientMockRecorder) UpdateAllSubscription(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAllSubscription", reflect.TypeOf((*MockClient)(nil).UpdateAllSubscription), ctx, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateAllSubscription", reflect.TypeOf((*MockClient)(nil).UpdateSubscriptionGroupForStreamAll), ctx, request)
 }
 
 // UpdateStreamSubscription mocks base method.
-func (m *MockClient) UpdateStreamSubscription(ctx context.Context, request CreateOrUpdateStreamRequest) errors.Error {
+func (m *MockClient) UpdateSubscriptionGroupForStream(ctx context.Context, request CreateOrUpdateStreamRequest) errors.Error {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "UpdateStreamSubscription", ctx, request)
 	ret0, _ := ret[0].(errors.Error)
@@ -131,5 +131,5 @@ func (m *MockClient) UpdateStreamSubscription(ctx context.Context, request Creat
 // UpdateStreamSubscription indicates an expected call of UpdateStreamSubscription.
 func (mr *MockClientMockRecorder) UpdateStreamSubscription(ctx, request interface{}) *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStreamSubscription", reflect.TypeOf((*MockClient)(nil).UpdateStreamSubscription), ctx, request)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "UpdateStreamSubscription", reflect.TypeOf((*MockClient)(nil).UpdateSubscriptionGroupForStream), ctx, request)
 }

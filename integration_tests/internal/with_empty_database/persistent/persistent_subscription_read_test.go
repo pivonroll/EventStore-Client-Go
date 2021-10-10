@@ -24,10 +24,10 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 
 		groupName := "GroupAckToReceiveNewEvents"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -67,10 +67,10 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 
 		groupName := "GroupNackToReceiveNewEvents"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -108,10 +108,10 @@ func Test_PersistentSubscription_ReadExistingStream(t *testing.T) {
 
 		groupName := "GroupNackToReceiveNewEvents_Cancelled"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -149,10 +149,10 @@ func Test_PersistentSubscription_OldConnectionsAreDroppedAfterUpdate(t *testing.
 
 	groupName := "GroupOldConnectionsAreDropped"
 	request := persistent.CreateOrUpdateStreamRequest{
-		StreamName: streamID,
-		GroupName:  groupName,
-		Revision:   persistent.StreamRevisionStart{},
-		Settings:   persistent.DefaultRequestSettings,
+		StreamId:  streamID,
+		GroupName: groupName,
+		Revision:  persistent.StreamRevisionStart{},
+		Settings:  persistent.DefaultRequestSettings,
 	}
 	err := client.CreateStreamSubscription(
 		context.Background(),
@@ -217,10 +217,10 @@ func Test_PersistentSubscription_AckToReceiveNewEventsStartFromSamePositionWithR
 
 	groupName := "GroupAckToReceiveNewEventsWithReconnectFromStart"
 	request := persistent.CreateOrUpdateStreamRequest{
-		StreamName: streamID,
-		GroupName:  groupName,
-		Revision:   persistent.StreamRevisionStart{},
-		Settings:   persistent.DefaultRequestSettings,
+		StreamId:  streamID,
+		GroupName: groupName,
+		Revision:  persistent.StreamRevisionStart{},
+		Settings:  persistent.DefaultRequestSettings,
 	}
 	err := client.CreateStreamSubscription(
 		context.Background(),
@@ -282,10 +282,10 @@ func Test_PersistentSubscription_AckToReceiveNewEventsWithReconnect_Bug_Receives
 
 	groupName := "GroupAckToReceiveNewEventsWithReconnect"
 	request := persistent.CreateOrUpdateStreamRequest{
-		StreamName: streamID,
-		GroupName:  groupName,
-		Revision:   persistent.StreamRevisionStart{},
-		Settings:   settings,
+		StreamId:  streamID,
+		GroupName: groupName,
+		Revision:  persistent.StreamRevisionStart{},
+		Settings:  settings,
 	}
 	err := client.CreateStreamSubscription(
 		context.Background(),
@@ -344,10 +344,10 @@ func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
 		streamID := "StartFromBeginning_AppendEventsAfterwards"
 		groupName := "Group StartFromBeginning_AppendEventsAfterwards"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -376,10 +376,10 @@ func Test_PersistentSubscription_ToNonExistingStream(t *testing.T) {
 		streamID := "StartFromTwo_AppendEventsAfterwards"
 		groupName := "Group StartFromTwo_AppendEventsAfterwards"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevision{Revision: 2},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevision{Revision: 2},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -419,10 +419,10 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// create persistent stream connection with Revision set to Start
 		groupName := "Group StartFromBeginning_AndEventsInIt"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionStart{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionStart{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -455,10 +455,10 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// create persistent stream connection with Revision set to End
 		groupName := "Group StartFromEnd_EventsInItAndAppendEventsAfterwards"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionEnd{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionEnd{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -497,10 +497,10 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// create persistent stream connection with position set to End
 		groupName := "Group StartFromEnd_EventsInIt"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevisionEnd{},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevisionEnd{},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -552,10 +552,10 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// create persistent stream connection with start position set to Position(10)
 		groupName := "Group StartFrom10_EventsInItAppendEventsAfterwards"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevision{Revision: 10},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevision{Revision: 10},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -596,10 +596,10 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// create persistent stream connection with start position set to Position(4)
 		groupName := "Group StartFrom4_EventsInIt"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevision{Revision: 4},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevision{Revision: 4},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),
@@ -641,10 +641,10 @@ func Test_PersistentSubscription_ToExistingStream(t *testing.T) {
 		// create persistent stream connection with start position set to Position(11)
 		groupName := "Group StartFromHigherRevisionThenEventsInStream_EventsInItAppendEventsAfterwards"
 		request := persistent.CreateOrUpdateStreamRequest{
-			StreamName: streamID,
-			GroupName:  groupName,
-			Revision:   persistent.StreamRevision{Revision: 11},
-			Settings:   persistent.DefaultRequestSettings,
+			StreamId:  streamID,
+			GroupName: groupName,
+			Revision:  persistent.StreamRevision{Revision: 11},
+			Settings:  persistent.DefaultRequestSettings,
 		}
 		err := client.CreateStreamSubscription(
 			context.Background(),

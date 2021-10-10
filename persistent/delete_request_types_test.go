@@ -10,8 +10,8 @@ import (
 
 func Test_deleteRequestStreamProto(t *testing.T) {
 	request := DeleteRequest{
-		StreamName: "stream name",
-		GroupName:  "group name",
+		StreamId:  "stream name",
+		GroupName: "group name",
 	}
 	result := request.Build()
 

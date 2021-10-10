@@ -6,8 +6,8 @@ import (
 )
 
 type CreateOrUpdateStreamRequest struct {
-	StreamName string
-	GroupName  string
+	StreamId  string
+	GroupName string
 	//	StreamRevision
 	//	StreamRevisionStart
 	//	StreamRevisionEnd
@@ -17,7 +17,7 @@ type CreateOrUpdateStreamRequest struct {
 
 func (request CreateOrUpdateStreamRequest) BuildCreateStreamRequest() *persistent.CreateReq {
 	streamOption := &persistent.CreateReq_StreamOptions{
-		StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamName)},
+		StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamId)},
 		RevisionOption:   nil,
 	}
 
@@ -28,7 +28,7 @@ func (request CreateOrUpdateStreamRequest) BuildCreateStreamRequest() *persisten
 			StreamOption: &persistent.CreateReq_Options_Stream{
 				Stream: streamOption,
 			},
-			StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamName)},
+			StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamId)},
 			GroupName:        request.GroupName,
 			Settings:         request.Settings.buildCreateRequestSettings(),
 		},
@@ -39,7 +39,7 @@ func (request CreateOrUpdateStreamRequest) BuildCreateStreamRequest() *persisten
 
 func (request CreateOrUpdateStreamRequest) BuildUpdateStreamRequest() *persistent.UpdateReq {
 	streamOption := &persistent.UpdateReq_StreamOptions{
-		StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamName)},
+		StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamId)},
 		RevisionOption:   nil,
 	}
 
@@ -50,7 +50,7 @@ func (request CreateOrUpdateStreamRequest) BuildUpdateStreamRequest() *persisten
 			StreamOption: &persistent.UpdateReq_Options_Stream{
 				Stream: streamOption,
 			},
-			StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamName)},
+			StreamIdentifier: &shared.StreamIdentifier{StreamName: []byte(request.StreamId)},
 			GroupName:        request.GroupName,
 			Settings:         request.Settings.buildUpdateRequestSettings(),
 		},

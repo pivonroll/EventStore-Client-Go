@@ -6,8 +6,8 @@ import (
 )
 
 type DeleteRequest struct {
-	StreamName string
-	GroupName  string
+	StreamId  string
+	GroupName string
 }
 
 func (options DeleteRequest) Build() *persistent.DeleteReq {
@@ -16,7 +16,7 @@ func (options DeleteRequest) Build() *persistent.DeleteReq {
 			GroupName: options.GroupName,
 			StreamOption: &persistent.DeleteReq_Options_StreamIdentifier{
 				StreamIdentifier: &shared.StreamIdentifier{
-					StreamName: []byte(options.StreamName),
+					StreamName: []byte(options.StreamId),
 				},
 			},
 		},

@@ -5,19 +5,20 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 )
 
+// CreateAllRequest is a struct with all data necessary to create a persistent subscription group.
 type CreateAllRequest struct {
-	GroupName string
+	GroupName string // name of the persistent subscription group
 	// AllPosition
 	// AllPositionStart
 	// AllPositionEnd
-	Position isAllPosition
+	Position isAllPosition // position from which we want to start to receive events from a stream $all
 	// CreateRequestAllNoFilter
 	// CreateRequestAllFilter
-	Filter   IsCreateRequestAllFilter
-	Settings CreateOrUpdateRequestSettings
+	Filter   isCreateRequestAllFilter      // filter for messages from stream $all
+	Settings CreateOrUpdateRequestSettings // setting for a persistent subscription group
 }
 
-func (request CreateAllRequest) Build() *persistent.CreateReq {
+func (request CreateAllRequest) build() *persistent.CreateReq {
 	streamOption := &persistent.CreateReq_Options_All{
 		All: &persistent.CreateReq_AllOptions{},
 	}
@@ -37,7 +38,7 @@ func (request CreateAllRequest) Build() *persistent.CreateReq {
 	return result
 }
 
-type IsCreateRequestAllFilter interface {
+type isCreateRequestAllFilter interface {
 	isCreateRequestAllFilter()
 	build(*persistent.CreateReq_AllOptions)
 }

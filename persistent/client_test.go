@@ -352,10 +352,10 @@ func Test_Client_CreateStreamSubscription_Success(t *testing.T) {
 	ctx := context.Background()
 
 	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  StreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -381,7 +381,7 @@ func Test_Client_CreateStreamSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateStreamSubscription(ctx, config)
+	err := client.CreateSubscriptionGroupForStream(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -393,10 +393,10 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 	ctx := context.Background()
 
 	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  StreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -439,8 +439,8 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 				return nil, clientError
 			}),
 		grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, clientError,
-			CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr).Return(
-			errors.NewErrorCode(CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr)),
+			CreateStreamSubscription_FailedToCreateErr).Return(
+			errors.NewErrorCode(CreateStreamSubscription_FailedToCreateErr)),
 	)
 
 	client := clientImpl{
@@ -448,8 +448,8 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateStreamSubscription(ctx, config)
-	require.Equal(t, CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr, err.Code())
+	err := client.CreateSubscriptionGroupForStream(ctx, config)
+	require.Equal(t, CreateStreamSubscription_FailedToCreateErr, err.Code())
 }
 
 func Test_Client_CreateAllSubscription_Success(t *testing.T) {
@@ -478,7 +478,7 @@ func Test_Client_CreateAllSubscription_Success(t *testing.T) {
 	handle := connection.NewMockConnectionHandle(ctrl)
 	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	var headers, trailers metadata.MD
@@ -497,7 +497,7 @@ func Test_Client_CreateAllSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateAllSubscription(ctx, config)
+	err := client.CreateSubscriptionGroupForStreamAll(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -527,7 +527,7 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 	handle := connection.NewMockConnectionHandle(ctrl)
 	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	errorResult := errors.NewErrorCode("some error")
@@ -562,8 +562,8 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 				return nil, errorResult
 			}),
 		grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-			CreateAllSubscription_FailedToCreatePermanentSubscriptionErr).Return(
-			errors.NewErrorCode(CreateAllSubscription_FailedToCreatePermanentSubscriptionErr)),
+			CreateAllSubscription_FailedToCreateErr).Return(
+			errors.NewErrorCode(CreateAllSubscription_FailedToCreateErr)),
 	)
 
 	client := clientImpl{
@@ -571,8 +571,8 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateAllSubscription(ctx, config)
-	require.Equal(t, CreateAllSubscription_FailedToCreatePermanentSubscriptionErr, err.Code())
+	err := client.CreateSubscriptionGroupForStreamAll(ctx, config)
+	require.Equal(t, CreateAllSubscription_FailedToCreateErr, err.Code())
 }
 
 func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
@@ -583,10 +583,10 @@ func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
 	ctx := context.Background()
 
 	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  StreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -612,7 +612,7 @@ func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateStreamSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStream(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -624,10 +624,10 @@ func Test_Client_UpdateStreamSubscription_Failure(t *testing.T) {
 	ctx := context.Background()
 
 	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  StreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -679,7 +679,7 @@ func Test_Client_UpdateStreamSubscription_Failure(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateStreamSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStream(ctx, config)
 	require.Equal(t, UpdateStreamSubscription_FailedToUpdateErr, err.Code())
 }
 
@@ -719,7 +719,7 @@ func Test_Client_UpdateAllSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateAllSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStreamAll(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -785,7 +785,7 @@ func Test_Client_UpdateAllSubscription_Failure(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateAllSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStreamAll(ctx, config)
 	require.Equal(t, UpdateAllSubscription_FailedToUpdateErr, err.Code())
 }
 
@@ -797,8 +797,8 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 	ctx := context.Background()
 
 	config := DeleteRequest{
-		StreamName: "some stream name",
-		GroupName:  "some group name",
+		StreamId:  "some stream name",
+		GroupName: "some group name",
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -824,7 +824,7 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteStreamSubscription(ctx, config)
+	err := client.DeleteSubscriptionGroupForStream(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -836,8 +836,8 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 	ctx := context.Background()
 
 	config := DeleteRequest{
-		StreamName: "some stream name",
-		GroupName:  "some group name",
+		StreamId:  "some stream name",
+		GroupName: "some group name",
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -889,7 +889,7 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteStreamSubscription(ctx, config)
+	err := client.DeleteSubscriptionGroupForStream(ctx, config)
 	require.Equal(t, DeleteStreamSubscription_FailedToDeleteErr, err.Code())
 }
 
@@ -923,7 +923,7 @@ func Test_Client_DeleteAllSubscription_Success(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteAllSubscription(ctx, "some group")
+	err := client.DeleteSubscriptionGroupForStreamAll(ctx, "some group")
 	require.NoError(t, err)
 }
 
@@ -985,6 +985,6 @@ func Test_Client_DeleteAllSubscription_Failure(t *testing.T) {
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteAllSubscription(ctx, groupName)
+	err := client.DeleteSubscriptionGroupForStreamAll(ctx, groupName)
 	require.Equal(t, DeleteAllSubscription_FailedToDeleteErr, err.Code())
 }

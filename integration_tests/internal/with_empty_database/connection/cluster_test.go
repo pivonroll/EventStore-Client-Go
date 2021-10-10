@@ -21,8 +21,8 @@ func Test_NotLeaderExceptionButWorkAfterRetry(t *testing.T) {
 	persistentSubscriptionClient := persistent.ClientFactoryImpl{}.Create(grpcClient)
 
 	persistentCreateConfig := persistent.CreateOrUpdateStreamRequest{
-		StreamName: "myfoobar_123456",
-		GroupName:  "a_group",
+		StreamId:  "myfoobar_123456",
+		GroupName: "a_group",
 		Revision: persistent.StreamRevision{
 			Revision: 0,
 		},
