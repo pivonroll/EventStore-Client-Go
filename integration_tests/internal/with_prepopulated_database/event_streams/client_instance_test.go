@@ -7,17 +7,17 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/test_utils"
 )
 
-func initializeWithPrePopulatedDatabase(t *testing.T) (event_streams.Client, test_utils.CloseFunc) {
+func initializeWithPrePopulatedDatabase(t *testing.T) (*event_streams.Client, test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClientWithPrePopulatedDatabase(t)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 	return client, closeFunc
 }
 
 func initializeContainerAndClientWithCredentials(t *testing.T,
 	username string,
-	password string, envVariableOverrides map[string]string) (event_streams.Client, test_utils.CloseFunc) {
+	password string, envVariableOverrides map[string]string) (*event_streams.Client, test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClientWithCredentials(t, username, password, envVariableOverrides)
 
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 	return client, closeFunc
 }

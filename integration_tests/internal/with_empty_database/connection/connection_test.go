@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 
 	"github.com/google/uuid"
@@ -33,14 +34,14 @@ func Test_CloseConnection(t *testing.T) {
 	defer cancel()
 	_, err := eventStreamClient.AppendToStream(ctx,
 		streamID.String(),
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		proposedEvents)
 	require.NoError(t, err)
 
 	grpcClient.Close()
 	_, err = eventStreamClient.AppendToStream(ctx,
 		streamID.String(),
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		proposedEvents)
 
 	assert.Equal(t, connection.EsdbConnectionIsClosed, err.Code())

@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
@@ -32,7 +33,7 @@ func TestSubscribeToAll_WithFilterDeliversCorrectEvents(t *testing.T) {
 
 	reader, err := client.SubscribeToFilteredStreamAll(
 		context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false,
 		event_streams.Filter{
 			FilterBy: event_streams.FilterByEventType{

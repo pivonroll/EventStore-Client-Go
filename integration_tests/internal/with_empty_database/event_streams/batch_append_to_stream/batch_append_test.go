@@ -7,6 +7,7 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
@@ -21,7 +22,7 @@ func Test_BatchAppendZeroEvents_ToNonExistingStream(t *testing.T) {
 		for ; iterations > 0; iterations-- {
 			_, err := client.BatchAppendToStream(context.Background(),
 				streamName,
-				event_streams.WriteStreamRevisionNoStream{},
+				stream_revision.WriteStreamRevisionNoStream{},
 				[]event_streams.ProposedEvent{},
 				5,
 				time.Now().Add(time.Second*10),
@@ -31,7 +32,7 @@ func Test_BatchAppendZeroEvents_ToNonExistingStream(t *testing.T) {
 		_, err := client.ReadStreamEvents(context.Background(),
 			streamName,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			2,
 			false)
 		require.Equal(t, err.Code(), errors.StreamNotFoundErr)
@@ -44,7 +45,7 @@ func Test_BatchAppendZeroEvents_ToNonExistingStream(t *testing.T) {
 		for ; iterations > 0; iterations-- {
 			writeResult, err := client.BatchAppendToStream(context.Background(),
 				streamName,
-				event_streams.WriteStreamRevisionAny{},
+				stream_revision.WriteStreamRevisionAny{},
 				[]event_streams.ProposedEvent{},
 				1,
 				time.Now().Add(time.Second*10),
@@ -56,7 +57,7 @@ func Test_BatchAppendZeroEvents_ToNonExistingStream(t *testing.T) {
 		_, err := client.ReadStreamEvents(context.Background(),
 			streamName,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			2,
 			false)
 		require.Equal(t, err.Code(), errors.StreamNotFoundErr)
@@ -74,7 +75,7 @@ func Test_BatchAppendToNonExistingStream_WithExpectedRevision(t *testing.T) {
 
 		writeResult, err := client.BatchAppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionAny{},
+			stream_revision.WriteStreamRevisionAny{},
 			[]event_streams.ProposedEvent{testEvent},
 			1,
 			time.Now().Add(time.Second*10))
@@ -85,7 +86,7 @@ func Test_BatchAppendToNonExistingStream_WithExpectedRevision(t *testing.T) {
 		events, err := client.ReadStreamEvents(context.Background(),
 			streamName,
 			event_streams.ReadDirectionForward,
-			event_streams.ReadStreamRevisionStart{},
+			stream_revision.ReadStreamRevisionStart{},
 			2,
 			false)
 		require.NoError(t, err)
@@ -99,7 +100,7 @@ func Test_BatchAppendToNonExistingStream_WithExpectedRevision(t *testing.T) {
 
 		writeResult, err := client.BatchAppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionAny{},
+			stream_revision.WriteStreamRevisionAny{},
 			testEvents,
 			50,
 			time.Now().Add(time.Second*10),
@@ -121,7 +122,7 @@ func Test_BatchAppendToExistingStream_WithExpectedRevision(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testEvents)
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
@@ -130,7 +131,7 @@ func Test_BatchAppendToExistingStream_WithExpectedRevision(t *testing.T) {
 
 		batchWriteResult, err := client.BatchAppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevision{Revision: 1},
+			stream_revision.WriteStreamRevision{Revision: 1},
 			batchTestEvents,
 			50,
 			time.Now().Add(time.Second*10),
@@ -148,7 +149,7 @@ func Test_BatchAppendToExistingStream_WithExpectedRevision(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			testEvents)
 		require.NoError(t, err)
 		require.EqualValues(t, 1, writeResult.GetCurrentRevision())
@@ -157,7 +158,7 @@ func Test_BatchAppendToExistingStream_WithExpectedRevision(t *testing.T) {
 
 		_, err = client.BatchAppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevision{Revision: 2},
+			stream_revision.WriteStreamRevision{Revision: 2},
 			batchTestEvents,
 			50,
 			time.Now().Add(time.Second*10))
@@ -177,7 +178,7 @@ func Test_BatchAppend_WithIncorrectCredentials(t *testing.T) {
 
 	_, err := client.BatchAppendToStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		testEvents,
 		50,
 		time.Now().Add(time.Second*10))

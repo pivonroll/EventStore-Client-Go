@@ -3,6 +3,7 @@ package event_streams
 import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 type tombstoneRequest struct {
@@ -12,7 +13,7 @@ type tombstoneRequest struct {
 	// WriteStreamRevisionNoStream
 	// WriteStreamRevisionAny
 	// WriteStreamRevisionStreamExists
-	expectedStreamRevision IsWriteStreamRevision
+	expectedStreamRevision stream_revision.IsWriteStreamRevision
 }
 
 func (this tombstoneRequest) build() *streams2.TombstoneReq {
@@ -26,20 +27,20 @@ func (this tombstoneRequest) build() *streams2.TombstoneReq {
 	}
 
 	switch this.expectedStreamRevision.(type) {
-	case WriteStreamRevision:
-		revision := this.expectedStreamRevision.(WriteStreamRevision)
+	case stream_revision.WriteStreamRevision:
+		revision := this.expectedStreamRevision.(stream_revision.WriteStreamRevision)
 		result.Options.ExpectedStreamRevision = &streams2.TombstoneReq_Options_Revision{
 			Revision: revision.Revision,
 		}
-	case WriteStreamRevisionNoStream:
+	case stream_revision.WriteStreamRevisionNoStream:
 		result.Options.ExpectedStreamRevision = &streams2.TombstoneReq_Options_NoStream{
 			NoStream: &shared.Empty{},
 		}
-	case WriteStreamRevisionAny:
+	case stream_revision.WriteStreamRevisionAny:
 		result.Options.ExpectedStreamRevision = &streams2.TombstoneReq_Options_Any{
 			Any: &shared.Empty{},
 		}
-	case WriteStreamRevisionStreamExists:
+	case stream_revision.WriteStreamRevisionStreamExists:
 		result.Options.ExpectedStreamRevision = &streams2.TombstoneReq_Options_StreamExists{
 			StreamExists: &shared.Empty{},
 		}

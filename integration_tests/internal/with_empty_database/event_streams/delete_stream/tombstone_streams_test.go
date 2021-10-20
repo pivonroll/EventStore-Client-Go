@@ -6,6 +6,7 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/stretchr/testify/require"
 )
 
@@ -20,7 +21,7 @@ func Test_TombstoneStream_WithTimeout(t *testing.T) {
 		timeoutCtx, cancelFunc := context.WithTimeout(ctx, 0)
 		_, err := client.TombstoneStream(timeoutCtx,
 			streamName,
-			event_streams.WriteStreamRevisionAny{})
+			stream_revision.WriteStreamRevisionAny{})
 		require.Equal(t, errors.DeadlineExceededErr, err.Code())
 
 		defer cancelFunc()
@@ -33,7 +34,7 @@ func Test_TombstoneStream_WithTimeout(t *testing.T) {
 		timeoutCtx, cancelFunc := context.WithTimeout(ctx, 0)
 		_, err := client.TombstoneStream(timeoutCtx,
 			streamName,
-			event_streams.WriteStreamRevision{
+			stream_revision.WriteStreamRevision{
 				Revision: 0,
 			})
 		require.Equal(t, errors.DeadlineExceededErr, err.Code())
@@ -51,7 +52,7 @@ func Test_TombstoneStream(t *testing.T) {
 
 		_, err := client.TombstoneStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{})
+			stream_revision.WriteStreamRevisionNoStream{})
 		require.NoError(t, err)
 	})
 
@@ -60,7 +61,7 @@ func Test_TombstoneStream(t *testing.T) {
 
 		_, err := client.TombstoneStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionAny{})
+			stream_revision.WriteStreamRevisionAny{})
 		require.NoError(t, err)
 	})
 
@@ -69,7 +70,7 @@ func Test_TombstoneStream(t *testing.T) {
 
 		_, err := client.TombstoneStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevision{Revision: 0})
+			stream_revision.WriteStreamRevision{Revision: 0})
 		require.Equal(t, errors.WrongExpectedStreamRevisionErr, err.Code())
 	})
 
@@ -78,12 +79,12 @@ func Test_TombstoneStream(t *testing.T) {
 
 		_, err := client.TombstoneStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{})
+			stream_revision.WriteStreamRevisionNoStream{})
 		require.NoError(t, err)
 
 		_, err = client.TombstoneStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{})
+			stream_revision.WriteStreamRevisionNoStream{})
 		require.Equal(t, errors.StreamDeletedErr, err.Code())
 	})
 
@@ -94,13 +95,13 @@ func Test_TombstoneStream(t *testing.T) {
 
 		writeResult, err := client.AppendToStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			[]event_streams.ProposedEvent{event})
 		require.NoError(t, err)
 
 		tombstoneResult, err := client.TombstoneStream(context.Background(),
 			streamName,
-			event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+			stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 		require.NoError(t, err)
 
 		tombstonePosition, isTombstonePosition := tombstoneResult.GetPosition()
@@ -121,6 +122,6 @@ func Test_TombstoneStream_WithIncorrectCredentials(t *testing.T) {
 
 	_, err := client.TombstoneStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }

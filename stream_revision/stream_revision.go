@@ -1,4 +1,4 @@
-package event_streams
+package stream_revision
 
 // IsWriteStreamRevision interface is used to specify stream's expected revision
 // when we want to alter a state of the stream.

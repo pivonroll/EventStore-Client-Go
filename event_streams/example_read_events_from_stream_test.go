@@ -10,10 +10,11 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of reading events from the start of a stream.
-func ExampleClientImpl_ReadStreamEvents_readEventsFromStart() {
+func ExampleClient_ReadStreamEvents_readEventsFromStart() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -23,7 +24,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsFromStart() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -39,7 +40,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsFromStart() {
 	// create a stream with one event
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		eventsToWrite)
 	if err != nil {
 		log.Fatalln(err)
@@ -49,7 +50,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsFromStart() {
 	readEvents, err := client.ReadStreamEvents(context.Background(),
 		streamId,
 		event_streams.ReadDirectionForward,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		10, // set to be bigger than current number of events in a stream
 		false)
 	if err != nil {
@@ -63,7 +64,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsFromStart() {
 }
 
 // Example of reading events backwards from the end of a stream.
-func ExampleClientImpl_ReadStreamEvents_readEventsBackwardsFromEnd() {
+func ExampleClient_ReadStreamEvents_readEventsBackwardsFromEnd() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -73,7 +74,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsBackwardsFromEnd() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -92,7 +93,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsBackwardsFromEnd() {
 	// create a stream with 10 events
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		eventsToWrite)
 	if err != nil {
 		log.Fatalln(err)
@@ -102,7 +103,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsBackwardsFromEnd() {
 	readEvents, err := client.ReadStreamEvents(context.Background(),
 		streamId,
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadStreamRevisionEnd{},
+		stream_revision.ReadStreamRevisionEnd{},
 		10, // set to be bigger than current number of events in a stream
 		false)
 	if err != nil {
@@ -117,7 +118,7 @@ func ExampleClientImpl_ReadStreamEvents_readEventsBackwardsFromEnd() {
 }
 
 // Example of trying to read events from a stream which does not exist.
-func ExampleClientImpl_ReadStreamEvents_streamDoesNotExist() {
+func ExampleClient_ReadStreamEvents_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -127,14 +128,14 @@ func ExampleClientImpl_ReadStreamEvents_streamDoesNotExist() {
 		log.Fatalln(stdErr)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
 	_, err := client.ReadStreamEvents(context.Background(),
 		streamId,
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadStreamRevisionEnd{},
+		stream_revision.ReadStreamRevisionEnd{},
 		1,
 		false)
 
@@ -144,7 +145,7 @@ func ExampleClientImpl_ReadStreamEvents_streamDoesNotExist() {
 }
 
 // Example of trying to read events from a stream which is soft-deleted.
-func ExampleClientImpl_ReadStreamEvents_streamIsSoftDeleted() {
+func ExampleClient_ReadStreamEvents_streamIsSoftDeleted() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -154,7 +155,7 @@ func ExampleClientImpl_ReadStreamEvents_streamIsSoftDeleted() {
 		log.Fatalln(stdErr)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -169,7 +170,7 @@ func ExampleClientImpl_ReadStreamEvents_streamIsSoftDeleted() {
 	// create a stream with one event
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -178,7 +179,7 @@ func ExampleClientImpl_ReadStreamEvents_streamIsSoftDeleted() {
 	// soft-delete a stream
 	_, err = client.DeleteStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+		stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -187,7 +188,7 @@ func ExampleClientImpl_ReadStreamEvents_streamIsSoftDeleted() {
 	_, err = client.ReadStreamEvents(context.Background(),
 		streamId,
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadStreamRevisionEnd{},
+		stream_revision.ReadStreamRevisionEnd{},
 		event_streams.ReadCountMax,
 		false)
 

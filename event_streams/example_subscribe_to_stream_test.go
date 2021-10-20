@@ -12,12 +12,13 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example show how to subscribe to a stream which does not exist and wait for an event from it.
 // We can subscribe to a non-existing stream.
 // ReadOne method of StreamReader will block until stream with content is created.
-func ExampleClientImpl_SubscribeToStream_streamDoesNotExist() {
+func ExampleClient_SubscribeToStream_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -27,7 +28,7 @@ func ExampleClientImpl_SubscribeToStream_streamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -39,7 +40,7 @@ func ExampleClientImpl_SubscribeToStream_streamDoesNotExist() {
 	// as soon as stream is created we will start to receive content from it.
 	streamReader, err := client.SubscribeToStream(context.Background(),
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -75,14 +76,14 @@ func ExampleClientImpl_SubscribeToStream_streamDoesNotExist() {
 	// create a stream with one event written to it
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		event_streams.ProposedEventList{proposedEvent})
 
 	wg.Wait()
 }
 
 // Example shows how to subscribe to an existing stream from start.
-func ExampleClientImpl_SubscribeToStream_streamExists() {
+func ExampleClient_SubscribeToStream_streamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -92,7 +93,7 @@ func ExampleClientImpl_SubscribeToStream_streamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -105,7 +106,7 @@ func ExampleClientImpl_SubscribeToStream_streamExists() {
 	}
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		event_streams.ProposedEventList{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -114,7 +115,7 @@ func ExampleClientImpl_SubscribeToStream_streamExists() {
 	// subscribe to a stream fro start
 	streamReader, err := client.SubscribeToStream(context.Background(),
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -145,7 +146,7 @@ func ExampleClientImpl_SubscribeToStream_streamExists() {
 }
 
 // Example demonstrates that subscription will receive StreamDeleted error once stream has been deleted.
-func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
+func ExampleClient_SubscribeToStream_catchesDeletion() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -155,7 +156,7 @@ func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -167,7 +168,7 @@ func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
 	// create a subscription to a stream, from start of the stream
 	streamReader, err := client.SubscribeToStream(ctx,
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -184,7 +185,7 @@ func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
 
 	_, err = client.TombstoneStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	if err != nil {
 		log.Fatalln(err)
 	}
@@ -195,7 +196,7 @@ func ExampleClientImpl_SubscribeToStream_catchesDeletion() {
 
 // Example shows that subscription from start of the stream will receive all old events written to it,
 // as well as new events written to a stream after a subscription was created.
-func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
+func ExampleClient_SubscribeToStream_readOldAndNewContentFromStream() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -205,7 +206,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 		log.Fatalln(stdErr)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
@@ -240,7 +241,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 	// create a stream with 3 events in it
 	_, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		beforeEvents)
 	if err != nil {
 		log.Fatalln(err)
@@ -249,7 +250,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 	// create a stream subscription from start of the stream
 	streamReader, err := client.SubscribeToStream(ctx,
 		streamId,
-		event_streams.ReadStreamRevisionStart{},
+		stream_revision.ReadStreamRevisionStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -288,7 +289,7 @@ func ExampleClientImpl_SubscribeToStream_readOldAndNewContentFromStream() {
 
 	_, err = client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionAny{},
+		stream_revision.WriteStreamRevisionAny{},
 		afterEvents)
 
 	cancelWait.Wait() // wait until subscription receives all events

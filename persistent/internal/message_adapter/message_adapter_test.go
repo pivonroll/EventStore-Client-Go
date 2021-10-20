@@ -1,4 +1,4 @@
-package persistent
+package message_adapter
 
 import (
 	"strconv"
@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
 	"github.com/pivonroll/EventStore-Client-Go/position"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
@@ -49,11 +50,11 @@ func Test_MessageAdapter(t *testing.T) {
 		},
 	}
 
-	expectedMessage := &RecordedEvent{
-		EventID:     id,
+	expectedMessage := &persistent_event.RecordedEvent{
+		EventId:     id,
 		EventType:   "some event type",
 		ContentType: "some content type",
-		StreamID:    "stream identifier",
+		StreamId:    "stream identifier",
 		EventNumber: 5,
 		Position: position.Position{
 			Commit:  20,
@@ -70,8 +71,8 @@ func Test_MessageAdapter(t *testing.T) {
 		UserMetadata: []byte("some custom meta data"),
 	}
 
-	messageAdapterInstance := messageAdapterImpl{}
-	message := messageAdapterInstance.fromProtoResponse(protoResponse.GetEvent())
+	messageAdapterInstance := MessageAdapterImpl{}
+	message := messageAdapterInstance.FromProtoResponse(protoResponse.GetEvent())
 
 	// compare string representations of time
 	require.Equal(t, expectedMessage.CreatedDate.String(), message.GetOriginalEvent().CreatedDate.String())

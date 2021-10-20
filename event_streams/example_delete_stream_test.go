@@ -8,10 +8,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of sot-deleting a stream which exists.
-func ExampleClientImpl_DeleteStream_streamExists() {
+func ExampleClient_DeleteStream_streamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -21,7 +22,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -35,7 +36,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 	// create a stream with one event
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -44,7 +45,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 	// soft-delete a stream
 	deleteResult, err := client.DeleteStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+		stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 
 	deletePosition, isPosition := deleteResult.GetPosition()
 
@@ -61,7 +62,7 @@ func ExampleClientImpl_DeleteStream_streamExists() {
 }
 
 // Example of soft-deleting a stream which does not exist.
-func ExampleClientImpl_DeleteStream_streamDoesNotExist() {
+func ExampleClient_DeleteStream_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -71,14 +72,14 @@ func ExampleClientImpl_DeleteStream_streamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamId := "some_stream"
 
 	// delete a non-existing stream
 	deleteResult, err := client.DeleteStream(context.Background(),
 		streamId,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	deletePosition, isPosition := deleteResult.GetPosition()
 
 	// result of a soft-delete must be a position

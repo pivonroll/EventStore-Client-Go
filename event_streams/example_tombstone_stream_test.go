@@ -8,10 +8,11 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of putting a tombstone on an existing stream.
-func ExampleClientImpl_TombstoneStream_streamExists() {
+func ExampleClient_TombstoneStream_streamExists() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -21,7 +22,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamName := "some_stream"
 	proposedEvent := event_streams.ProposedEvent{
@@ -35,7 +36,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 	// create a stream with one event
 	writeResult, err := client.AppendToStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		[]event_streams.ProposedEvent{proposedEvent})
 	if err != nil {
 		log.Fatalln(err)
@@ -44,7 +45,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 	// put tombstone on a stream
 	tombstoneResult, err := client.TombstoneStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
+		stream_revision.WriteStreamRevision{Revision: writeResult.GetCurrentRevision()})
 
 	tombstonePosition, isPosition := tombstoneResult.GetPosition()
 
@@ -62,7 +63,7 @@ func ExampleClientImpl_TombstoneStream_streamExists() {
 }
 
 // Example of trying to put a tombstone on a stream which does not exist.
-func ExampleClientImpl_TombstoneStream_streamDoesNotExist() {
+func ExampleClient_TombstoneStream_streamDoesNotExist() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -72,14 +73,14 @@ func ExampleClientImpl_TombstoneStream_streamDoesNotExist() {
 		log.Fatalln(err)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	streamName := "some_stream"
 
 	// tombstone a non-existing stream
 	tombstoneResult, err := client.TombstoneStream(context.Background(),
 		streamName,
-		event_streams.WriteStreamRevisionNoStream{})
+		stream_revision.WriteStreamRevisionNoStream{})
 	tombstonePosition, isPosition := tombstoneResult.GetPosition()
 
 	// result of a hard-delete must be a position

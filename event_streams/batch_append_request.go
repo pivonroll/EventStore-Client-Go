@@ -6,6 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -43,25 +44,25 @@ func (this batchAppendRequest) build() *streams2.BatchAppendReq {
 
 func (this batchAppendRequest) buildExpectedStreamPosition(
 	protoResult *streams2.BatchAppendReq,
-	position IsWriteStreamRevision) {
+	position stream_revision.IsWriteStreamRevision) {
 
 	switch position.(type) {
-	case WriteStreamRevision:
-		streamPosition := position.(WriteStreamRevision)
+	case stream_revision.WriteStreamRevision:
+		streamPosition := position.(stream_revision.WriteStreamRevision)
 		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_StreamPosition{
 			StreamPosition: streamPosition.Revision,
 		}
-	case WriteStreamRevisionNoStream:
+	case stream_revision.WriteStreamRevisionNoStream:
 		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_NoStream{
 			NoStream: &emptypb.Empty{},
 		}
 
-	case WriteStreamRevisionAny:
+	case stream_revision.WriteStreamRevisionAny:
 		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_Any{
 			Any: &emptypb.Empty{},
 		}
 
-	case WriteStreamRevisionStreamExists:
+	case stream_revision.WriteStreamRevisionStreamExists:
 		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_StreamExists{
 			StreamExists: &emptypb.Empty{},
 		}
@@ -100,6 +101,6 @@ type batchAppendRequestOptions struct {
 	// WriteStreamRevisionNoStream
 	// WriteStreamRevisionAny
 	// WriteStreamRevisionStreamExists
-	expectedStreamRevision IsWriteStreamRevision
+	expectedStreamRevision stream_revision.IsWriteStreamRevision
 	deadline               time.Time
 }

@@ -5,6 +5,10 @@ import (
 	"testing"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/event_reader_mock"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
+	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/mocks"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -29,12 +33,12 @@ func Test_Client_CreateSyncConnection_Success(t *testing.T) {
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 	persistentReadClient := persistent.NewMockPersistentSubscriptions_ReadClient(ctrl)
-	eventReaderInstance := NewMockEventReader(ctrl)
-	eventReaderFactoryInstance := NewMockeventReaderFactory(ctrl)
-	messageAdapterProviderInstance := NewMockmessageAdapterProvider(ctrl)
+	eventReaderInstance := event_reader_mock.NewMockEventReader(ctrl)
+	eventReaderFactoryInstance := mocks.NewEventReaderFactory(ctrl)
+	messageAdapterProviderInstance := mocks.NewMockMessageAdapterProvider(ctrl)
 
 	subscriptionId := "subscription ID"
 	protoReadResponse := &persistent.ReadResp{
@@ -46,7 +50,7 @@ func Test_Client_CreateSyncConnection_Success(t *testing.T) {
 	}
 
 	grpcClientConn := &grpc.ClientConn{}
-	messageAdapterInstance := messageAdapterImpl{}
+	messageAdapterInstance := message_adapter.MessageAdapterImpl{}
 	var headers, trailers metadata.MD
 	cancelCtx, cancelFunc := context.WithCancel(ctx)
 	defer cancelFunc()
@@ -66,7 +70,7 @@ func Test_Client_CreateSyncConnection_Success(t *testing.T) {
 			Return(eventReaderInstance),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		syncReadConnectionFactory:     eventReaderFactoryInstance,
 		messageAdapterProvider:        messageAdapterProviderInstance,
@@ -93,7 +97,7 @@ func Test_Client_CreateSyncConnection_GetHandleConnectionError(t *testing.T) {
 	expectedError := errors.NewErrorCode("new error")
 	grpcClient.EXPECT().GetConnectionHandle().Return(nil, expectedError)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient: grpcClient,
 	}
 
@@ -113,7 +117,7 @@ func Test_Client_CreateSyncConnection_SubscriptionClientReadErr(t *testing.T) {
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 
 	grpcClientConn := &grpc.ClientConn{}
@@ -154,7 +158,7 @@ func Test_Client_CreateSyncConnection_SubscriptionClientReadErr(t *testing.T) {
 		grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, readError,
 			SubscribeToStreamSync_FailedToInitPersistentSubscriptionClientErr).Return(expectedError),
 	)
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
@@ -177,7 +181,7 @@ func Test_Client_CreateSyncConnection_SubscriptionClientSendStreamInitialization
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 	persistentReadClient := persistent.NewMockPersistentSubscriptions_ReadClient(ctrl)
 
@@ -220,7 +224,7 @@ func Test_Client_CreateSyncConnection_SubscriptionClientSendStreamInitialization
 			SubscribeToStreamSync_FailedToSendStreamInitializationErr).Return(expectedError),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
@@ -243,7 +247,7 @@ func Test_Client_CreateSyncConnection_SubscriptionClientReceiveStreamInitializat
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 	persistentReadClient := persistent.NewMockPersistentSubscriptions_ReadClient(ctrl)
 
@@ -288,7 +292,7 @@ func Test_Client_CreateSyncConnection_SubscriptionClientReceiveStreamInitializat
 			SubscribeToStreamSync_FailedToReceiveStreamInitializationErr).Return(expectdError),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
@@ -311,7 +315,7 @@ func Test_Client_CreateSyncConnection_NoSubscriptionConfirmationErr(t *testing.T
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 	persistentReadClient := persistent.NewMockPersistentSubscriptions_ReadClient(ctrl)
 
@@ -335,7 +339,7 @@ func Test_Client_CreateSyncConnection_NoSubscriptionConfirmationErr(t *testing.T
 		persistentReadClient.EXPECT().Recv().Return(protoReadResponse, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
@@ -351,18 +355,18 @@ func Test_Client_CreateStreamSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+	config := SubscriptionGroupForStreamRequest{
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.BuildCreateStreamRequest()
+	expectedProtoRequest := config.buildCreateRequest()
 
 	grpcClientConn := &grpc.ClientConn{}
 	var headers, trailers metadata.MD
@@ -376,12 +380,12 @@ func Test_Client_CreateStreamSubscription_Success(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).Return(nil, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateStreamSubscription(ctx, config)
+	err := client.CreateSubscriptionGroupForStream(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -392,18 +396,18 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+	config := SubscriptionGroupForStreamRequest{
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.BuildCreateStreamRequest()
+	expectedProtoRequest := config.buildCreateRequest()
 
 	grpcClientConn := &grpc.ClientConn{}
 	clientError := errors.NewErrorCode("some error")
@@ -439,17 +443,17 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 				return nil, clientError
 			}),
 		grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, clientError,
-			CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr).Return(
-			errors.NewErrorCode(CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr)),
+			CreateStreamSubscription_FailedToCreateErr).Return(
+			errors.NewErrorCode(CreateStreamSubscription_FailedToCreateErr)),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateStreamSubscription(ctx, config)
-	require.Equal(t, CreateStreamSubscription_FailedToCreatePermanentSubscriptionErr, err.Code())
+	err := client.CreateSubscriptionGroupForStream(ctx, config)
+	require.Equal(t, CreateStreamSubscription_FailedToCreateErr, err.Code())
 }
 
 func Test_Client_CreateAllSubscription_Success(t *testing.T) {
@@ -459,16 +463,19 @@ func Test_Client_CreateAllSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateAllRequest{
+	config := SubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position: AllPosition{
-			Commit:  10,
-			Prepare: 20,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
 		},
-		Filter: CreateRequestAllFilter{
-			FilterBy:                     CreateRequestAllFilterByEventType,
-			Matcher:                      CreateRequestAllFilterByRegex{Regex: "some regex"},
-			Window:                       CreateRequestAllFilterWindowMax{Max: 10},
+		Filter: Filter{
+			FilterBy: FilterByEventType{
+				Matcher: RegexFilterMatcher{
+					Regex: "some regex",
+				},
+			},
+			Window:                       FilterWindowMax{Max: 10},
 			CheckpointIntervalMultiplier: 20,
 		},
 		Settings: DefaultRequestSettings,
@@ -476,9 +483,9 @@ func Test_Client_CreateAllSubscription_Success(t *testing.T) {
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	var headers, trailers metadata.MD
@@ -492,12 +499,12 @@ func Test_Client_CreateAllSubscription_Success(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).Return(nil, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateAllSubscription(ctx, config)
+	err := client.CreateSubscriptionGroupForStreamAll(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -508,16 +515,19 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateAllRequest{
+	config := SubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position: AllPosition{
-			Commit:  10,
-			Prepare: 20,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
 		},
-		Filter: CreateRequestAllFilter{
-			FilterBy:                     CreateRequestAllFilterByEventType,
-			Matcher:                      CreateRequestAllFilterByRegex{Regex: "some regex"},
-			Window:                       CreateRequestAllFilterWindowMax{Max: 10},
+		Filter: Filter{
+			FilterBy: FilterByEventType{
+				Matcher: RegexFilterMatcher{
+					Regex: "some regex",
+				},
+			},
+			Window:                       FilterWindowMax{Max: 10},
 			CheckpointIntervalMultiplier: 20,
 		},
 		Settings: DefaultRequestSettings,
@@ -525,9 +535,9 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	errorResult := errors.NewErrorCode("some error")
@@ -562,17 +572,17 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 				return nil, errorResult
 			}),
 		grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-			CreateAllSubscription_FailedToCreatePermanentSubscriptionErr).Return(
-			errors.NewErrorCode(CreateAllSubscription_FailedToCreatePermanentSubscriptionErr)),
+			CreateAllSubscription_FailedToCreateErr).Return(
+			errors.NewErrorCode(CreateAllSubscription_FailedToCreateErr)),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.CreateAllSubscription(ctx, config)
-	require.Equal(t, CreateAllSubscription_FailedToCreatePermanentSubscriptionErr, err.Code())
+	err := client.CreateSubscriptionGroupForStreamAll(ctx, config)
+	require.Equal(t, CreateAllSubscription_FailedToCreateErr, err.Code())
 }
 
 func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
@@ -582,18 +592,18 @@ func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+	config := SubscriptionGroupForStreamRequest{
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.BuildUpdateStreamRequest()
+	expectedProtoRequest := config.buildUpdateRequest()
 
 	grpcClientConn := &grpc.ClientConn{}
 	var headers, trailers metadata.MD
@@ -607,12 +617,12 @@ func Test_Client_UpdateStreamSubscription_Success(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).Return(nil, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateStreamSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStream(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -623,18 +633,18 @@ func Test_Client_UpdateStreamSubscription_Failure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := CreateOrUpdateStreamRequest{
-		StreamName: "some name",
-		GroupName:  "some group",
-		Revision:   StreamRevision{Revision: 10},
-		Settings:   DefaultRequestSettings,
+	config := SubscriptionGroupForStreamRequest{
+		StreamId:  "some name",
+		GroupName: "some group",
+		Revision:  stream_revision.ReadStreamRevision{Revision: 10},
+		Settings:  DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.BuildUpdateStreamRequest()
+	expectedProtoRequest := config.buildUpdateRequest()
 
 	grpcClientConn := &grpc.ClientConn{}
 	errorResult := errors.NewErrorCode("some error")
@@ -674,12 +684,12 @@ func Test_Client_UpdateStreamSubscription_Failure(t *testing.T) {
 			errors.NewErrorCode(UpdateStreamSubscription_FailedToUpdateErr)),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateStreamSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStream(ctx, config)
 	require.Equal(t, UpdateStreamSubscription_FailedToUpdateErr, err.Code())
 }
 
@@ -690,17 +700,20 @@ func Test_Client_UpdateAllSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := UpdateAllRequest{
+	config := UpdateSubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position:  AllPosition{Commit: 10, Prepare: 20},
-		Settings:  DefaultRequestSettings,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
+		},
+		Settings: DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	var headers, trailers metadata.MD
@@ -714,12 +727,12 @@ func Test_Client_UpdateAllSubscription_Success(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).Return(nil, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateAllSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStreamAll(ctx, config)
 	require.NoError(t, err)
 }
 
@@ -730,17 +743,20 @@ func Test_Client_UpdateAllSubscription_Failure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := UpdateAllRequest{
+	config := UpdateSubscriptionGroupForStreamAllRequest{
 		GroupName: "some group",
-		Position:  AllPosition{Commit: 10, Prepare: 20},
-		Settings:  DefaultRequestSettings,
+		Position: stream_revision.ReadPositionAll{
+			CommitPosition:  10,
+			PreparePosition: 20,
+		},
+		Settings: DefaultRequestSettings,
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	expectedHeader := metadata.MD{
@@ -780,12 +796,12 @@ func Test_Client_UpdateAllSubscription_Failure(t *testing.T) {
 			errors.NewErrorCode(UpdateAllSubscription_FailedToUpdateErr)),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.UpdateAllSubscription(ctx, config)
+	err := client.UpdateSubscriptionGroupForStreamAll(ctx, config)
 	require.Equal(t, UpdateAllSubscription_FailedToUpdateErr, err.Code())
 }
 
@@ -796,15 +812,15 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := DeleteRequest{
-		StreamName: "some stream name",
-		GroupName:  "some group name",
+	config := deleteSubscriptionGroupForStreamRequest{
+		StreamId:  "some stream name",
+		GroupName: "some group name",
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
-	expectedProtoRequest := config.Build()
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
+	expectedProtoRequest := config.build()
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 
 	grpcClientConn := &grpc.ClientConn{}
@@ -819,12 +835,12 @@ func Test_Client_DeleteStreamSubscription_Success(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).Return(nil, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteStreamSubscription(ctx, config)
+	err := client.DeleteSubscriptionGroupForStream(ctx, "some stream name", "some group name")
 	require.NoError(t, err)
 }
 
@@ -835,16 +851,16 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 
 	ctx := context.Background()
 
-	config := DeleteRequest{
-		StreamName: "some stream name",
-		GroupName:  "some group name",
+	config := deleteSubscriptionGroupForStreamRequest{
+		StreamId:  "some stream name",
+		GroupName: "some group name",
 	}
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
-	expectedProtoRequest := config.Build()
+	expectedProtoRequest := config.build()
 
 	grpcClientConn := &grpc.ClientConn{}
 	expectedHeader := metadata.MD{
@@ -884,12 +900,12 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 			errors.NewErrorCode(DeleteStreamSubscription_FailedToDeleteErr)),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteStreamSubscription(ctx, config)
+	err := client.DeleteSubscriptionGroupForStream(ctx, "some stream name", "some group name")
 	require.Equal(t, DeleteStreamSubscription_FailedToDeleteErr, err.Code())
 }
 
@@ -902,7 +918,7 @@ func Test_Client_DeleteAllSubscription_Success(t *testing.T) {
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 	expectedProtoRequest := deleteRequestAllOptionsProto("some group")
 
@@ -918,12 +934,12 @@ func Test_Client_DeleteAllSubscription_Success(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).Return(nil, nil),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteAllSubscription(ctx, "some group")
+	err := client.DeleteSubscriptionGroupForStreamAll(ctx, "some group")
 	require.NoError(t, err)
 }
 
@@ -939,7 +955,7 @@ func Test_Client_DeleteAllSubscription_Failure(t *testing.T) {
 
 	grpcClient := connection.NewMockGrpcClient(ctrl)
 	handle := connection.NewMockConnectionHandle(ctrl)
-	grpcSubscriptionClientFactoryInstance := NewMockgrpcSubscriptionClientFactory(ctrl)
+	grpcSubscriptionClientFactoryInstance := mocks.NewGrpcClientFactory(ctrl)
 	persistentSubscriptionClient := persistent.NewMockPersistentSubscriptionsClient(ctrl)
 
 	grpcClientConn := &grpc.ClientConn{}
@@ -980,11 +996,11 @@ func Test_Client_DeleteAllSubscription_Failure(t *testing.T) {
 			errors.NewErrorCode(DeleteAllSubscription_FailedToDeleteErr)),
 	)
 
-	client := clientImpl{
+	client := Client{
 		grpcClient:                    grpcClient,
 		grpcSubscriptionClientFactory: grpcSubscriptionClientFactoryInstance,
 	}
 
-	err := client.DeleteAllSubscription(ctx, groupName)
+	err := client.DeleteSubscriptionGroupForStreamAll(ctx, groupName)
 	require.Equal(t, DeleteAllSubscription_FailedToDeleteErr, err.Code())
 }

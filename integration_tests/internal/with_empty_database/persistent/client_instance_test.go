@@ -9,20 +9,20 @@ import (
 )
 
 func initializeContainerAndClient(t *testing.T,
-	envVariableOverrides map[string]string) (persistent.Client,
-	event_streams.Client,
+	envVariableOverrides map[string]string) (*persistent.Client,
+	*event_streams.Client,
 	test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClient(t, envVariableOverrides)
 
-	client := persistent.ClientFactoryImpl{}.Create(grpcClient)
+	client := persistent.NewClient(grpcClient)
 
-	eventStreamsClient := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	eventStreamsClient := event_streams.NewClient(grpcClient)
 
 	return client, eventStreamsClient, closeFunc
 }
 
-func initializeWithPrePopulatedDatabase(t *testing.T) (persistent.Client, test_utils.CloseFunc) {
+func initializeWithPrePopulatedDatabase(t *testing.T) (*persistent.Client, test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClientWithPrePopulatedDatabase(t)
-	client := persistent.ClientFactoryImpl{}.Create(grpcClient)
+	client := persistent.NewClient(grpcClient)
 	return client, closeFunc
 }

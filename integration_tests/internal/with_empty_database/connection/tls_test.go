@@ -8,9 +8,9 @@ import (
 	"path/filepath"
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/client"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/test_utils"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -22,7 +22,7 @@ func TestTLSDefaults(t *testing.T) {
 
 	_, err := eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 	require.Error(t, err)
@@ -43,7 +43,7 @@ func TestTLSDefaultsWithCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s",
+	config, err := connection.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s",
 		container.Endpoint))
 	require.NoError(t, err)
 
@@ -56,7 +56,7 @@ func TestTLSDefaultsWithCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 	require.NoError(t, err)
@@ -66,7 +66,7 @@ func TestTLSWithoutCertificateAndVerify(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(
+	config, err := connection.ParseConnectionString(
 		fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=false", container.Endpoint))
 	require.NoError(t, err)
 
@@ -75,7 +75,7 @@ func TestTLSWithoutCertificateAndVerify(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 	require.NoError(t, err)
@@ -85,7 +85,7 @@ func TestTLSWithoutCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
+	config, err := connection.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
 	require.NoError(t, err)
 
 	grpcClient := connection.NewGrpcClient(*config)
@@ -93,7 +93,7 @@ func TestTLSWithoutCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		false)
 
@@ -105,7 +105,7 @@ func TestTLSWithCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
+	config, err := connection.ParseConnectionString(fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
 	require.NoError(t, err)
 
 	certificatePool := testGetCertificatePoolForFile(t, joinRootPathAndFilePath("certs/node/node.crt"))
@@ -117,7 +117,7 @@ func TestTLSWithCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.NoError(t, err)
@@ -131,7 +131,7 @@ func TestTLSWithCertificateFromAbsoluteFile(t *testing.T) {
 	require.NoError(t, err)
 
 	s := fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true&tlsCAFile=%s", container.Endpoint, absPath)
-	config, err := client.ParseConnectionString(s)
+	config, err := connection.ParseConnectionString(s)
 	require.NoError(t, err)
 
 	grpcClient := connection.NewGrpcClient(*config)
@@ -139,7 +139,7 @@ func TestTLSWithCertificateFromAbsoluteFile(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.NoError(t, err)
@@ -149,7 +149,7 @@ func TestTLSWithCertificateFromRelativeFile(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(
+	config, err := connection.ParseConnectionString(
 		fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true&tlsCAFile=%s",
 			container.Endpoint, joinRootPathAndFilePath("certs/node/node.crt")))
 	require.NoError(t, err)
@@ -159,7 +159,7 @@ func TestTLSWithCertificateFromRelativeFile(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.NoError(t, err)
@@ -169,7 +169,7 @@ func TestTLSWithInvalidCertificate(t *testing.T) {
 	container := test_utils.StartEventStoreInDockerContainer(nil)
 	defer container.Close()
 
-	config, err := client.ParseConnectionString(
+	config, err := connection.ParseConnectionString(
 		fmt.Sprintf("esdb://admin:changeit@%s?tls=true&tlsverifycert=true", container.Endpoint))
 	require.NoError(t, err)
 
@@ -181,7 +181,7 @@ func TestTLSWithInvalidCertificate(t *testing.T) {
 
 	_, err = eventStreamsClient.ReadEventsFromStreamAll(context.Background(),
 		event_streams.ReadDirectionBackward,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		1,
 		true)
 	require.Error(t, err)

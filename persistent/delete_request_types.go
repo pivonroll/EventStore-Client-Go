@@ -5,18 +5,18 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 )
 
-type DeleteRequest struct {
-	StreamName string
-	GroupName  string
+type deleteSubscriptionGroupForStreamRequest struct {
+	StreamId  string
+	GroupName string
 }
 
-func (options DeleteRequest) Build() *persistent.DeleteReq {
+func (options deleteSubscriptionGroupForStreamRequest) build() *persistent.DeleteReq {
 	return &persistent.DeleteReq{
 		Options: &persistent.DeleteReq_Options{
 			GroupName: options.GroupName,
 			StreamOption: &persistent.DeleteReq_Options_StreamIdentifier{
 				StreamIdentifier: &shared.StreamIdentifier{
-					StreamName: []byte(options.StreamName),
+					StreamName: []byte(options.StreamId),
 				},
 			},
 		},

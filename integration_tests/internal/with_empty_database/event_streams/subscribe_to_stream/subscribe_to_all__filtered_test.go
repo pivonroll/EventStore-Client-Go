@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 
@@ -26,7 +27,7 @@ func Test_SubscribeToAll_Filtered_ReturnsCancelled(t *testing.T) {
 
 		ctx, cancelFunc := context.WithCancel(context.Background())
 		streamReader, err := client.SubscribeToFilteredStreamAll(ctx,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			false,
 			event_streams.Filter{
 				FilterBy: event_streams.FilterByStreamId{
@@ -60,7 +61,7 @@ func Test_SubscribeToAll_Filtered_ReturnsCancelled(t *testing.T) {
 
 		ctx, cancelFunc := context.WithCancel(context.Background())
 		streamReader, err := client.SubscribeToFilteredStreamAll(ctx,
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			false,
 			event_streams.Filter{
 				FilterBy: event_streams.FilterByStreamId{
@@ -93,7 +94,7 @@ func Test_SubscribeToAll_Filtered_ReturnsCancelled(t *testing.T) {
 		wg.Add(1)
 
 		streamReader, err := client.SubscribeToFilteredStreamAll(context.Background(),
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			false,
 			event_streams.Filter{
 				FilterBy: event_streams.FilterByStreamId{
@@ -126,7 +127,7 @@ func Test_SubscribeToAll_Filtered_ReturnsCancelled(t *testing.T) {
 		wg.Add(1)
 
 		streamReader, err := client.SubscribeToFilteredStreamAll(context.Background(),
-			event_streams.ReadPositionAllEnd{},
+			stream_revision.ReadPositionAllEnd{},
 			false,
 			event_streams.Filter{
 				FilterBy: event_streams.FilterByStreamId{
@@ -175,26 +176,26 @@ func Test_SubscribeToAll_Filtered_ReadAllEventsWithPrefix(t *testing.T) {
 
 		_, err := client.AppendToStream(context.Background(),
 			otherStream,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			otherStreamEvents)
 		require.NoError(t, err)
 
 		_, err = client.AppendToStream(context.Background(),
 			prefixStream,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			prefixStreamEvents)
 		require.NoError(t, err)
 
 		_, err = client.AppendToStream(context.Background(),
 			prefixStream2,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			prefixStreamEvents2)
 		require.NoError(t, err)
 
 		appPrefixEvents := append(prefixStreamEvents, prefixStreamEvents2...)
 
 		streamReader, err := client.SubscribeToFilteredStreamAll(context.Background(),
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			false,
 			event_streams.Filter{
 				FilterBy: event_streams.FilterByStreamId{
@@ -243,18 +244,18 @@ func Test_SubscribeToAll_Filtered_ReadAllEventsWithPrefix(t *testing.T) {
 
 		_, err := client.AppendToStream(context.Background(),
 			otherStream,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			otherStreamEvents)
 		require.NoError(t, err)
 
 		_, err = client.AppendToStream(context.Background(),
 			prefixStream,
-			event_streams.WriteStreamRevisionNoStream{},
+			stream_revision.WriteStreamRevisionNoStream{},
 			prefixStreamEvents)
 		require.NoError(t, err)
 
 		streamReader, err := client.SubscribeToFilteredStreamAll(context.Background(),
-			event_streams.ReadPositionAllStart{},
+			stream_revision.ReadPositionAllStart{},
 			false,
 			event_streams.Filter{
 				FilterBy: event_streams.FilterByStreamId{
@@ -299,7 +300,7 @@ func Test_SubscribeToAll_Filtered_ReadAllEventsWithPrefix(t *testing.T) {
 			waitForReadingFirstEvents.Wait()
 			_, err = client.AppendToStream(context.Background(),
 				newPrefixStream,
-				event_streams.WriteStreamRevisionNoStream{},
+				stream_revision.WriteStreamRevisionNoStream{},
 				newPrefixStreamEvents)
 			require.NoError(t, err)
 		}()
@@ -335,7 +336,7 @@ func Test_SubscribeToAll_Filtered_WithIncorrectCredentials(t *testing.T) {
 	defer closeFunc()
 
 	_, err := client.SubscribeToFilteredStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false,
 		event_streams.Filter{
 			FilterBy: event_streams.FilterByStreamId{

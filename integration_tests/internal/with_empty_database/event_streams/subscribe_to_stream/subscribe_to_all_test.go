@@ -7,6 +7,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
@@ -25,7 +26,7 @@ func Test_SubscribeToAll_FromStart_ReturnsSubscriptionDroppedWhenCancelled(t *te
 
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	streamReader, err := client.SubscribeToStreamAll(ctx,
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false)
 	require.NoError(t, err)
 
@@ -53,7 +54,7 @@ func Test_SubscribeToAll_FromEnd_ReturnsSubscriptionDroppedWhenCancelled(t *test
 
 	ctx, cancelFunc := context.WithCancel(context.Background())
 	streamReader, err := client.SubscribeToStreamAll(ctx,
-		event_streams.ReadPositionAllEnd{},
+		stream_revision.ReadPositionAllEnd{},
 		false)
 	require.NoError(t, err)
 
@@ -80,7 +81,7 @@ func Test_SubscribeToAll_FromStart_ReturnsSubscriptionDroppedWhenReaderClosed(t 
 	wg.Add(1)
 
 	streamReader, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false)
 	require.NoError(t, err)
 
@@ -107,7 +108,7 @@ func Test_SubscribeToAll_FromEnd_ReturnsSubscriptionDroppedWhenReaderClosed(t *t
 	wg.Add(1)
 
 	streamReader, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllEnd{},
+		stream_revision.ReadPositionAllEnd{},
 		false)
 	require.NoError(t, err)
 
@@ -134,7 +135,7 @@ func Test_SubscribeToAll_FromStart_ToEmptyDatabase(t *testing.T) {
 	wg.Add(1)
 
 	streamReader, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllEnd{},
+		stream_revision.ReadPositionAllEnd{},
 		false)
 	require.NoError(t, err)
 
@@ -176,12 +177,12 @@ func Test_SubscribeToAll_FromStart_ReadAllExistingEventsAndKeepListeningForNewOn
 
 	_, err := client.AppendToStream(context.Background(),
 		firstStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		beforeEvents)
 	require.NoError(t, err)
 
 	streamReader, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false)
 	require.NoError(t, err)
 
@@ -206,7 +207,7 @@ func Test_SubscribeToAll_FromStart_ReadAllExistingEventsAndKeepListeningForNewOn
 
 	_, err = client.AppendToStream(context.Background(),
 		secondStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		afterEvents)
 	require.NoError(t, err)
 
@@ -220,7 +221,7 @@ func Test_Test_SubscribeToAll_WithIncorrectCredentials(t *testing.T) {
 	defer closeFunc()
 
 	_, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }

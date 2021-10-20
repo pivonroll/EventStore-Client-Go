@@ -10,6 +10,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
+	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
@@ -17,7 +18,7 @@ import (
 //
 // We create two streams and write events to them.
 // Subscription to stream $all must catch all events written to those two streams.
-func ExampleClientImpl_SubscribeToStreamAll() {
+func ExampleClient_SubscribeToStreamAll() {
 	username := "admin"
 	password := "changeit"
 	eventStoreEndpoint := "localhost:2113" // assuming that EventStoreDB is running on port 2113
@@ -27,7 +28,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 		log.Fatalln(stdErr)
 	}
 	grpcClient := connection.NewGrpcClient(*config)
-	client := event_streams.ClientFactoryImpl{}.Create(grpcClient)
+	client := event_streams.NewClient(grpcClient)
 
 	createEvents := func(count uint32) event_streams.ProposedEventList {
 		result := make(event_streams.ProposedEventList, 10)
@@ -57,7 +58,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 	// create a stream with some events in it
 	_, err := client.AppendToStream(context.Background(),
 		firstStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		beforeEvents)
 	if err != nil {
 		log.Fatalln(err)
@@ -65,7 +66,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 
 	// create a subscription to a stream
 	streamReader, err := client.SubscribeToStreamAll(context.Background(),
-		event_streams.ReadPositionAllStart{},
+		stream_revision.ReadPositionAllStart{},
 		false)
 	if err != nil {
 		log.Fatalln(err)
@@ -96,7 +97,7 @@ func ExampleClientImpl_SubscribeToStreamAll() {
 	// append some events to a stream after a listening go routine has started
 	_, err = client.AppendToStream(context.Background(),
 		secondStream,
-		event_streams.WriteStreamRevisionNoStream{},
+		stream_revision.WriteStreamRevisionNoStream{},
 		afterEvents)
 	if err != nil {
 		log.Fatalln(err)
