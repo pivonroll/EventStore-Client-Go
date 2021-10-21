@@ -554,10 +554,9 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 	defer ctrl.Finish()
 
 	ctx := context.Background()
-
+	projectionName := "some name"
 	grpcClientConn := &grpc.ClientConn{}
-	options := AbortOptionsRequest{}
-	options.SetName("some name")
+	options := abortOptionsRequest(projectionName)
 	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
@@ -581,7 +580,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
 		}
 
-		err := client.AbortProjection(ctx, options)
+		err := client.AbortProjection(ctx, projectionName)
 		require.NoError(t, err)
 	})
 
@@ -594,7 +593,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 			grpcClient: grpcClient,
 		}
 
-		err := client.AbortProjection(ctx, options)
+		err := client.AbortProjection(ctx, projectionName)
 		require.Equal(t, errorResult, err)
 	})
 
@@ -645,7 +644,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
 		}
 
-		err := client.AbortProjection(ctx, options)
+		err := client.AbortProjection(ctx, projectionName)
 		require.Equal(t, errors.FatalError, err.Code())
 	})
 }

@@ -201,9 +201,7 @@ func Test_AbortProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	abortOptions := projections.AbortOptionsRequest{}
-	abortOptions.SetName(StandardProjectionStreams)
-	err := client.AbortProjection(context.Background(), abortOptions)
+	err := client.AbortProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
 	stateOptions := projections.StatisticsOptionsRequest{}
@@ -549,9 +547,7 @@ func Test_AbortProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	abortOptions := projections.AbortOptionsRequest{}
-	abortOptions.SetName(StandardProjectionStreams)
-	err := client.AbortProjection(context.Background(), abortOptions)
+	err := client.AbortProjection(context.Background(), StandardProjectionStreams)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }
 

@@ -137,7 +137,7 @@ func (client *Client) DisableProjection(
 // AbortProjection aborts an existing projection.
 func (client *Client) AbortProjection(
 	ctx context.Context,
-	options AbortOptionsRequest) errors.Error {
+	projectionName string) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -146,7 +146,7 @@ func (client *Client) AbortProjection(
 	projectionsClient := client.grpcProjectionsClientFactory.Create(handle.Connection())
 
 	var headers, trailers metadata.MD
-	_, protoErr := projectionsClient.Disable(ctx, options.build(), grpc.Header(&headers), grpc.Trailer(&trailers))
+	_, protoErr := projectionsClient.Disable(ctx, abortOptionsRequest(projectionName).build(), grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
 		err := client.grpcClient.HandleError(handle, headers, trailers, protoErr, errors.FatalError)
 		return err
