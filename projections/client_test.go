@@ -757,8 +757,10 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := ResetOptionsRequest{}
-	options.SetName("some name").SetWriteCheckpoint(true)
+	options := ResetOptionsRequest{
+		Name:            "some name",
+		WriteCheckpoint: true,
+	}
 	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {

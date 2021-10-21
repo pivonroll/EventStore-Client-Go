@@ -7,29 +7,19 @@ import (
 )
 
 type ResetOptionsRequest struct {
-	name            string
-	writeCheckpoint bool
-}
-
-func (resetOptionsRequest *ResetOptionsRequest) SetName(name string) *ResetOptionsRequest {
-	resetOptionsRequest.name = name
-	return resetOptionsRequest
-}
-
-func (resetOptionsRequest *ResetOptionsRequest) SetWriteCheckpoint(writeCheckpoint bool) *ResetOptionsRequest {
-	resetOptionsRequest.writeCheckpoint = writeCheckpoint
-	return resetOptionsRequest
+	Name            string
+	WriteCheckpoint bool
 }
 
 func (resetOptionsRequest *ResetOptionsRequest) build() *projections.ResetReq {
-	if strings.TrimSpace(resetOptionsRequest.name) == "" {
+	if strings.TrimSpace(resetOptionsRequest.Name) == "" {
 		panic("Failed to build ResetOptionsRequest. Trimmed name is an empty string")
 	}
 
 	result := &projections.ResetReq{
 		Options: &projections.ResetReq_Options{
-			Name:            resetOptionsRequest.name,
-			WriteCheckpoint: resetOptionsRequest.writeCheckpoint,
+			Name:            resetOptionsRequest.Name,
+			WriteCheckpoint: resetOptionsRequest.WriteCheckpoint,
 		},
 	}
 

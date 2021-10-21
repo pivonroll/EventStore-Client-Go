@@ -426,8 +426,9 @@ func Test_ResetProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	resetOptions := projections.ResetOptionsRequest{}
-	resetOptions.SetName(StandardProjectionStreams)
+	resetOptions := projections.ResetOptionsRequest{
+		Name: StandardProjectionStreams,
+	}
 	err := client.ResetProjection(context.Background(), resetOptions)
 	require.NoError(t, err)
 
@@ -629,8 +630,9 @@ func Test_ResetProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	resetOptions := projections.ResetOptionsRequest{}
-	resetOptions.SetName(StandardProjectionStreams)
+	resetOptions := projections.ResetOptionsRequest{
+		Name: StandardProjectionStreams,
+	}
 	err := client.ResetProjection(context.Background(), resetOptions)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }
