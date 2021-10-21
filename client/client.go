@@ -20,7 +20,6 @@ type Client struct {
 	grpcClient              connection.GrpcClient
 	Config                  *connection.Configuration
 	projectionClientFactory projections.ClientFactory
-	userManagementFactory   user_management.ClientFactory
 	operationsClientFactory operations.ClientFactory
 }
 
@@ -31,7 +30,6 @@ func NewClient(configuration *connection.Configuration) (*Client, error) {
 		grpcClient:              grpcClient,
 		Config:                  configuration,
 		projectionClientFactory: projections.ClientFactoryImpl{},
-		userManagementFactory:   user_management.ClientFactoryImpl{},
 		operationsClientFactory: operations.ClientFactoryImpl{},
 	}, nil
 }
@@ -45,8 +43,8 @@ func (client *Client) Projections() projections.Client {
 	return client.projectionClientFactory.Create(client.grpcClient)
 }
 
-func (client *Client) UserManagement() user_management.Client {
-	return client.userManagementFactory.Create(client.grpcClient)
+func (client *Client) UserManagement() *user_management.Client {
+	return user_management.NewClient(client.grpcClient)
 }
 
 func (client *Client) EventStreams() *event_streams.Client {

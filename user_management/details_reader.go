@@ -10,6 +10,10 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/users"
 )
 
+type detailsReader interface {
+	Recv() (DetailsResponse, errors.Error)
+}
+
 type DetailsReaderImpl struct {
 	protoStreamReader      users.Users_DetailsClient
 	detailsResponseAdapter detailsResponseAdapter
