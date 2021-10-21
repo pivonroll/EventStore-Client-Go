@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"google.golang.org/protobuf/types/known/structpb"
 
@@ -40,7 +41,7 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -77,7 +78,7 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -145,7 +146,7 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -184,7 +185,7 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -248,7 +249,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -286,7 +287,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -350,7 +351,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
 		statisticsClientSyncRead := NewMockStatisticsClientSync(ctrl)
@@ -395,7 +396,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -459,7 +460,7 @@ func TestClientImpl_DisableProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -497,7 +498,7 @@ func TestClientImpl_DisableProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -560,7 +561,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -598,7 +599,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -661,7 +662,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -699,7 +700,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -761,7 +762,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -800,7 +801,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -869,7 +870,7 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -911,7 +912,7 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -981,7 +982,7 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -1023,7 +1024,7 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -1083,7 +1084,7 @@ func TestClientImpl_RestartProjectionsSubsystem(t *testing.T) {
 	t.Run("Success with RestartSubsystem return nil", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -1109,7 +1110,7 @@ func TestClientImpl_RestartProjectionsSubsystem(t *testing.T) {
 	t.Run("Success with RestartSubsystem return &shared.Empty{}", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -1148,7 +1149,7 @@ func TestClientImpl_RestartProjectionsSubsystem(t *testing.T) {
 	t.Run("Error returned from grpc", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -1213,7 +1214,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
 		statisticsClientSyncRead := NewMockStatisticsClientSync(ctrl)
@@ -1260,7 +1261,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 	t.Run("Error returned from Statistics", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -1314,7 +1315,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 	t.Run("Error returned from statistics client read", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
@@ -1364,7 +1365,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
 		statisticsClientSyncRead := NewMockStatisticsClientSync(ctrl)
@@ -1410,7 +1411,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 	t.Run("Error returned from Statistics", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -1464,7 +1465,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 	t.Run("Error returned from statistics client read", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
@@ -1514,7 +1515,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
 		statisticsClientSyncRead := NewMockStatisticsClientSync(ctrl)
@@ -1560,7 +1561,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 	t.Run("Error returned from Statistics", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 
 		errorResult := errors.NewErrorCode("some error")
@@ -1613,7 +1614,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 	t.Run("Error returned from statistics client read", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
 		handle := connection.NewMockConnectionHandle(ctrl)
-		grpcProjectionsClientFactoryInstance := NewMockgrpcProjectionsClientFactory(ctrl)
+		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClientSyncFactoryInstance := NewMockstatisticsClientSyncFactory(ctrl)
 		statisticsClientSyncRead := NewMockStatisticsClientSync(ctrl)

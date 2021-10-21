@@ -9,6 +9,7 @@ import (
 	"context"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -18,7 +19,7 @@ import (
 
 type ClientImpl struct {
 	grpcClient                   connection.GrpcClient
-	grpcProjectionsClientFactory grpcProjectionsClientFactory
+	grpcProjectionsClientFactory grpc_proto_client_factory.Factory
 	statisticsClientSyncFactory  statisticsClientSyncFactory
 }
 
@@ -358,7 +359,7 @@ func (client *ClientImpl) ListOneTimeProjections(
 func NewClientImpl(
 	grpcClient connection.GrpcClient) *ClientImpl {
 	return &ClientImpl{
-		grpcProjectionsClientFactory: grpcProjectionsClientFactoryImpl{},
+		grpcProjectionsClientFactory: grpc_proto_client_factory.FactoryImpl{},
 		grpcClient:                   grpcClient,
 		statisticsClientSyncFactory:  statisticsClientSyncFactoryImpl{},
 	}
