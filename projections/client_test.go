@@ -245,8 +245,9 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := DeleteOptionsRequest{}
-	options.SetName("some name")
+	options := DeleteOptionsRequest{
+		Name: "some name",
+	}
 
 	grpcOptions := options.build()
 
