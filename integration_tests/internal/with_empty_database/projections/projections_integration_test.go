@@ -19,8 +19,8 @@ func Test_CreateContinuousProjection_TrackEmittedStreamsFalse(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuous_false",
 			TrackEmittedStreams: false,
 		},
@@ -35,8 +35,8 @@ func Test_CreateContinuousProjection_TrackEmittedStreamsTrue(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuous_true",
 			TrackEmittedStreams: true,
 		},
@@ -51,8 +51,8 @@ func Test_CreateTransientProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeTransientOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.TransientProjection{
 			ProjectionName: "Transient",
 		},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
@@ -66,8 +66,8 @@ func Test_CreateOneTimeProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode:  projections.CreateConfigModeOneTimeOption{},
+	createOptions := projections.CreateRequest{
+		Mode:  projections.OneTimeProjection{},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
 	}
 
@@ -79,8 +79,8 @@ func Test_UpdateContinuousProjection_NoEmit(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuous_no_emit",
 			TrackEmittedStreams: false,
 		},
@@ -90,8 +90,8 @@ func Test_UpdateContinuousProjection_NoEmit(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionNoEmit{},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.NoEmit{},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyContinuous_no_emit",
 	}
@@ -104,8 +104,8 @@ func Test_UpdateContinuousProjection_EmitFalse(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuous_emit_false",
 			TrackEmittedStreams: false,
 		},
@@ -115,8 +115,8 @@ func Test_UpdateContinuousProjection_EmitFalse(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: false},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.EmitEnabled{EmitEnabled: false},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyContinuous_emit_false",
 	}
@@ -129,8 +129,8 @@ func Test_UpdateContinuousProjection_EmitTrue(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuous_emit_true",
 			TrackEmittedStreams: false,
 		},
@@ -140,8 +140,8 @@ func Test_UpdateContinuousProjection_EmitTrue(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: true},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.EmitEnabled{EmitEnabled: true},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyContinuous_emit_true",
 	}
@@ -154,8 +154,8 @@ func Test_UpdateTransientProjection_NoEmit(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeTransientOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.TransientProjection{
 			ProjectionName: "MyTransient_no_emit",
 		},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
@@ -164,8 +164,8 @@ func Test_UpdateTransientProjection_NoEmit(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionNoEmit{},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.NoEmit{},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyTransient_no_emit",
 	}
@@ -178,8 +178,8 @@ func Test_UpdateTransientProjection_EmitFalse(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeTransientOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.TransientProjection{
 			ProjectionName: "MyTransient_emit_false",
 		},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
@@ -188,8 +188,8 @@ func Test_UpdateTransientProjection_EmitFalse(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: false},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.EmitEnabled{EmitEnabled: false},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyTransient_emit_false",
 	}
@@ -202,8 +202,8 @@ func Test_UpdateTransientProjection_EmitTrue(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeTransientOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.TransientProjection{
 			ProjectionName: "MyTransient_emit_true",
 		},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
@@ -212,8 +212,8 @@ func Test_UpdateTransientProjection_EmitTrue(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: true},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.EmitEnabled{EmitEnabled: true},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyTransient_emit_true",
 	}
@@ -229,8 +229,8 @@ func Test_AbortProjection(t *testing.T) {
 	err := client.AbortProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
-		Name: StandardProjectionStreams,
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsForProjectionByName{
+		ProjectionName: StandardProjectionStreams,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
@@ -247,8 +247,8 @@ func Test_DisableProjection(t *testing.T) {
 	err := client.DisableProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
-		Name: StandardProjectionStreams,
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsForProjectionByName{
+		ProjectionName: StandardProjectionStreams,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
@@ -265,8 +265,8 @@ func Test_EnableProjection(t *testing.T) {
 	err := client.EnableProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
-		Name: StandardProjectionStreams,
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsForProjectionByName{
+		ProjectionName: StandardProjectionStreams,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
@@ -302,8 +302,8 @@ func Test_GetResultOfProjection(t *testing.T) {
 		index: %d,
 	}`
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuousProjection",
 			TrackEmittedStreams: false,
 		},
@@ -369,8 +369,8 @@ func Test_GetStateOfProjection(t *testing.T) {
 		index: %d,
 	}`
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuousProjection",
 			TrackEmittedStreams: false,
 		},
@@ -413,8 +413,8 @@ func Test_GetStatusOfProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
-		Name: StandardProjectionStreams,
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsForProjectionByName{
+		ProjectionName: StandardProjectionStreams,
 	})
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
@@ -429,14 +429,14 @@ func Test_ResetProjection(t *testing.T) {
 	defer closeFunc()
 
 	resetOptions := projections.ResetOptionsRequest{
-		Name: StandardProjectionStreams,
+		ProjectionName: StandardProjectionStreams,
 	}
 	err := client.ResetProjection(context.Background(), resetOptions)
 	require.NoError(t, err)
 
 	statisticsClient, err := client.
-		GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
-			Name: StandardProjectionStreams,
+		GetProjectionStatistics(context.Background(), projections.StatisticsForProjectionByName{
+			ProjectionName: StandardProjectionStreams,
 		})
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
@@ -483,8 +483,8 @@ func Test_ListContinuousProjections(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode: projections.CreateConfigModeContinuousOption{
+	createOptions := projections.CreateRequest{
+		Mode: projections.ContinuousProjection{
 			ProjectionName:      "MyContinuous_false",
 			TrackEmittedStreams: false,
 		},
@@ -520,8 +520,8 @@ func Test_ListOneTimeProjections(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode:  projections.CreateConfigModeOneTimeOption{},
+	createOptions := projections.CreateRequest{
+		Mode:  projections.OneTimeProjection{},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
 	}
 
@@ -541,8 +541,8 @@ func Test_CreateProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	createOptions := projections.CreateOptionsRequest{
-		Mode:  projections.CreateConfigModeOneTimeOption{},
+	createOptions := projections.CreateRequest{
+		Mode:  projections.OneTimeProjection{},
 		Query: "fromAll().when({$init: function (state, ev) {return {};}});",
 	}
 
@@ -555,8 +555,8 @@ func Test_UpdateProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	updateOptions := projections.UpdateOptionsRequest{
-		EmitOption:     projections.UpdateOptionsEmitOptionNoEmit{},
+	updateOptions := projections.UpdateRequest{
+		EmitOption:     projections.NoEmit{},
 		Query:          "fromAll().when({$init: function (s, e) {return {};}});",
 		ProjectionName: "MyTransient_no_emit",
 	}
@@ -623,8 +623,8 @@ func Test_GetProjectionStatistics_WithIncorrectCredentials_DoesNotFail(t *testin
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	_, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
-		Name: StandardProjectionStreams,
+	_, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsForProjectionByName{
+		ProjectionName: StandardProjectionStreams,
 	})
 	require.NoError(t, err)
 }
@@ -635,7 +635,7 @@ func Test_ResetProjection_WithIncorrectCredentials(t *testing.T) {
 	defer closeFunc()
 
 	resetOptions := projections.ResetOptionsRequest{
-		Name: StandardProjectionStreams,
+		ProjectionName: StandardProjectionStreams,
 	}
 	err := client.ResetProjection(context.Background(), resetOptions)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())

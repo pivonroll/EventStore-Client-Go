@@ -11,7 +11,7 @@ import (
 func TestDeleteOptionsRequest_Build(t *testing.T) {
 	t.Run("Set non empty name without trailing spaces", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name:                   "name",
+			ProjectionName:         "name",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      false,
 			DeleteCheckpointStream: false,
@@ -33,7 +33,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Set non empty name with trailing spaces", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name:                   " name ",
+			ProjectionName:         " name ",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      false,
 			DeleteCheckpointStream: false,
@@ -55,7 +55,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Set non empty name and DeleteEmittedStreams true", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name:                   "name",
+			ProjectionName:         "name",
 			DeleteEmittedStreams:   true,
 			DeleteStateStream:      false,
 			DeleteCheckpointStream: false,
@@ -77,7 +77,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Set non empty name and SetDeleteStateStream true", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name:                   "name",
+			ProjectionName:         "name",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      true,
 			DeleteCheckpointStream: false,
@@ -99,7 +99,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Set non empty name and SetDeleteStateStream true", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name:                   "name",
+			ProjectionName:         "name",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      false,
 			DeleteCheckpointStream: true,
@@ -121,7 +121,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Panics for empty name", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name: "",
+			ProjectionName: "",
 		}
 		require.Panics(t, func() {
 			options.build()
@@ -130,7 +130,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Panics for name consisting of spaces only", func(t *testing.T) {
 		options := DeleteOptionsRequest{
-			Name: "     ",
+			ProjectionName: "     ",
 		}
 		require.Panics(t, func() {
 			options.build()

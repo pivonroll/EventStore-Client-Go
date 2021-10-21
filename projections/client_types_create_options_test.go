@@ -11,8 +11,8 @@ import (
 
 func TestCreateOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty query and mode set", func(t *testing.T) {
-		options := CreateOptionsRequest{
-			Mode:  CreateConfigModeOneTimeOption{},
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
 			Query: "some query",
 		}
 
@@ -31,8 +31,8 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Query with trailing space is not transformed", func(t *testing.T) {
-		options := CreateOptionsRequest{
-			Mode:  CreateConfigModeOneTimeOption{},
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
 			Query: " some query ",
 		}
 
@@ -51,8 +51,8 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for empty query", func(t *testing.T) {
-		options := CreateOptionsRequest{
-			Mode:  CreateConfigModeOneTimeOption{},
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
 			Query: "",
 		}
 
@@ -62,8 +62,8 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for query consisting of spaces only", func(t *testing.T) {
-		options := CreateOptionsRequest{
-			Mode:  CreateConfigModeOneTimeOption{},
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
 			Query: "    ",
 		}
 
@@ -73,7 +73,7 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics if mode is not set", func(t *testing.T) {
-		options := CreateOptionsRequest{
+		options := CreateRequest{
 			Query: "some query",
 		}
 

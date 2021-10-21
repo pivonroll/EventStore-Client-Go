@@ -31,8 +31,8 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := CreateOptionsRequest{
-		Mode: CreateConfigModeContinuousOption{
+	options := CreateRequest{
+		Mode: ContinuousProjection{
 			ProjectionName:      "some mode",
 			TrackEmittedStreams: true,
 		},
@@ -137,8 +137,8 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := UpdateOptionsRequest{
-		EmitOption: UpdateOptionsEmitOptionEnabled{
+	options := UpdateRequest{
+		EmitOption: EmitEnabled{
 			EmitEnabled: true,
 		},
 		Query:          "some query",
@@ -246,7 +246,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 
 	grpcClientConn := &grpc.ClientConn{}
 	options := DeleteOptionsRequest{
-		Name: "some name",
+		ProjectionName: "some name",
 	}
 
 	grpcOptions := options.build()
@@ -348,7 +348,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	mode := StatisticsOptionsRequestModeAll{}
+	mode := StatisticsForAllProjections{}
 	grpcOptions := buildStatisticsRequest(mode)
 
 	t.Run("Success", func(t *testing.T) {
@@ -758,7 +758,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 
 	grpcClientConn := &grpc.ClientConn{}
 	options := ResetOptionsRequest{
-		Name:            "some name",
+		ProjectionName:  "some name",
 		WriteCheckpoint: true,
 	}
 	grpcOptions := options.build()
@@ -1214,7 +1214,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	mode := StatisticsOptionsRequestModeAll{}
+	mode := StatisticsForAllProjections{}
 
 	grpcOptions := buildStatisticsRequest(mode)
 
@@ -1364,7 +1364,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	ctx := context.Background()
 
-	mode := StatisticsOptionsRequestModeContinuous{}
+	mode := StatisticsForContinuousProjections{}
 	grpcOptions := buildStatisticsRequest(mode)
 
 	t.Run("Success", func(t *testing.T) {
@@ -1512,7 +1512,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	ctx := context.Background()
 
-	mode := StatisticsOptionsRequestModeOneTime{}
+	mode := StatisticsForOneTimeProjections{}
 	grpcOptions := buildStatisticsRequest(mode)
 
 	t.Run("Success", func(t *testing.T) {

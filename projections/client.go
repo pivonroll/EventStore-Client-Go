@@ -29,7 +29,7 @@ type Client struct {
 // CreateProjection creates a new projection on EventStoreDB.
 func (client *Client) CreateProjection(
 	ctx context.Context,
-	options CreateOptionsRequest) errors.Error {
+	options CreateRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -50,7 +50,7 @@ func (client *Client) CreateProjection(
 // UpdateProjection updates an existing projection on EventStoreDB.
 func (client *Client) UpdateProjection(
 	ctx context.Context,
-	options UpdateOptionsRequest) errors.Error {
+	options UpdateRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -92,7 +92,7 @@ func (client *Client) DeleteProjection(
 // GetProjectionStatistics returns a reader for projection's statistics.
 func (client *Client) GetProjectionStatistics(
 	ctx context.Context,
-	mode StatisticsOptionsRequestMode) (statistics.ClientSync, errors.Error) {
+	mode IsStatisticsByProjection) (statistics.ClientSync, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -266,7 +266,7 @@ func (client *Client) RestartProjectionsSubsystem(ctx context.Context) errors.Er
 func (client *Client) ListAllProjections(
 	ctx context.Context) ([]statistics.Response, errors.Error) {
 
-	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsOptionsRequestModeAll{})
+	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsForAllProjections{})
 	if err != nil {
 		return nil, err
 	}
@@ -293,7 +293,7 @@ func (client *Client) ListAllProjections(
 func (client *Client) ListContinuousProjections(
 	ctx context.Context) ([]statistics.Response, errors.Error) {
 
-	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsOptionsRequestModeContinuous{})
+	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsForContinuousProjections{})
 	if err != nil {
 		return nil, err
 	}
@@ -319,7 +319,7 @@ func (client *Client) ListContinuousProjections(
 func (client *Client) ListOneTimeProjections(
 	ctx context.Context) ([]statistics.Response, errors.Error) {
 
-	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsOptionsRequestModeOneTime{})
+	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsForOneTimeProjections{})
 	if err != nil {
 		return nil, err
 	}

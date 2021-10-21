@@ -11,7 +11,7 @@ import (
 func TestResetOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name", func(t *testing.T) {
 		options := ResetOptionsRequest{
-			Name: "name",
+			ProjectionName: "name",
 		}
 		result := options.build()
 
@@ -27,7 +27,7 @@ func TestResetOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Non empty name with trailing spaces", func(t *testing.T) {
 		options := ResetOptionsRequest{
-			Name: " name ",
+			ProjectionName: " name ",
 		}
 		result := options.build()
 
@@ -43,7 +43,7 @@ func TestResetOptionsRequest_Build(t *testing.T) {
 
 	t.Run("WriteCheckpoint set to false", func(t *testing.T) {
 		options := ResetOptionsRequest{
-			Name:            "name",
+			ProjectionName:  "name",
 			WriteCheckpoint: false,
 		}
 		result := options.build()
@@ -60,7 +60,7 @@ func TestResetOptionsRequest_Build(t *testing.T) {
 
 	t.Run("WriteCheckpoint set to true", func(t *testing.T) {
 		options := ResetOptionsRequest{
-			Name:            "name",
+			ProjectionName:  "name",
 			WriteCheckpoint: true,
 		}
 		result := options.build()
@@ -77,7 +77,7 @@ func TestResetOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Panics for empty name", func(t *testing.T) {
 		options := ResetOptionsRequest{
-			Name: "",
+			ProjectionName: "",
 		}
 
 		require.Panics(t, func() {
@@ -87,7 +87,7 @@ func TestResetOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Panics for name consisting of spaces only", func(t *testing.T) {
 		options := ResetOptionsRequest{
-			Name: "      ",
+			ProjectionName: "      ",
 		}
 
 		require.Panics(t, func() {

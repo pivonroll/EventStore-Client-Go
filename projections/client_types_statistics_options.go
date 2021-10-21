@@ -7,83 +7,83 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 )
 
-type StatisticsOptionsRequestModeType string
+type StatisticsForProjectionType string
 
 const (
-	StatisticsOptionsRequestModeAllType        StatisticsOptionsRequestModeType = "StatisticsOptionsRequestModeAllType"
-	StatisticsOptionsRequestModeNameType       StatisticsOptionsRequestModeType = "StatisticsOptionsRequestModeNameType"
-	StatisticsOptionsRequestModeTransientType  StatisticsOptionsRequestModeType = "StatisticsOptionsRequestModeTransientType"
-	StatisticsOptionsRequestModeContinuousType StatisticsOptionsRequestModeType = "StatisticsOptionsRequestModeContinuousType"
-	StatisticsOptionsRequestModeOneTimeType    StatisticsOptionsRequestModeType = "StatisticsOptionsRequestModeOneTimeType"
+	StatisticsForAllProjectionsType        StatisticsForProjectionType = "StatisticsForAllProjectionsType"
+	StatisticsForProjectionByNameType      StatisticsForProjectionType = "StatisticsForProjectionByNameType"
+	StatisticsForTransientProjectionsType  StatisticsForProjectionType = "StatisticsForTransientProjectionsType"
+	StatisticsForContinuousProjectionsType StatisticsForProjectionType = "StatisticsForContinuousProjectionsType"
+	StatisticsForOneTimeProjectionsType    StatisticsForProjectionType = "StatisticsForOneTimeProjectionsType"
 )
 
-type StatisticsOptionsRequestMode interface {
-	GetType() StatisticsOptionsRequestModeType
+type IsStatisticsByProjection interface {
+	GetType() StatisticsForProjectionType
 }
 
-type StatisticsOptionsRequestModeAll struct{}
+type StatisticsForAllProjections struct{}
 
-func (s StatisticsOptionsRequestModeAll) GetType() StatisticsOptionsRequestModeType {
-	return StatisticsOptionsRequestModeAllType
+func (s StatisticsForAllProjections) GetType() StatisticsForProjectionType {
+	return StatisticsForAllProjectionsType
 }
 
-type StatisticsOptionsRequestModeName struct {
-	Name string
+type StatisticsForProjectionByName struct {
+	ProjectionName string
 }
 
-func (s StatisticsOptionsRequestModeName) GetType() StatisticsOptionsRequestModeType {
-	return StatisticsOptionsRequestModeNameType
+func (s StatisticsForProjectionByName) GetType() StatisticsForProjectionType {
+	return StatisticsForProjectionByNameType
 }
 
-type StatisticsOptionsRequestModeTransient struct{}
+type StatisticsForTransientProjections struct{}
 
-func (s StatisticsOptionsRequestModeTransient) GetType() StatisticsOptionsRequestModeType {
-	return StatisticsOptionsRequestModeTransientType
+func (s StatisticsForTransientProjections) GetType() StatisticsForProjectionType {
+	return StatisticsForTransientProjectionsType
 }
 
-type StatisticsOptionsRequestModeContinuous struct{}
+type StatisticsForContinuousProjections struct{}
 
-func (s StatisticsOptionsRequestModeContinuous) GetType() StatisticsOptionsRequestModeType {
-	return StatisticsOptionsRequestModeContinuousType
+func (s StatisticsForContinuousProjections) GetType() StatisticsForProjectionType {
+	return StatisticsForContinuousProjectionsType
 }
 
-type StatisticsOptionsRequestModeOneTime struct{}
+type StatisticsForOneTimeProjections struct{}
 
-func (s StatisticsOptionsRequestModeOneTime) GetType() StatisticsOptionsRequestModeType {
-	return StatisticsOptionsRequestModeOneTimeType
+func (s StatisticsForOneTimeProjections) GetType() StatisticsForProjectionType {
+	return StatisticsForOneTimeProjectionsType
 }
 
-func buildStatisticsRequest(mode StatisticsOptionsRequestMode) *projections.StatisticsReq {
+func buildStatisticsRequest(mode IsStatisticsByProjection) *projections.StatisticsReq {
 	result := &projections.StatisticsReq{
 		Options: &projections.StatisticsReq_Options{
 			Mode: nil,
 		},
 	}
 
-	if mode.GetType() == StatisticsOptionsRequestModeAllType {
+	if mode.GetType() == StatisticsForAllProjectionsType {
 		result.Options.Mode = &projections.StatisticsReq_Options_All{
 			All: &shared.Empty{},
 		}
-	} else if mode.GetType() == StatisticsOptionsRequestModeTransientType {
+	} else if mode.GetType() == StatisticsForTransientProjectionsType {
 		result.Options.Mode = &projections.StatisticsReq_Options_Transient{
 			Transient: &shared.Empty{},
 		}
-	} else if mode.GetType() == StatisticsOptionsRequestModeContinuousType {
+	} else if mode.GetType() == StatisticsForContinuousProjectionsType {
 		result.Options.Mode = &projections.StatisticsReq_Options_Continuous{
 			Continuous: &shared.Empty{},
 		}
-	} else if mode.GetType() == StatisticsOptionsRequestModeOneTimeType {
+	} else if mode.GetType() == StatisticsForOneTimeProjectionsType {
 		result.Options.Mode = &projections.StatisticsReq_Options_OneTime{
 			OneTime: &shared.Empty{},
 		}
-	} else if mode.GetType() == StatisticsOptionsRequestModeNameType {
-		mode := mode.(StatisticsOptionsRequestModeName)
-		if strings.TrimSpace(mode.Name) == "" {
-			panic("Failed to build StatisticsOptionsRequest. Trimmed name is an empty string")
+	} else if mode.GetType() == StatisticsForProjectionByNameType {
+		mode := mode.(StatisticsForProjectionByName)
+		if strings.TrimSpace(mode.ProjectionName) == "" {
+			panic("Failed to build StatisticsOptionsRequest. Trimmed projection name is an empty string")
 		}
 
 		result.Options.Mode = &projections.StatisticsReq_Options_Name{
-			Name: mode.Name,
+			Name: mode.ProjectionName,
 		}
 	}
 

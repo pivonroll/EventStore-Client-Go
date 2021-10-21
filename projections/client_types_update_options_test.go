@@ -11,8 +11,8 @@ import (
 
 func TestUpdateOptionsRequest_Build(t *testing.T) {
 	t.Run("Build with name, query and emit option set to no emit", func(t *testing.T) {
-		options := UpdateOptionsRequest{
-			EmitOption:     UpdateOptionsEmitOptionNoEmit{},
+		options := UpdateRequest{
+			EmitOption:     NoEmit{},
 			Query:          "some query",
 			ProjectionName: "some name",
 		}
@@ -34,8 +34,8 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Build with name, query and emit option set to EmitOptionEnabled with EmitEnabled set to false",
 		func(t *testing.T) {
-			options := UpdateOptionsRequest{
-				EmitOption: UpdateOptionsEmitOptionEnabled{
+			options := UpdateRequest{
+				EmitOption: EmitEnabled{
 					EmitEnabled: false,
 				},
 				Query:          "some query",
@@ -58,8 +58,8 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Build with name, query and emit option set to EmitOptionEnabled with EmitEnabled set to true",
 		func(t *testing.T) {
-			options := UpdateOptionsRequest{
-				EmitOption: UpdateOptionsEmitOptionEnabled{
+			options := UpdateRequest{
+				EmitOption: EmitEnabled{
 					EmitEnabled: true,
 				},
 				Query:          "some query",
@@ -81,8 +81,8 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		})
 
 	t.Run("Build with name with trailing spaces", func(t *testing.T) {
-		options := UpdateOptionsRequest{
-			EmitOption:     UpdateOptionsEmitOptionNoEmit{},
+		options := UpdateRequest{
+			EmitOption:     NoEmit{},
 			Query:          "some query",
 			ProjectionName: " some name ",
 		}
@@ -102,8 +102,8 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Build with query with trailing spaces", func(t *testing.T) {
-		options := UpdateOptionsRequest{
-			EmitOption:     UpdateOptionsEmitOptionNoEmit{},
+		options := UpdateRequest{
+			EmitOption:     NoEmit{},
 			Query:          " some query ",
 			ProjectionName: "some name",
 		}
@@ -123,7 +123,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Build with empty name panics", func(t *testing.T) {
-		options := UpdateOptionsRequest{
+		options := UpdateRequest{
 			ProjectionName: "",
 			Query:          "some query",
 		}
@@ -134,7 +134,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics with name consisting of spaces only", func(t *testing.T) {
-		options := UpdateOptionsRequest{
+		options := UpdateRequest{
 			ProjectionName: "     ",
 			Query:          "some query",
 		}
@@ -145,7 +145,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics with empty query", func(t *testing.T) {
-		options := UpdateOptionsRequest{
+		options := UpdateRequest{
 			ProjectionName: "some name",
 			Query:          "",
 		}
@@ -156,7 +156,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics with query consisting of spaces only", func(t *testing.T) {
-		options := UpdateOptionsRequest{
+		options := UpdateRequest{
 			ProjectionName: "some name",
 			Query:          "    ",
 		}

@@ -12,7 +12,7 @@ import (
 
 func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	t.Run("With Mode OneTime", func(t *testing.T) {
-		result := buildStatisticsRequest(StatisticsOptionsRequestModeOneTime{})
+		result := buildStatisticsRequest(StatisticsForOneTimeProjections{})
 
 		expectedResult := &projections.StatisticsReq{
 			Options: &projections.StatisticsReq_Options{
@@ -26,7 +26,7 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("With Mode All", func(t *testing.T) {
-		result := buildStatisticsRequest(StatisticsOptionsRequestModeAll{})
+		result := buildStatisticsRequest(StatisticsForAllProjections{})
 
 		expectedResult := &projections.StatisticsReq{
 			Options: &projections.StatisticsReq_Options{
@@ -40,7 +40,7 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("With Mode Continuous", func(t *testing.T) {
-		result := buildStatisticsRequest(StatisticsOptionsRequestModeContinuous{})
+		result := buildStatisticsRequest(StatisticsForContinuousProjections{})
 
 		expectedResult := &projections.StatisticsReq{
 			Options: &projections.StatisticsReq_Options{
@@ -54,7 +54,7 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("With Mode Transient", func(t *testing.T) {
-		result := buildStatisticsRequest(StatisticsOptionsRequestModeTransient{})
+		result := buildStatisticsRequest(StatisticsForTransientProjections{})
 
 		expectedResult := &projections.StatisticsReq{
 			Options: &projections.StatisticsReq_Options{
@@ -68,8 +68,8 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("With Mode Name", func(t *testing.T) {
-		result := buildStatisticsRequest(StatisticsOptionsRequestModeName{
-			Name: "name",
+		result := buildStatisticsRequest(StatisticsForProjectionByName{
+			ProjectionName: "name",
 		})
 
 		expectedResult := &projections.StatisticsReq{
@@ -84,8 +84,8 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("With Mode Name, non empty name with trailing spaces", func(t *testing.T) {
-		result := buildStatisticsRequest(StatisticsOptionsRequestModeName{
-			Name: " name ",
+		result := buildStatisticsRequest(StatisticsForProjectionByName{
+			ProjectionName: " name ",
 		})
 
 		expectedResult := &projections.StatisticsReq{
@@ -101,8 +101,8 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 
 	t.Run("With Mode Name, Panics with empty name", func(t *testing.T) {
 		require.Panics(t, func() {
-			buildStatisticsRequest(StatisticsOptionsRequestModeName{
-				Name: "",
+			buildStatisticsRequest(StatisticsForProjectionByName{
+				ProjectionName: "",
 			})
 		})
 	})
@@ -110,8 +110,8 @@ func TestStatisticsOptionsRequest_Build(t *testing.T) {
 	t.Run("With Mode Name, Panics with name consisting from spaces only", func(t *testing.T) {
 		require.Panics(t, func() {
 			buildStatisticsRequest(
-				StatisticsOptionsRequestModeName{
-					Name: "    ",
+				StatisticsForProjectionByName{
+					ProjectionName: "    ",
 				})
 		})
 	})
