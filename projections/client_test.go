@@ -973,8 +973,10 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := ResultOptionsRequest{}
-	options.SetName("some name").SetPartition("some partition")
+	options := ResultOptionsRequest{
+		ProjectionName: "some name",
+		Partition:      "some partition",
+	}
 	grpcOptions := options.build()
 
 	response := &projections.ResultResp{
