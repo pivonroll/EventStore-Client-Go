@@ -136,12 +136,13 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := UpdateOptionsRequest{}
-	options.SetName("some name").
-		SetQuery("some query").
-		SetEmitOption(UpdateOptionsEmitOptionEnabled{
+	options := UpdateOptionsRequest{
+		EmitOption: UpdateOptionsEmitOptionEnabled{
 			EmitEnabled: true,
-		})
+		},
+		Query: "some query",
+		Name:  "some name",
+	}
 
 	grpcOptions := options.build()
 

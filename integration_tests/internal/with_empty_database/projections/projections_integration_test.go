@@ -81,10 +81,11 @@ func Test_UpdateContinuousProjection_NoEmit(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyContinuous_no_emit")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionNoEmit{})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionNoEmit{},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyContinuous_no_emit",
+	}
 
 	err = client.UpdateProjection(context.Background(), updateOptions)
 	require.NoError(t, err)
@@ -103,10 +104,11 @@ func Test_UpdateContinuousProjection_EmitFalse(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyContinuous_emit_false")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: false})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: false},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyContinuous_emit_false",
+	}
 
 	err = client.UpdateProjection(context.Background(), updateOptions)
 	require.NoError(t, err)
@@ -125,10 +127,11 @@ func Test_UpdateContinuousProjection_EmitTrue(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyContinuous_emit_true")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: true})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: true},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyContinuous_emit_true",
+	}
 
 	err = client.UpdateProjection(context.Background(), updateOptions)
 	require.NoError(t, err)
@@ -146,10 +149,11 @@ func Test_UpdateTransientProjection_NoEmit(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyTransient_no_emit")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionNoEmit{})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionNoEmit{},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyTransient_no_emit",
+	}
 
 	err = client.UpdateProjection(context.Background(), updateOptions)
 	require.NoError(t, err)
@@ -167,10 +171,11 @@ func Test_UpdateTransientProjection_EmitFalse(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyTransient_emit_false")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: false})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: false},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyTransient_emit_false",
+	}
 
 	err = client.UpdateProjection(context.Background(), updateOptions)
 	require.NoError(t, err)
@@ -188,10 +193,11 @@ func Test_UpdateTransientProjection_EmitTrue(t *testing.T) {
 	err := client.CreateProjection(context.Background(), createOptions)
 	require.NoError(t, err)
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyTransient_emit_true")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: true})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionEnabled{EmitEnabled: true},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyTransient_emit_true",
+	}
 
 	err = client.UpdateProjection(context.Background(), updateOptions)
 	require.NoError(t, err)
@@ -519,10 +525,11 @@ func Test_UpdateProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	updateOptions := projections.UpdateOptionsRequest{}
-	updateOptions.SetName("MyTransient_no_emit")
-	updateOptions.SetQuery("fromAll().when({$init: function (s, e) {return {};}});").
-		SetEmitOption(projections.UpdateOptionsEmitOptionNoEmit{})
+	updateOptions := projections.UpdateOptionsRequest{
+		EmitOption: projections.UpdateOptionsEmitOptionNoEmit{},
+		Query:      "fromAll().when({$init: function (s, e) {return {};}});",
+		Name:       "MyTransient_no_emit",
+	}
 
 	err := client.UpdateProjection(context.Background(), updateOptions)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
