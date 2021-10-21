@@ -7,29 +7,19 @@ import (
 )
 
 type StateOptionsRequest struct {
-	name      string
-	partition string
-}
-
-func (stateOptionsRequest *StateOptionsRequest) SetName(name string) *StateOptionsRequest {
-	stateOptionsRequest.name = name
-	return stateOptionsRequest
-}
-
-func (stateOptionsRequest *StateOptionsRequest) SetPartition(partition string) *StateOptionsRequest {
-	stateOptionsRequest.partition = partition
-	return stateOptionsRequest
+	ProjectionName string
+	Partition      string
 }
 
 func (stateOptionsRequest *StateOptionsRequest) build() *projections.StateReq {
-	if strings.TrimSpace(stateOptionsRequest.name) == "" {
+	if strings.TrimSpace(stateOptionsRequest.ProjectionName) == "" {
 		panic("Failed to build StateOptionsRequest. Trimmed name is an empty string")
 	}
 
 	result := &projections.StateReq{
 		Options: &projections.StateReq_Options{
-			Name:      stateOptionsRequest.name,
-			Partition: stateOptionsRequest.partition,
+			Name:      stateOptionsRequest.ProjectionName,
+			Partition: stateOptionsRequest.Partition,
 		},
 	}
 

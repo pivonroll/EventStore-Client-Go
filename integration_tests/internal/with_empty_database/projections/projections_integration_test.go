@@ -388,8 +388,9 @@ func Test_GetStateOfProjection(t *testing.T) {
 
 	var projectionResult projections.StateResponse
 	require.Eventually(t, func() bool {
-		resultOptions := projections.StateOptionsRequest{}
-		resultOptions.SetName("MyContinuousProjection")
+		resultOptions := projections.StateOptionsRequest{
+			ProjectionName: "MyContinuousProjection",
+		}
 		projectionResult, err = client.
 			GetProjectionState(context.Background(), resultOptions)
 		return err == nil && projectionResult.GetType() == projections.StateResponseStructType
@@ -609,8 +610,9 @@ func Test_GetProjectionState_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	resultOptions := projections.StateOptionsRequest{}
-	resultOptions.SetName("MyContinuousProjection")
+	resultOptions := projections.StateOptionsRequest{
+		ProjectionName: "MyContinuousProjection",
+	}
 	_, err := client.
 		GetProjectionState(context.Background(), resultOptions)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())

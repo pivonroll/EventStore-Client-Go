@@ -861,8 +861,10 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := StateOptionsRequest{}
-	options.SetName("some name").SetPartition("some partition")
+	options := StateOptionsRequest{
+		ProjectionName: "some name",
+		Partition:      "some partition",
+	}
 	grpcOptions := options.build()
 
 	response := &projections.StateResp{
