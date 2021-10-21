@@ -9,93 +9,14 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestCreateOptionsRequest_SetMode(t *testing.T) {
-	t.Run("Set OneTime Mode once", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeOneTimeOption{})
-
-		require.Equal(t, CreateConfigModeOneTimeOption{}, options.mode)
-	})
-
-	t.Run("Set OneTimeOption Mode twice", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeOneTimeOption{})
-		options.SetMode(CreateConfigModeOneTimeOption{})
-
-		require.Equal(t, CreateConfigModeOneTimeOption{}, options.mode)
-	})
-
-	t.Run("Set OneTimeOption Mode after Continuous Mode", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeContinuousOption{})
-		options.SetMode(CreateConfigModeOneTimeOption{})
-
-		require.Equal(t, CreateConfigModeOneTimeOption{}, options.mode)
-	})
-
-	t.Run("Set OneTimeOption Mode after Transient Mode", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeTransientOption{})
-		options.SetMode(CreateConfigModeOneTimeOption{})
-
-		require.Equal(t, CreateConfigModeOneTimeOption{}, options.mode)
-	})
-
-	t.Run("Set Continuous Mode once", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeContinuousOption{})
-
-		require.Equal(t, CreateConfigModeContinuousOption{}, options.mode)
-	})
-
-	t.Run("Set Continuous Mode twice", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeContinuousOption{})
-		options.SetMode(CreateConfigModeContinuousOption{})
-
-		require.Equal(t, CreateConfigModeContinuousOption{}, options.mode)
-	})
-
-	t.Run("Set Transient Mode once", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeTransientOption{})
-
-		require.Equal(t, CreateConfigModeTransientOption{}, options.mode)
-	})
-
-	t.Run("Set Continuous Mode twice", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeTransientOption{})
-		options.SetMode(CreateConfigModeTransientOption{})
-
-		require.Equal(t, CreateConfigModeTransientOption{}, options.mode)
-	})
-}
-
-func TestCreateOptionsRequest_SetQuery(t *testing.T) {
-	t.Run("Set query once", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetQuery("some query")
-
-		require.Equal(t, "some query", options.query)
-	})
-
-	t.Run("Set query twice", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetQuery("some query")
-		options.SetQuery("some query 2")
-
-		require.Equal(t, "some query 2", options.query)
-	})
-}
-
 func TestCreateOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty query and mode set", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetQuery("some query")
-		options.SetMode(CreateConfigModeOneTimeOption{})
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
+			Query: "some query",
+		}
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.CreateReq{
 			Options: &projections.CreateReq_Options{
@@ -110,11 +31,12 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Query with trailing space is not transformed", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetQuery(" some query ")
-		options.SetMode(CreateConfigModeOneTimeOption{})
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
+			Query: " some query ",
+		}
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.CreateReq{
 			Options: &projections.CreateReq_Options{
@@ -129,30 +51,34 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for empty query", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeOneTimeOption{})
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
+			Query: "",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
 	t.Run("Panics for query consisting of spaces only", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetMode(CreateConfigModeOneTimeOption{})
-		options.SetQuery("    ")
+		options := CreateRequest{
+			Mode:  OneTimeProjection{},
+			Query: "    ",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
 	t.Run("Panics if mode is not set", func(t *testing.T) {
-		options := CreateOptionsRequest{}
-		options.SetQuery("some query")
+		options := CreateRequest{
+			Query: "some query",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

@@ -9,17 +9,10 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/user_management"
 )
 
-type Configuration = connection.Configuration
-
-func ParseConnectionString(str string) (*connection.Configuration, error) {
-	return connection.ParseConnectionString(str)
-}
-
 // Client ...
 type Client struct {
 	grpcClient              connection.GrpcClient
 	Config                  *connection.Configuration
-	projectionClientFactory projections.ClientFactory
 	operationsClientFactory operations.ClientFactory
 }
 
@@ -29,7 +22,6 @@ func NewClient(configuration *connection.Configuration) (*Client, error) {
 	return &Client{
 		grpcClient:              grpcClient,
 		Config:                  configuration,
-		projectionClientFactory: projections.ClientFactoryImpl{},
 		operationsClientFactory: operations.ClientFactoryImpl{},
 	}, nil
 }
@@ -39,8 +31,8 @@ func (client *Client) Close() {
 	client.grpcClient.Close()
 }
 
-func (client *Client) Projections() projections.Client {
-	return client.projectionClientFactory.Create(client.grpcClient)
+func (client *Client) Projections() *projections.Client {
+	return projections.NewClient(client.grpcClient)
 }
 
 func (client *Client) UserManagement() *user_management.Client {

@@ -6,23 +6,16 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type AbortOptionsRequest struct {
-	name string
-}
+type abortOptionsRequest string
 
-func (abortOptionsRequest *AbortOptionsRequest) SetName(name string) *AbortOptionsRequest {
-	abortOptionsRequest.name = name
-	return abortOptionsRequest
-}
-
-func (abortOptionsRequest *AbortOptionsRequest) Build() *projections.DisableReq {
-	if strings.TrimSpace(abortOptionsRequest.name) == "" {
+func (abortOptionsRequest abortOptionsRequest) build() *projections.DisableReq {
+	if strings.TrimSpace(string(abortOptionsRequest)) == "" {
 		panic("Failed to build AbortOptionsRequest. Trimmed name is an empty string")
 	}
 
 	result := &projections.DisableReq{
 		Options: &projections.DisableReq_Options{
-			Name:            abortOptionsRequest.name,
+			Name:            string(abortOptionsRequest),
 			WriteCheckpoint: true,
 		},
 	}

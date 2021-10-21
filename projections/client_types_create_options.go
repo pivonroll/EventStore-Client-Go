@@ -7,84 +7,84 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 )
 
-type CreateConfigModeType string
+type ProjectionType string
 
 const (
-	CreateConfigModeOneTimeOptionType    CreateConfigModeType = "CreateConfigModeOneTimeOptionType"
-	CreateConfigModeTransientOptionType  CreateConfigModeType = "CreateConfigModeTransientOptionType"
-	CreateConfigModeContinuousOptionType CreateConfigModeType = "CreateConfigModeContinuousOptionType"
+	OneTimeProjectionType     ProjectionType = "OneTimeProjectionType"
+	TransientProjectionType   ProjectionType = "TransientProjectionType"
+	ContinuousProjectionsType ProjectionType = "ContinuousProjectionsType"
 )
 
-type CreateConfigMode interface {
-	GetType() CreateConfigModeType
+type isProjectionType interface {
+	GetType() ProjectionType
 }
 
-type CreateConfigModeOneTimeOption struct{}
+// OneTimeProjection mode instructs EventStoreDB to create one-time projection.
+type OneTimeProjection struct{}
 
-func (mode CreateConfigModeOneTimeOption) GetType() CreateConfigModeType {
-	return CreateConfigModeOneTimeOptionType
+// GetType returns a mode type. In this case it will be OneTimeProjectionType.
+// See constant OneTimeProjectionType.
+func (mode OneTimeProjection) GetType() ProjectionType {
+	return OneTimeProjectionType
 }
 
-type CreateConfigModeTransientOption struct {
-	Name string
+// TransientProjection mode is used to create transient projection.
+type TransientProjection struct {
+	ProjectionName string
 }
 
-func (mode CreateConfigModeTransientOption) GetType() CreateConfigModeType {
-	return CreateConfigModeTransientOptionType
+// GetType returns a mode type. In this case it will be TransientProjectionType.
+// See constant TransientProjectionType.
+func (mode TransientProjection) GetType() ProjectionType {
+	return TransientProjectionType
 }
 
-type CreateConfigModeContinuousOption struct {
-	Name                string
+// ContinuousProjection mode is used to create a continuous projection.
+type ContinuousProjection struct {
+	ProjectionName      string
 	TrackEmittedStreams bool
 }
 
-func (mode CreateConfigModeContinuousOption) GetType() CreateConfigModeType {
-	return CreateConfigModeContinuousOptionType
+// GetType returns a mode type. In this case it will be ContinuousProjectionsType.
+// See constant ContinuousProjectionsType.
+func (mode ContinuousProjection) GetType() ProjectionType {
+	return ContinuousProjectionsType
 }
 
-type CreateOptionsRequest struct {
-	mode  CreateConfigMode
-	query string
+// CreateRequest represents data required to create a projection at EventStoreDB.
+type CreateRequest struct {
+	Mode  isProjectionType
+	Query string
 }
 
-func (createConfig *CreateOptionsRequest) SetQuery(query string) *CreateOptionsRequest {
-	createConfig.query = query
-	return createConfig
-}
-
-func (createConfig *CreateOptionsRequest) SetMode(mode CreateConfigMode) *CreateOptionsRequest {
-	createConfig.mode = mode
-	return createConfig
-}
-
-func (createConfig *CreateOptionsRequest) Build() *projections.CreateReq {
-	if strings.TrimSpace(createConfig.query) == "" {
-		panic("Failed to build CreateOptionsRequest. Trimmed query is an empty string")
+func (createConfig *CreateRequest) build() *projections.CreateReq {
+	if strings.TrimSpace(createConfig.Query) == "" {
+		panic("Failed to build CreateRequest. Trimmed query is an empty string")
 	}
 
 	result := &projections.CreateReq{
 		Options: &projections.CreateReq_Options{
 			Mode:  nil,
-			Query: createConfig.query,
+			Query: createConfig.Query,
 		},
 	}
 
-	if createConfig.mode.GetType() == CreateConfigModeOneTimeOptionType {
+	if createConfig.Mode.GetType() == OneTimeProjectionType {
 		result.Options.Mode = &projections.CreateReq_Options_OneTime{
 			OneTime: &shared.Empty{},
 		}
-	} else if createConfig.mode.GetType() == CreateConfigModeTransientOptionType {
-		transientOption := createConfig.mode.(CreateConfigModeTransientOption)
+	} else if createConfig.Mode.GetType() == TransientProjectionType {
+		transientOption := createConfig.Mode.(TransientProjection)
 		result.Options.Mode = &projections.CreateReq_Options_Transient_{
 			Transient: &projections.CreateReq_Options_Transient{
-				Name: transientOption.Name,
+				Name: transientOption.ProjectionName,
 			},
 		}
-	} else if createConfig.mode.GetType() == CreateConfigModeContinuousOptionType {
-		continuousOption := createConfig.mode.(CreateConfigModeContinuousOption)
+	} else if createConfig.Mode.GetType() == ContinuousProjectionsType {
+		continuousOption := createConfig.Mode.(ContinuousProjection)
 		result.Options.Mode = &projections.CreateReq_Options_Continuous_{
 			Continuous: &projections.CreateReq_Options_Continuous{
-				Name:                continuousOption.Name,
+				Name:                continuousOption.ProjectionName,
 				TrackEmittedStreams: continuousOption.TrackEmittedStreams,
 			},
 		}

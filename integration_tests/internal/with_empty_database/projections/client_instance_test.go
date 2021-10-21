@@ -8,7 +8,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/test_utils"
 )
 
-func initializeContainerAndClient(t *testing.T) (projections.Client,
+func initializeContainerAndClient(t *testing.T) (*projections.Client,
 	test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClient(t,
 		map[string]string{
@@ -16,12 +16,12 @@ func initializeContainerAndClient(t *testing.T) (projections.Client,
 			"EVENTSTORE_START_STANDARD_PROJECTIONS": "true",
 		})
 
-	client := projections.ClientFactoryImpl{}.Create(grpcClient)
+	client := projections.NewClient(grpcClient)
 
 	return client, closeFunc
 }
 
-func initializeClientAndEventStreamsClient(t *testing.T) (projections.Client,
+func initializeClientAndEventStreamsClient(t *testing.T) (*projections.Client,
 	*event_streams.Client,
 	test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClient(t,
@@ -30,7 +30,7 @@ func initializeClientAndEventStreamsClient(t *testing.T) (projections.Client,
 			"EVENTSTORE_START_STANDARD_PROJECTIONS": "true",
 		})
 
-	client := projections.ClientFactoryImpl{}.Create(grpcClient)
+	client := projections.NewClient(grpcClient)
 	eventStreamsClient := event_streams.NewClient(grpcClient)
 
 	return client, eventStreamsClient, closeFunc
@@ -38,9 +38,9 @@ func initializeClientAndEventStreamsClient(t *testing.T) (projections.Client,
 
 func initializeContainerAndClientWithCredentials(t *testing.T,
 	username string,
-	password string, envVariableOverrides map[string]string) (projections.Client, test_utils.CloseFunc) {
+	password string, envVariableOverrides map[string]string) (*projections.Client, test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClientWithCredentials(t, username, password, envVariableOverrides)
 
-	client := projections.ClientFactoryImpl{}.Create(grpcClient)
+	client := projections.NewClient(grpcClient)
 	return client, closeFunc
 }

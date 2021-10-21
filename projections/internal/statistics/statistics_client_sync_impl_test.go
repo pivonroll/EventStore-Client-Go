@@ -1,10 +1,11 @@
-package projections
+package statistics
 
 import (
 	stdErrors "errors"
 	"testing"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
 
 	"google.golang.org/grpc/metadata"
 
@@ -32,7 +33,7 @@ func TestStatisticsClientSyncImpl_Read(t *testing.T) {
 		result, err := statisticsClient.Read()
 
 		require.NoError(t, err)
-		require.Equal(t, StatisticsClientResponse{Name: "some name"}, result)
+		require.Equal(t, statistics.Response{Name: "some name"}, result)
 	})
 
 	t.Run("Error returned from proto client does not match known exception", func(t *testing.T) {
@@ -47,7 +48,7 @@ func TestStatisticsClientSyncImpl_Read(t *testing.T) {
 
 		require.Error(t, err)
 		require.Equal(t, errors.FatalError, err.Code())
-		require.Equal(t, StatisticsClientResponse{}, result)
+		require.Equal(t, statistics.Response{}, result)
 	})
 
 	t.Run("Error returned from proto client matches known exception", func(t *testing.T) {
@@ -62,6 +63,6 @@ func TestStatisticsClientSyncImpl_Read(t *testing.T) {
 
 		require.Error(t, err)
 		require.Equal(t, errors.MaximumSubscriberCountReached, err.Code())
-		require.Equal(t, StatisticsClientResponse{}, result)
+		require.Equal(t, statistics.Response{}, result)
 	})
 }

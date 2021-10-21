@@ -9,125 +9,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-func TestUpdateOptionsRequest_SetQuery(t *testing.T) {
-	t.Run("Set query once", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery("some query")
-		require.Equal(t, "some query", options.query)
-	})
-
-	t.Run("Set query twice", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery("some query")
-		options.SetQuery("some query 2")
-		require.Equal(t, "some query 2", options.query)
-	})
-}
-
-func TestUpdateOptionsRequest_SetName(t *testing.T) {
-	t.Run("Set name once", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetName("some name")
-		require.Equal(t, "some name", options.name)
-	})
-
-	t.Run("Set name twice", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetName("some name")
-		options.SetName("some name 2")
-		require.Equal(t, "some name 2", options.name)
-	})
-}
-
-func TestUpdateOptionsRequest_SetEmitOption(t *testing.T) {
-	t.Run("Set no emit", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		require.Equal(t, UpdateOptionsEmitOptionNoEmit{}, options.emitOption)
-	})
-
-	t.Run("Set EmitOptionEnabled with EmitEnabled set to false", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-			EmitEnabled: false,
-		})
-		require.Equal(t, UpdateOptionsEmitOptionEnabled{
-			EmitEnabled: false,
-		}, options.emitOption)
-	})
-
-	t.Run("Set EmitOptionEnabled with EmitEnabled set to true", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-			EmitEnabled: true,
-		})
-		require.Equal(t, UpdateOptionsEmitOptionEnabled{
-			EmitEnabled: true,
-		}, options.emitOption)
-	})
-
-	t.Run("Set no emit after EmitOptionEnabled with EmitEnabled set to false", func(t *testing.T) {
-		t.Run("Set no emit", func(t *testing.T) {
-			options := UpdateOptionsRequest{}
-			options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-				EmitEnabled: false,
-			})
-			options.SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-			require.Equal(t, UpdateOptionsEmitOptionNoEmit{}, options.emitOption)
-		})
-	})
-
-	t.Run("Set no emit after EmitOptionEnabled with EmitEnabled set to true", func(t *testing.T) {
-		t.Run("Set no emit", func(t *testing.T) {
-			options := UpdateOptionsRequest{}
-			options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-				EmitEnabled: true,
-			})
-			options.SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-			require.Equal(t, UpdateOptionsEmitOptionNoEmit{}, options.emitOption)
-		})
-	})
-
-	t.Run("Set EmitOptionEnabled with EmitEnabled set to true after EmitOptionEnabled with EmitEnabled set to false",
-		func(t *testing.T) {
-			t.Run("Set no emit", func(t *testing.T) {
-				options := UpdateOptionsRequest{}
-				options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-					EmitEnabled: false,
-				})
-				options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-					EmitEnabled: true,
-				})
-				require.Equal(t, UpdateOptionsEmitOptionEnabled{
-					EmitEnabled: true,
-				}, options.emitOption)
-			})
-		})
-
-	t.Run("Set EmitOptionEnabled with EmitEnabled set to false after EmitOptionEnabled with EmitEnabled set to true",
-		func(t *testing.T) {
-			t.Run("Set no emit", func(t *testing.T) {
-				options := UpdateOptionsRequest{}
-				options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-					EmitEnabled: true,
-				})
-				options.SetEmitOption(UpdateOptionsEmitOptionEnabled{
-					EmitEnabled: false,
-				})
-				require.Equal(t, UpdateOptionsEmitOptionEnabled{
-					EmitEnabled: false,
-				}, options.emitOption)
-			})
-		})
-}
-
 func TestUpdateOptionsRequest_Build(t *testing.T) {
 	t.Run("Build with name, query and emit option set to no emit", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery("some query").
-			SetName("some name").
-			SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		result := options.Build()
+		options := UpdateRequest{
+			EmitOption:     NoEmit{},
+			Query:          "some query",
+			ProjectionName: "some name",
+		}
+
+		result := options.build()
 
 		expectedResult := &projections.UpdateReq{
 			Options: &projections.UpdateReq_Options{
@@ -144,13 +34,14 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Build with name, query and emit option set to EmitOptionEnabled with EmitEnabled set to false",
 		func(t *testing.T) {
-			options := UpdateOptionsRequest{}
-			options.SetQuery("some query").
-				SetName("some name").
-				SetEmitOption(UpdateOptionsEmitOptionEnabled{
+			options := UpdateRequest{
+				EmitOption: EmitEnabled{
 					EmitEnabled: false,
-				})
-			result := options.Build()
+				},
+				Query:          "some query",
+				ProjectionName: "some name",
+			}
+			result := options.build()
 
 			expectedResult := &projections.UpdateReq{
 				Options: &projections.UpdateReq_Options{
@@ -167,13 +58,14 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 
 	t.Run("Build with name, query and emit option set to EmitOptionEnabled with EmitEnabled set to true",
 		func(t *testing.T) {
-			options := UpdateOptionsRequest{}
-			options.SetQuery("some query").
-				SetName("some name").
-				SetEmitOption(UpdateOptionsEmitOptionEnabled{
+			options := UpdateRequest{
+				EmitOption: EmitEnabled{
 					EmitEnabled: true,
-				})
-			result := options.Build()
+				},
+				Query:          "some query",
+				ProjectionName: "some name",
+			}
+			result := options.build()
 
 			expectedResult := &projections.UpdateReq{
 				Options: &projections.UpdateReq_Options{
@@ -189,11 +81,12 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		})
 
 	t.Run("Build with name with trailing spaces", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery("some query").
-			SetName(" some name ").
-			SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		result := options.Build()
+		options := UpdateRequest{
+			EmitOption:     NoEmit{},
+			Query:          "some query",
+			ProjectionName: " some name ",
+		}
+		result := options.build()
 
 		expectedResult := &projections.UpdateReq{
 			Options: &projections.UpdateReq_Options{
@@ -209,11 +102,12 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Build with query with trailing spaces", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery(" some query ").
-			SetName("some name").
-			SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		result := options.Build()
+		options := UpdateRequest{
+			EmitOption:     NoEmit{},
+			Query:          " some query ",
+			ProjectionName: "some name",
+		}
+		result := options.build()
 
 		expectedResult := &projections.UpdateReq{
 			Options: &projections.UpdateReq_Options{
@@ -229,38 +123,46 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Build with empty name panics", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetName("")
+		options := UpdateRequest{
+			ProjectionName: "",
+			Query:          "some query",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
 	t.Run("Panics with name consisting of spaces only", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetName("     ")
+		options := UpdateRequest{
+			ProjectionName: "     ",
+			Query:          "some query",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
 	t.Run("Panics with empty query", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery("")
+		options := UpdateRequest{
+			ProjectionName: "some name",
+			Query:          "",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
 	t.Run("Panics with query consisting of spaces only", func(t *testing.T) {
-		options := UpdateOptionsRequest{}
-		options.SetQuery("     ")
+		options := UpdateRequest{
+			ProjectionName: "some name",
+			Query:          "    ",
+		}
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }
