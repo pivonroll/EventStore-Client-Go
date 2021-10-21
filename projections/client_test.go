@@ -31,12 +31,13 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := CreateOptionsRequest{}
-	options.SetQuery("some query")
-	options.SetMode(CreateConfigModeContinuousOption{
-		Name:                "some mode",
-		TrackEmittedStreams: true,
-	})
+	options := CreateOptionsRequest{
+		Mode: CreateConfigModeContinuousOption{
+			ProjectionName:      "some mode",
+			TrackEmittedStreams: true,
+		},
+		Query: "some query",
+	}
 
 	grpcOptions := options.build()
 
@@ -140,8 +141,8 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 		EmitOption: UpdateOptionsEmitOptionEnabled{
 			EmitEnabled: true,
 		},
-		Query: "some query",
-		Name:  "some name",
+		Query:          "some query",
+		ProjectionName: "some name",
 	}
 
 	grpcOptions := options.build()

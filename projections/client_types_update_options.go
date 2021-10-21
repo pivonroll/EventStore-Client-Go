@@ -32,15 +32,16 @@ func (u UpdateOptionsEmitOptionNoEmit) GetType() UpdateOptionsEmitOptionType {
 	return UpdateOptionsEmitOptionNoEmitType
 }
 
+// UpdateOptionsRequest are projection's name and it's options which we want to update.
 type UpdateOptionsRequest struct {
-	EmitOption UpdateOptionsEmitOption
-	Query      string
-	Name       string
+	EmitOption     UpdateOptionsEmitOption
+	Query          string
+	ProjectionName string
 }
 
 func (updateConfig *UpdateOptionsRequest) build() *projections.UpdateReq {
-	if strings.TrimSpace(updateConfig.Name) == "" {
-		panic("Failed to build UpdateOptionsRequest. Trimmed name is an empty string")
+	if strings.TrimSpace(updateConfig.ProjectionName) == "" {
+		panic("Failed to build UpdateOptionsRequest. Trimmed projection name is an empty string")
 	}
 
 	if strings.TrimSpace(updateConfig.Query) == "" {
@@ -49,7 +50,7 @@ func (updateConfig *UpdateOptionsRequest) build() *projections.UpdateReq {
 
 	result := &projections.UpdateReq{
 		Options: &projections.UpdateReq_Options{
-			Name:  updateConfig.Name,
+			Name:  updateConfig.ProjectionName,
 			Query: updateConfig.Query,
 		},
 	}

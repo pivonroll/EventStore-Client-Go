@@ -26,7 +26,7 @@ func (mode CreateConfigModeOneTimeOption) GetType() CreateConfigModeType {
 }
 
 type CreateConfigModeTransientOption struct {
-	Name string
+	ProjectionName string
 }
 
 func (mode CreateConfigModeTransientOption) GetType() CreateConfigModeType {
@@ -34,7 +34,7 @@ func (mode CreateConfigModeTransientOption) GetType() CreateConfigModeType {
 }
 
 type CreateConfigModeContinuousOption struct {
-	Name                string
+	ProjectionName      string
 	TrackEmittedStreams bool
 }
 
@@ -43,48 +43,38 @@ func (mode CreateConfigModeContinuousOption) GetType() CreateConfigModeType {
 }
 
 type CreateOptionsRequest struct {
-	mode  CreateConfigMode
-	query string
-}
-
-func (createConfig *CreateOptionsRequest) SetQuery(query string) *CreateOptionsRequest {
-	createConfig.query = query
-	return createConfig
-}
-
-func (createConfig *CreateOptionsRequest) SetMode(mode CreateConfigMode) *CreateOptionsRequest {
-	createConfig.mode = mode
-	return createConfig
+	Mode  CreateConfigMode
+	Query string
 }
 
 func (createConfig *CreateOptionsRequest) build() *projections.CreateReq {
-	if strings.TrimSpace(createConfig.query) == "" {
+	if strings.TrimSpace(createConfig.Query) == "" {
 		panic("Failed to build CreateOptionsRequest. Trimmed query is an empty string")
 	}
 
 	result := &projections.CreateReq{
 		Options: &projections.CreateReq_Options{
 			Mode:  nil,
-			Query: createConfig.query,
+			Query: createConfig.Query,
 		},
 	}
 
-	if createConfig.mode.GetType() == CreateConfigModeOneTimeOptionType {
+	if createConfig.Mode.GetType() == CreateConfigModeOneTimeOptionType {
 		result.Options.Mode = &projections.CreateReq_Options_OneTime{
 			OneTime: &shared.Empty{},
 		}
-	} else if createConfig.mode.GetType() == CreateConfigModeTransientOptionType {
-		transientOption := createConfig.mode.(CreateConfigModeTransientOption)
+	} else if createConfig.Mode.GetType() == CreateConfigModeTransientOptionType {
+		transientOption := createConfig.Mode.(CreateConfigModeTransientOption)
 		result.Options.Mode = &projections.CreateReq_Options_Transient_{
 			Transient: &projections.CreateReq_Options_Transient{
-				Name: transientOption.Name,
+				Name: transientOption.ProjectionName,
 			},
 		}
-	} else if createConfig.mode.GetType() == CreateConfigModeContinuousOptionType {
-		continuousOption := createConfig.mode.(CreateConfigModeContinuousOption)
+	} else if createConfig.Mode.GetType() == CreateConfigModeContinuousOptionType {
+		continuousOption := createConfig.Mode.(CreateConfigModeContinuousOption)
 		result.Options.Mode = &projections.CreateReq_Options_Continuous_{
 			Continuous: &projections.CreateReq_Options_Continuous{
-				Name:                continuousOption.Name,
+				Name:                continuousOption.ProjectionName,
 				TrackEmittedStreams: continuousOption.TrackEmittedStreams,
 			},
 		}
