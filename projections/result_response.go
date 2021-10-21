@@ -7,132 +7,114 @@ import (
 	"google.golang.org/protobuf/types/known/structpb"
 )
 
-type ResultResponseType string
+// ResultType is a type of the result received by reading a
+// result of a projection of projection's state.
+type ResultType string
 
 const (
-	ResultResponseNullType   ResultResponseType = "ResultResponseNullType"
-	ResultResponseNumberType ResultResponseType = "ResultResponseNumberType"
-	ResultResponseStringType ResultResponseType = "ResultResponseStringType"
-	ResultResponseBoolType   ResultResponseType = "ResultResponseBoolType"
-	ResultResponseStructType ResultResponseType = "ResultResponseStructType"
-	ResultResponseListType   ResultResponseType = "ResultResponseListType"
+	// ResultTypeNull received value is null.
+	ResultTypeNull ResultType = "ResultTypeNull"
+	// ResultTypeFloat64 received value is a float64 type.
+	ResultTypeFloat64 ResultType = "ResultTypeFloat64"
+	// ResultTypeString received value is a string type.
+	ResultTypeString ResultType = "ResultTypeString"
+	// ResultTypeBool received value is a bool type.
+	ResultTypeBool ResultType = "ResultTypeBool"
+	// ResultTypeJSONObject received value is a JSON object type.
+	ResultTypeJSONObject ResultType = "ResultTypeJSONObject"
+	// ResultTypeJSONObjectList received value is a slice of JSON objects.
+	ResultTypeJSONObjectList ResultType = "ResultTypeJSONObjectList"
 )
 
-type ResultResponse interface {
-	GetType() ResultResponseType
+// IsResult an interface of the result value.
+type IsResult interface {
+	// ResultType returns a type of the value.
+	ResultType() ResultType
 }
 
-type ResultResponseBool struct {
-	value bool
+// BoolResult represents a boolean value.
+type BoolResult bool
+
+// ResultType returns ResultTypeBool.
+func (s BoolResult) ResultType() ResultType {
+	return ResultTypeBool
 }
 
-func (s *ResultResponseBool) GetType() ResultResponseType {
-	return ResultResponseBoolType
+// NullResult represents a null.
+type NullResult struct{}
+
+// ResultType returns ResultTypeNull.
+func (s NullResult) ResultType() ResultType {
+	return ResultTypeNull
 }
 
-func (s *ResultResponseBool) Value() bool {
-	return s.value
+// Float64Result represents a float64 value.
+type Float64Result float64
+
+// ResultType returns ResultTypeFloat64.
+func (s Float64Result) ResultType() ResultType {
+	return ResultTypeFloat64
 }
 
-type ResultResponseNull struct{}
+// StringResult represents a string value.
+type StringResult string
 
-func (s *ResultResponseNull) GetType() ResultResponseType {
-	return ResultResponseNullType
+// ResultType returns ResultTypeString.
+func (s StringResult) ResultType() ResultType {
+	return ResultTypeString
 }
 
-type ResultResponseNumber struct {
-	value float64
+// JSONObjectResult represents a JSON object.
+type JSONObjectResult JSONBytes
+
+// ResultType returns ResultTypeJSONObject.
+func (s JSONObjectResult) ResultType() ResultType {
+	return ResultTypeJSONObject
 }
 
-func (s *ResultResponseNumber) GetType() ResultResponseType {
-	return ResultResponseNumberType
+// JSONObjectListResult represents a slice of JSON objects.
+type JSONObjectListResult []JSONBytes
+
+// ResultType returns ResultTypeJSONObjectList.
+func (s JSONObjectListResult) ResultType() ResultType {
+	return ResultTypeJSONObjectList
 }
 
-func (s *ResultResponseNumber) Value() float64 {
-	return s.value
-}
-
-type ResultResponseString struct {
-	value string
-}
-
-func (s *ResultResponseString) GetType() ResultResponseType {
-	return ResultResponseStringType
-}
-
-func (s *ResultResponseString) Value() string {
-	return s.value
-}
-
-type ResultResponseStruct struct {
-	value JSONBytes
-}
-
-func (s *ResultResponseStruct) GetType() ResultResponseType {
-	return ResultResponseStructType
-}
-
-func (s *ResultResponseStruct) Value() JSONBytes {
-	return s.value
-}
-
-type ResultResponseList struct {
-	value []JSONBytes
-}
-
-func (s *ResultResponseList) GetType() ResultResponseType {
-	return ResultResponseListType
-}
-
-func (s *ResultResponseList) Value() []JSONBytes {
-	return s.value
-}
-
-func newResultResponse(state *projections.ResultResp) ResultResponse {
+func newResultResponse(state *projections.ResultResp) IsResult {
 	_, ok := state.Result.Kind.(*structpb.Value_NullValue)
 
 	if ok {
-		return &ResultResponseNull{}
+		return &NullResult{}
 	}
 
 	numberValue, ok := state.Result.Kind.(*structpb.Value_NumberValue)
 
 	if ok {
-		return &ResultResponseNumber{
-			value: numberValue.NumberValue,
-		}
+		return Float64Result(numberValue.NumberValue)
 	}
 
 	stringValue, ok := state.Result.Kind.(*structpb.Value_StringValue)
 
 	if ok {
-		return &ResultResponseString{
-			value: stringValue.StringValue,
-		}
+		return StringResult(stringValue.StringValue)
 	}
 
 	boolValue, ok := state.Result.Kind.(*structpb.Value_BoolValue)
 
 	if ok {
-		return &ResultResponseBool{
-			value: boolValue.BoolValue,
-		}
+		return BoolResult(boolValue.BoolValue)
 	}
 
 	structValue, ok := state.Result.Kind.(*structpb.Value_StructValue)
 
 	if ok {
-		return &ResultResponseStruct{
-			value: newResultResponseStructMap(structValue.StructValue.Fields),
-		}
+		return JSONObjectResult(newResultResponseStructMap(structValue.StructValue.Fields))
 	}
 
 	listValue, ok := state.Result.Kind.(*structpb.Value_ListValue)
 
 	if ok {
-		return &ResultResponseList{
-			value: newResultResponseList(listValue.ListValue.Values),
-		}
+		return JSONObjectListResult(newResultResponseList(listValue.ListValue.Values))
 	}
 
 	return nil
@@ -148,6 +130,69 @@ func newResultResponseStructMap(grpcValue map[string]*structpb.Value) JSONBytes 
 }
 
 func newResultResponseList(grpcValue []*structpb.Value) []JSONBytes {
+	var result []JSONBytes
+
+	for _, value := range grpcValue {
+		byteValue, err := value.MarshalJSON()
+		if err != nil {
+			panic(err)
+		}
+		result = append(result, byteValue)
+	}
+
+	return result
+}
+
+func newStateResponse(state *projections.StateResp) IsResult {
+	_, ok := state.State.Kind.(*structpb.Value_NullValue)
+
+	if ok {
+		return NullResult{}
+	}
+
+	numberValue, ok := state.State.Kind.(*structpb.Value_NumberValue)
+
+	if ok {
+		return Float64Result(numberValue.NumberValue)
+	}
+
+	stringValue, ok := state.State.Kind.(*structpb.Value_StringValue)
+
+	if ok {
+		return StringResult(stringValue.StringValue)
+	}
+
+	boolValue, ok := state.State.Kind.(*structpb.Value_BoolValue)
+
+	if ok {
+		return BoolResult(boolValue.BoolValue)
+	}
+
+	structValue, ok := state.State.Kind.(*structpb.Value_StructValue)
+
+	if ok {
+		return JSONObjectResult(newStateResponseStructMap(structValue.StructValue.Fields))
+	}
+
+	listValue, ok := state.State.Kind.(*structpb.Value_ListValue)
+
+	if ok {
+		return JSONObjectListResult(newStateResponseList(listValue.ListValue.Values))
+	}
+
+	return nil
+}
+
+func newStateResponseStructMap(grpcValue map[string]*structpb.Value) JSONBytes {
+	result, err := json.Marshal(grpcValue)
+	if err != nil {
+		panic(err)
+	}
+
+	return result
+}
+
+func newStateResponseList(grpcValue []*structpb.Value) []JSONBytes {
 	var result []JSONBytes
 
 	for _, value := range grpcValue {

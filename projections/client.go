@@ -23,7 +23,7 @@ import (
 type Client struct {
 	grpcClient                   connection.GrpcClient
 	grpcProjectionsClientFactory grpc_proto_client_factory.Factory
-	statisticsClientSyncFactory  statistics.ClientSyncFactory
+	statisticsReaderFactory      statistics_internal.ReaderFactory
 }
 
 // CreateProjection creates a new projection on EventStoreDB.
@@ -71,7 +71,7 @@ func (client *Client) UpdateProjection(
 // DeleteProjection removes a projection from EventStoreDB.
 func (client *Client) DeleteProjection(
 	ctx context.Context,
-	options DeleteOptionsRequest) errors.Error {
+	options DeleteRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -92,7 +92,7 @@ func (client *Client) DeleteProjection(
 // GetProjectionStatistics returns a reader for projection's statistics.
 func (client *Client) GetProjectionStatistics(
 	ctx context.Context,
-	mode IsStatisticsByProjection) (statistics.ClientSync, errors.Error) {
+	mode IsStatisticsProjection) (statistics.Reader, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -109,7 +109,7 @@ func (client *Client) GetProjectionStatistics(
 		return nil, err
 	}
 
-	return client.statisticsClientSyncFactory.Create(statisticsClient), nil
+	return client.statisticsReaderFactory.Create(statisticsClient), nil
 }
 
 // DisableProjection disables an existing projection.
@@ -182,7 +182,7 @@ func (client *Client) EnableProjection(
 // ResetProjection resets an existing projection.
 func (client *Client) ResetProjection(
 	ctx context.Context,
-	options ResetOptionsRequest) errors.Error {
+	options ResetRequest) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -203,7 +203,7 @@ func (client *Client) ResetProjection(
 // GetProjectionState fetches a state of the projection.
 func (client *Client) GetProjectionState(
 	ctx context.Context,
-	options StateOptionsRequest) (StateResponse, errors.Error) {
+	options StateRequest) (IsResult, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -224,7 +224,7 @@ func (client *Client) GetProjectionState(
 // GetProjectionResult fetches a result of a projection.
 func (client *Client) GetProjectionResult(
 	ctx context.Context,
-	options ResultOptionsRequest) (ResultResponse, errors.Error) {
+	options ResultRequest) (IsResult, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -348,6 +348,6 @@ func NewClient(
 	return &Client{
 		grpcProjectionsClientFactory: grpc_proto_client_factory.FactoryImpl{},
 		grpcClient:                   grpcClient,
-		statisticsClientSyncFactory:  statistics_internal.ClientSyncFactoryImpl{},
+		statisticsReaderFactory:      statistics_internal.ClientSyncFactoryImpl{},
 	}
 }

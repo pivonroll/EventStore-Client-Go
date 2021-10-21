@@ -245,7 +245,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := DeleteOptionsRequest{
+	options := DeleteRequest{
 		ProjectionName: "some name",
 	}
 
@@ -356,8 +356,8 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 		handle := connection.NewMockConnectionHandle(ctrl)
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -375,7 +375,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		result, err := client.GetProjectionStatistics(ctx, mode)
@@ -757,7 +757,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := ResetOptionsRequest{
+	options := ResetRequest{
 		ProjectionName:  "some name",
 		WriteCheckpoint: true,
 	}
@@ -861,7 +861,7 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := StateOptionsRequest{
+	options := StateRequest{
 		ProjectionName: "some name",
 		Partition:      "some partition",
 	}
@@ -975,7 +975,7 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := ResultOptionsRequest{
+	options := ResultRequest{
 		ProjectionName: "some name",
 		Partition:      "some partition",
 	}
@@ -1223,8 +1223,8 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 		handle := connection.NewMockConnectionHandle(ctrl)
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 
 		responseList := []statistics.Response{
@@ -1256,7 +1256,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		allProjectionsResult, err := client.ListAllProjections(ctx)
@@ -1325,8 +1325,8 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 
 		var headers, trailers metadata.MD
 		errorCode := errors.FatalError
@@ -1347,7 +1347,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		allProjectionsResult, err := client.ListAllProjections(ctx)
@@ -1372,8 +1372,8 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 		handle := connection.NewMockConnectionHandle(ctrl)
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -1404,7 +1404,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		projectionsResult, err := client.ListContinuousProjections(ctx)
@@ -1473,8 +1473,8 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 
 		var headers, trailers metadata.MD
 
@@ -1495,7 +1495,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		allProjectionsResult, err := client.ListContinuousProjections(ctx)
@@ -1520,8 +1520,8 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 		handle := connection.NewMockConnectionHandle(ctrl)
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -1552,7 +1552,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		projectionsResult, err := client.ListOneTimeProjections(ctx)
@@ -1619,8 +1619,8 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 		handle := connection.NewMockConnectionHandle(ctrl)
 		grpcProjectionsClientFactoryInstance := grpc_proto_client_factory.NewMockFactory(ctrl)
 		grpcProjectionsClientMock := projections.NewMockProjectionsClient(ctrl)
-		statisticsClientSyncFactoryInstance := statistics_internal.NewMockClientSyncFactory(ctrl)
-		statisticsClientSyncRead := statistics_internal.NewMockClientSync(ctrl)
+		statisticsClientSyncFactoryInstance := statistics_internal.NewMockReaderFactory(ctrl)
+		statisticsClientSyncRead := statistics_internal.NewMockReader(ctrl)
 		statisticsClient := projections.NewMockProjections_StatisticsClient(ctrl)
 
 		var headers, trailers metadata.MD
@@ -1642,7 +1642,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 		client := Client{
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
-			statisticsClientSyncFactory:  statisticsClientSyncFactoryInstance,
+			statisticsReaderFactory:      statisticsClientSyncFactoryInstance,
 		}
 
 		allProjectionsResult, err := client.ListOneTimeProjections(ctx)

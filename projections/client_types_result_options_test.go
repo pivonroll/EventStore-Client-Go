@@ -10,7 +10,7 @@ import (
 
 func TestResultOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name", func(t *testing.T) {
-		options := ResultOptionsRequest{
+		options := ResultRequest{
 			ProjectionName: "name",
 		}
 		result := options.build()
@@ -25,7 +25,7 @@ func TestResultOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Non empty name with trailing spaces", func(t *testing.T) {
-		options := ResultOptionsRequest{
+		options := ResultRequest{
 			ProjectionName: " name ",
 		}
 		result := options.build()
@@ -40,7 +40,7 @@ func TestResultOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Non empty name and partition", func(t *testing.T) {
-		options := ResultOptionsRequest{
+		options := ResultRequest{
 			ProjectionName: "name",
 			Partition:      "partition",
 		}
@@ -57,7 +57,7 @@ func TestResultOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for empty name", func(t *testing.T) {
-		options := ResultOptionsRequest{
+		options := ResultRequest{
 			ProjectionName: "",
 		}
 
@@ -67,7 +67,7 @@ func TestResultOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for name consisting of spaces only", func(t *testing.T) {
-		options := ResultOptionsRequest{
+		options := ResultRequest{
 			ProjectionName: "     ",
 		}
 

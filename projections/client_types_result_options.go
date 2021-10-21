@@ -6,14 +6,15 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type ResultOptionsRequest struct {
+// ResultRequest represents input required to fetch a result of a projection.
+type ResultRequest struct {
 	ProjectionName string
 	Partition      string
 }
 
-func (resultOptionsRequest *ResultOptionsRequest) build() *projections.ResultReq {
+func (resultOptionsRequest *ResultRequest) build() *projections.ResultReq {
 	if strings.TrimSpace(resultOptionsRequest.ProjectionName) == "" {
-		panic("Failed to build ResultOptionsRequest. Trimmed projection name is an empty string")
+		panic("Failed to build ResultRequest. Trimmed projection name is an empty string")
 	}
 
 	result := &projections.ResultReq{

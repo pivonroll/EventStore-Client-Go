@@ -6,14 +6,16 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type ResetOptionsRequest struct {
+// ResetRequest contains projection's name and whether
+// to write a checkpoint or not when projection is reset.
+type ResetRequest struct {
 	ProjectionName  string
 	WriteCheckpoint bool
 }
 
-func (resetOptionsRequest *ResetOptionsRequest) build() *projections.ResetReq {
+func (resetOptionsRequest *ResetRequest) build() *projections.ResetReq {
 	if strings.TrimSpace(resetOptionsRequest.ProjectionName) == "" {
-		panic("Failed to build ResetOptionsRequest. Trimmed name is an empty string")
+		panic("Failed to build ResetRequest. Trimmed projection name is an empty string")
 	}
 
 	result := &projections.ResetReq{

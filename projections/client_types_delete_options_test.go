@@ -10,7 +10,7 @@ import (
 
 func TestDeleteOptionsRequest_Build(t *testing.T) {
 	t.Run("Set non empty name without trailing spaces", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName:         "name",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      false,
@@ -32,7 +32,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Set non empty name with trailing spaces", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName:         " name ",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      false,
@@ -54,7 +54,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Set non empty name and DeleteEmittedStreams true", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName:         "name",
 			DeleteEmittedStreams:   true,
 			DeleteStateStream:      false,
@@ -76,7 +76,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Set non empty name and SetDeleteStateStream true", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName:         "name",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      true,
@@ -98,7 +98,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Set non empty name and SetDeleteStateStream true", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName:         "name",
 			DeleteEmittedStreams:   false,
 			DeleteStateStream:      false,
@@ -120,7 +120,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for empty name", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName: "",
 		}
 		require.Panics(t, func() {
@@ -129,7 +129,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 	})
 
 	t.Run("Panics for name consisting of spaces only", func(t *testing.T) {
-		options := DeleteOptionsRequest{
+		options := DeleteRequest{
 			ProjectionName: "     ",
 		}
 		require.Panics(t, func() {

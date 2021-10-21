@@ -15,7 +15,7 @@ const (
 	ContinuousProjectionsType ProjectionType = "ContinuousProjectionsType"
 )
 
-type IsProjectionType interface {
+type isProjectionType interface {
 	GetType() ProjectionType
 }
 
@@ -53,7 +53,7 @@ func (mode ContinuousProjection) GetType() ProjectionType {
 
 // CreateRequest represents data required to create a projection at EventStoreDB.
 type CreateRequest struct {
-	Mode  IsProjectionType
+	Mode  isProjectionType
 	Query string
 }
 

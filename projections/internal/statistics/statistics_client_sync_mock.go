@@ -10,34 +10,33 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	errors "github.com/pivonroll/EventStore-Client-Go/errors"
 	statistics "github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	projections "github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-// MockClientSync is a mock of ClientSync interface.
-type MockClientSync struct {
+// MockReader is a mock of Reader interface.
+type MockReader struct {
 	ctrl     *gomock.Controller
-	recorder *MockClientSyncMockRecorder
+	recorder *MockReaderMockRecorder
 }
 
-// MockClientSyncMockRecorder is the mock recorder for MockClientSync.
-type MockClientSyncMockRecorder struct {
-	mock *MockClientSync
+// MockReaderMockRecorder is the mock recorder for MockReader.
+type MockReaderMockRecorder struct {
+	mock *MockReader
 }
 
-// NewMockClientSync creates a new mock instance.
-func NewMockClientSync(ctrl *gomock.Controller) *MockClientSync {
-	mock := &MockClientSync{ctrl: ctrl}
-	mock.recorder = &MockClientSyncMockRecorder{mock}
+// NewMockReader creates a new mock instance.
+func NewMockReader(ctrl *gomock.Controller) *MockReader {
+	mock := &MockReader{ctrl: ctrl}
+	mock.recorder = &MockReaderMockRecorder{mock}
 	return mock
 }
 
 // EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockClientSync) EXPECT() *MockClientSyncMockRecorder {
+func (m *MockReader) EXPECT() *MockReaderMockRecorder {
 	return m.recorder
 }
 
 // Read mocks base method.
-func (m *MockClientSync) Read() (statistics.Response, errors.Error) {
+func (m *MockReader) Read() (statistics.Response, errors.Error) {
 	m.ctrl.T.Helper()
 	ret := m.ctrl.Call(m, "Read")
 	ret0, _ := ret[0].(statistics.Response)
@@ -46,44 +45,7 @@ func (m *MockClientSync) Read() (statistics.Response, errors.Error) {
 }
 
 // Read indicates an expected call of Read.
-func (mr *MockClientSyncMockRecorder) Read() *gomock.Call {
+func (mr *MockReaderMockRecorder) Read() *gomock.Call {
 	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockClientSync)(nil).Read))
-}
-
-// MockClientSyncFactory is a mock of ClientSyncFactory interface.
-type MockClientSyncFactory struct {
-	ctrl     *gomock.Controller
-	recorder *MockClientSyncFactoryMockRecorder
-}
-
-// MockClientSyncFactoryMockRecorder is the mock recorder for MockClientSyncFactory.
-type MockClientSyncFactoryMockRecorder struct {
-	mock *MockClientSyncFactory
-}
-
-// NewMockClientSyncFactory creates a new mock instance.
-func NewMockClientSyncFactory(ctrl *gomock.Controller) *MockClientSyncFactory {
-	mock := &MockClientSyncFactory{ctrl: ctrl}
-	mock.recorder = &MockClientSyncFactoryMockRecorder{mock}
-	return mock
-}
-
-// EXPECT returns an object that allows the caller to indicate expected use.
-func (m *MockClientSyncFactory) EXPECT() *MockClientSyncFactoryMockRecorder {
-	return m.recorder
-}
-
-// Create mocks base method.
-func (m *MockClientSyncFactory) Create(client projections.Projections_StatisticsClient) statistics.ClientSync {
-	m.ctrl.T.Helper()
-	ret := m.ctrl.Call(m, "Create", client)
-	ret0, _ := ret[0].(statistics.ClientSync)
-	return ret0
-}
-
-// Create indicates an expected call of Create.
-func (mr *MockClientSyncFactoryMockRecorder) Create(client interface{}) *gomock.Call {
-	mr.mock.ctrl.T.Helper()
-	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Create", reflect.TypeOf((*MockClientSyncFactory)(nil).Create), client)
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Read", reflect.TypeOf((*MockReader)(nil).Read))
 }

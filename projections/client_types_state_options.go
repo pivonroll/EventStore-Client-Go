@@ -6,14 +6,15 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type StateOptionsRequest struct {
+// StateRequest represents input required to fetch state of the projection.
+type StateRequest struct {
 	ProjectionName string
 	Partition      string
 }
 
-func (stateOptionsRequest *StateOptionsRequest) build() *projections.StateReq {
+func (stateOptionsRequest *StateRequest) build() *projections.StateReq {
 	if strings.TrimSpace(stateOptionsRequest.ProjectionName) == "" {
-		panic("Failed to build StateOptionsRequest. Trimmed name is an empty string")
+		panic("Failed to build StateRequest. Trimmed name is an empty string")
 	}
 
 	result := &projections.StateReq{

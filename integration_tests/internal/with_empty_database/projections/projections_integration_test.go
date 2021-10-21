@@ -255,7 +255,11 @@ func Test_DisableProjection(t *testing.T) {
 
 	result, stdErr := statisticsClient.Read()
 	require.NoError(t, stdErr)
-	require.EqualValues(t, statistics.StatusStopped, result.Status)
+	expectedValues := []statistics.Status{
+		statistics.StatusAbortedOrStopped,
+		statistics.StatusStopped,
+	}
+	require.Contains(t, expectedValues, statistics.Status(result.Status))
 }
 
 func Test_EnableProjection(t *testing.T) {
@@ -319,15 +323,15 @@ func Test_GetResultOfProjection(t *testing.T) {
 
 	pushEventsToStream(t, eventStreamsClient, streamName, testEvent)
 
-	var projectionResult projections.ResultResponse
+	var projectionResult projections.IsResult
 
 	require.Eventually(t, func() bool {
-		resultOptions := projections.ResultOptionsRequest{
+		resultOptions := projections.ResultRequest{
 			ProjectionName: "MyContinuousProjection",
 		}
 		projectionResult, err = client.
 			GetProjectionResult(context.Background(), resultOptions)
-		return err == nil && projectionResult.GetType() == projections.ResultResponseStructType
+		return err == nil && projectionResult.ResultType() == projections.ResultTypeJSONObject
 	}, time.Second*5, time.Millisecond*500)
 
 	type resultStructType struct {
@@ -336,9 +340,9 @@ func Test_GetResultOfProjection(t *testing.T) {
 
 	var result resultStructType
 
-	structResult := projectionResult.(*projections.ResultResponseStruct)
+	structResult := projectionResult.(projections.JSONObjectResult)
 
-	stdErr := json.Unmarshal(structResult.Value(), &result)
+	stdErr := json.Unmarshal(structResult, &result)
 	require.NoError(t, stdErr)
 	require.EqualValues(t, 1, result.Count)
 }
@@ -386,14 +390,14 @@ func Test_GetStateOfProjection(t *testing.T) {
 
 	pushEventsToStream(t, eventStreamsClient, streamName, testEvent)
 
-	var projectionResult projections.StateResponse
+	var projectionResult projections.IsResult
 	require.Eventually(t, func() bool {
-		resultOptions := projections.StateOptionsRequest{
+		resultOptions := projections.StateRequest{
 			ProjectionName: "MyContinuousProjection",
 		}
 		projectionResult, err = client.
 			GetProjectionState(context.Background(), resultOptions)
-		return err == nil && projectionResult.GetType() == projections.StateResponseStructType
+		return err == nil && projectionResult.ResultType() == projections.ResultTypeJSONObject
 	}, time.Second*5, time.Millisecond*500)
 
 	type resultStructType struct {
@@ -402,9 +406,9 @@ func Test_GetStateOfProjection(t *testing.T) {
 
 	var result resultStructType
 
-	structResult := projectionResult.(*projections.StateResponseStruct)
+	structResult := projectionResult.(projections.JSONObjectResult)
 
-	stdErr := json.Unmarshal(structResult.Value(), &result)
+	stdErr := json.Unmarshal(structResult, &result)
 	require.NoError(t, stdErr)
 	require.EqualValues(t, 1, result.Count)
 }
@@ -428,7 +432,7 @@ func Test_ResetProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	resetOptions := projections.ResetOptionsRequest{
+	resetOptions := projections.ResetRequest{
 		ProjectionName: StandardProjectionStreams,
 	}
 	err := client.ResetProjection(context.Background(), resetOptions)
@@ -597,7 +601,7 @@ func Test_GetProjectionResult_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	resultOptions := projections.ResultOptionsRequest{
+	resultOptions := projections.ResultRequest{
 		ProjectionName: "MyContinuousProjection",
 	}
 	_, err := client.
@@ -610,7 +614,7 @@ func Test_GetProjectionState_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	resultOptions := projections.StateOptionsRequest{
+	resultOptions := projections.StateRequest{
 		ProjectionName: "MyContinuousProjection",
 	}
 	_, err := client.
@@ -634,7 +638,7 @@ func Test_ResetProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	resetOptions := projections.ResetOptionsRequest{
+	resetOptions := projections.ResetRequest{
 		ProjectionName: StandardProjectionStreams,
 	}
 	err := client.ResetProjection(context.Background(), resetOptions)

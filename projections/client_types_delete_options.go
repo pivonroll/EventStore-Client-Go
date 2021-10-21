@@ -6,16 +6,18 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type DeleteOptionsRequest struct {
+// DeleteRequest contains projection's name and a set of options what to do
+// with emit, state and checkpoint stream.
+type DeleteRequest struct {
 	ProjectionName         string
 	DeleteEmittedStreams   bool
 	DeleteStateStream      bool
 	DeleteCheckpointStream bool
 }
 
-func (deleteOptions *DeleteOptionsRequest) build() *projections.DeleteReq {
+func (deleteOptions *DeleteRequest) build() *projections.DeleteReq {
 	if strings.TrimSpace(deleteOptions.ProjectionName) == "" {
-		panic("Failed to build DeleteOptionsRequest. Trimmed name is an empty string")
+		panic("Failed to build DeleteRequest. Trimmed projection name is an empty string")
 	}
 
 	result := &projections.DeleteReq{

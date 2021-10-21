@@ -2,27 +2,34 @@ package statistics
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
 //go:generate mockgen -source=statistics.go -destination=../internal/statistics/statistics_client_sync_mock.go -package=statistics
 
-type ClientSync interface {
+// Reader is a reader interface for projection's statistics.
+type Reader interface {
+	// Read reads one statistics result for a projection.
 	Read() (Response, errors.Error)
 }
 
-type ClientSyncFactory interface {
-	Create(client projections.Projections_StatisticsClient) ClientSync
-}
+// Status is a status of the projection.
+type Status string
 
 const (
-	StatusAborted = "Stopped"
-	StatusStopped = "Aborted/Stopped"
-	StatusRunning = "Running"
+	// StatusAborted projection is aborted.
+	StatusAborted Status = "Stopped"
+	// StatusAbortedOrStopped projection is either aborted or stopped.
+	StatusAbortedOrStopped Status = "Aborted/Stopped"
+	// StatusStopped projection is stopped.
+	StatusStopped Status = "Stopped"
+	// StatusRunning projection is running.
+	StatusRunning Status = "Running"
 )
 
+// ModeOneTime means that mode od projection is one-time.
 const ModeOneTime = "OneTime"
 
+// Response is a result of a read operation of the statistics reader.
 type Response struct {
 	CoreProcessingTime                 int64
 	Version                            int64

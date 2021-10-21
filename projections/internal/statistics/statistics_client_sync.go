@@ -8,6 +8,6 @@ import (
 type ClientSyncFactoryImpl struct{}
 
 func (factory ClientSyncFactoryImpl) Create(
-	statisticsClient projections.Projections_StatisticsClient) statistics.ClientSync {
+	statisticsClient projections.Projections_StatisticsClient) statistics.Reader {
 	return newStatisticsClientSyncImpl(statisticsClient)
 }
