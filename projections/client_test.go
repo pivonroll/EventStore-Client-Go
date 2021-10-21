@@ -656,8 +656,8 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 	ctx := context.Background()
 
 	grpcClientConn := &grpc.ClientConn{}
-	options := EnableOptionsRequest{}
-	options.SetName("some name")
+	projectionName := "some name"
+	options := enableOptionsRequest(projectionName)
 	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
@@ -681,7 +681,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
 		}
 
-		err := client.EnableProjection(ctx, options)
+		err := client.EnableProjection(ctx, projectionName)
 		require.NoError(t, err)
 	})
 
@@ -694,7 +694,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 			grpcClient: grpcClient,
 		}
 
-		err := client.EnableProjection(ctx, options)
+		err := client.EnableProjection(ctx, projectionName)
 		require.Equal(t, errorResult, err)
 	})
 
@@ -744,7 +744,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 			grpcClient:                   grpcClient,
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
 		}
-		err := client.EnableProjection(ctx, options)
+		err := client.EnableProjection(ctx, projectionName)
 		require.Equal(t, errors.FatalError, err.Code())
 	})
 }

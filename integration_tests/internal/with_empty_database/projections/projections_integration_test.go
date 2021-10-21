@@ -241,9 +241,7 @@ func Test_EnableProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	enableOptions := projections.EnableOptionsRequest{}
-	enableOptions.SetName(StandardProjectionStreams)
-	err := client.EnableProjection(context.Background(), enableOptions)
+	err := client.EnableProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
 	stateOptions := projections.StatisticsOptionsRequest{}
@@ -563,9 +561,7 @@ func Test_EnableProjection_WithIncorrectCredentials(t *testing.T) {
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	enableOptions := projections.EnableOptionsRequest{}
-	enableOptions.SetName(StandardProjectionStreams)
-	err := client.EnableProjection(context.Background(), enableOptions)
+	err := client.EnableProjection(context.Background(), StandardProjectionStreams)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }
 

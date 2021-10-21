@@ -159,7 +159,7 @@ func (client *Client) AbortProjection(
 // EnableProjection enables a disabled projection. If projection was already enabled it does noop (no operation).
 func (client *Client) EnableProjection(
 	ctx context.Context,
-	options EnableOptionsRequest) errors.Error {
+	projectionName string) errors.Error {
 
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
@@ -169,7 +169,8 @@ func (client *Client) EnableProjection(
 	projectionsClient := client.grpcProjectionsClientFactory.Create(handle.Connection())
 
 	var headers, trailers metadata.MD
-	_, protoErr := projectionsClient.Enable(ctx, options.build(), grpc.Header(&headers), grpc.Trailer(&trailers))
+	_, protoErr := projectionsClient.Enable(ctx, enableOptionsRequest(projectionName).build(),
+		grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
 		err := client.grpcClient.HandleError(handle, headers, trailers, protoErr, errors.FatalError)
 		return err

@@ -6,24 +6,16 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type EnableOptionsRequest struct {
-	name            string
-	writeCheckpoint bool
-}
+type enableOptionsRequest string
 
-func (enableOptionsRequest *EnableOptionsRequest) SetName(name string) *EnableOptionsRequest {
-	enableOptionsRequest.name = name
-	return enableOptionsRequest
-}
-
-func (enableOptionsRequest *EnableOptionsRequest) build() *projections.EnableReq {
-	if strings.TrimSpace(enableOptionsRequest.name) == "" {
+func (enableOptionsRequest enableOptionsRequest) build() *projections.EnableReq {
+	if strings.TrimSpace(string(enableOptionsRequest)) == "" {
 		panic("Failed to build EnableOptionsRequest. Trimmed name is an empty string")
 	}
 
 	result := &projections.EnableReq{
 		Options: &projections.EnableReq_Options{
-			Name: enableOptionsRequest.name,
+			Name: string(enableOptionsRequest),
 		},
 	}
 
