@@ -57,7 +57,7 @@ func (createConfig *CreateOptionsRequest) SetMode(mode CreateConfigMode) *Create
 	return createConfig
 }
 
-func (createConfig *CreateOptionsRequest) Build() *projections.CreateReq {
+func (createConfig *CreateOptionsRequest) build() *projections.CreateReq {
 	if strings.TrimSpace(createConfig.query) == "" {
 		panic("Failed to build CreateOptionsRequest. Trimmed query is an empty string")
 	}

@@ -27,7 +27,7 @@ func TestAbortOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name", func(t *testing.T) {
 		options := AbortOptionsRequest{}
 		options.SetName("some name")
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DisableReq{
 			Options: &projections.DisableReq_Options{
@@ -42,7 +42,7 @@ func TestAbortOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name with trailing spaces", func(t *testing.T) {
 		options := AbortOptionsRequest{}
 		options.SetName(" some name ")
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DisableReq{
 			Options: &projections.DisableReq_Options{
@@ -58,7 +58,7 @@ func TestAbortOptionsRequest_Build(t *testing.T) {
 		options := AbortOptionsRequest{}
 		options.SetName("")
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -66,7 +66,7 @@ func TestAbortOptionsRequest_Build(t *testing.T) {
 		options := AbortOptionsRequest{}
 		options.SetName("    ")
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

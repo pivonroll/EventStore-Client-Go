@@ -42,7 +42,7 @@ func TestStateOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name", func(t *testing.T) {
 		options := StateOptionsRequest{}
 		options.SetName("name")
-		result := options.Build()
+		result := options.build()
 
 		expectedState := &projections.StateReq{
 			Options: &projections.StateReq_Options{
@@ -56,7 +56,7 @@ func TestStateOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name with trailing spaces", func(t *testing.T) {
 		options := StateOptionsRequest{}
 		options.SetName(" name ")
-		result := options.Build()
+		result := options.build()
 
 		expectedState := &projections.StateReq{
 			Options: &projections.StateReq_Options{
@@ -71,7 +71,7 @@ func TestStateOptionsRequest_Build(t *testing.T) {
 		options := StateOptionsRequest{}
 		options.SetName("name")
 		options.SetPartition("partition")
-		result := options.Build()
+		result := options.build()
 
 		expectedState := &projections.StateReq{
 			Options: &projections.StateReq_Options{
@@ -88,7 +88,7 @@ func TestStateOptionsRequest_Build(t *testing.T) {
 		options.SetName("")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -97,7 +97,7 @@ func TestStateOptionsRequest_Build(t *testing.T) {
 		options.SetName("    ")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

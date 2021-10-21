@@ -115,7 +115,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 			SetDeleteCheckpointStream(false).
 			SetDeleteEmittedStreams(false)
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DeleteReq{
 			Options: &projections.DeleteReq_Options{
@@ -136,7 +136,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 			SetDeleteCheckpointStream(false).
 			SetDeleteEmittedStreams(false)
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DeleteReq{
 			Options: &projections.DeleteReq_Options{
@@ -157,7 +157,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 			SetDeleteStateStream(false).
 			SetDeleteCheckpointStream(false)
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DeleteReq{
 			Options: &projections.DeleteReq_Options{
@@ -178,7 +178,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 			SetDeleteStateStream(true).
 			SetDeleteCheckpointStream(false)
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DeleteReq{
 			Options: &projections.DeleteReq_Options{
@@ -199,7 +199,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 			SetDeleteStateStream(false).
 			SetDeleteCheckpointStream(true)
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.DeleteReq{
 			Options: &projections.DeleteReq_Options{
@@ -217,7 +217,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 		options := DeleteOptionsRequest{}
 		options.SetName("")
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -225,7 +225,7 @@ func TestDeleteOptionsRequest_Build(t *testing.T) {
 		options := DeleteOptionsRequest{}
 		options.SetName("     ")
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

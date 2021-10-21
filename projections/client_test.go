@@ -38,7 +38,7 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 		TrackEmittedStreams: true,
 	})
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -116,7 +116,7 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToCreateProjectionErr).Return(errors.NewErrorCode(FailedToCreateProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -125,7 +125,7 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 		}
 
 		err := client.CreateProjection(ctx, options)
-		require.Equal(t, FailedToCreateProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -143,7 +143,7 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 			EmitEnabled: true,
 		})
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -223,7 +223,7 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToUpdateProjectionErr).Return(errors.NewErrorCode(FailedToUpdateProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -232,7 +232,7 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 		}
 
 		err := client.UpdateProjection(ctx, options)
-		require.Equal(t, FailedToUpdateProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -246,7 +246,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 	options := DeleteOptionsRequest{}
 	options.SetName("some name")
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -325,7 +325,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToDeleteProjectionErr).Return(errors.NewErrorCode(FailedToDeleteProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -334,7 +334,7 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 		}
 
 		err := client.DeleteProjection(ctx, options)
-		require.Equal(t, FailedToDeleteProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -348,7 +348,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 	options := StatisticsOptionsRequest{}
 	options.SetMode(StatisticsOptionsRequestModeAll{})
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -434,7 +434,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToFetchProjectionStatisticsErr).Return(errors.NewErrorCode(FailedToFetchProjectionStatisticsErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -444,7 +444,7 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 
 		statisticsClient, err := client.GetProjectionStatistics(ctx, options)
 		require.Nil(t, statisticsClient)
-		require.Equal(t, FailedToFetchProjectionStatisticsErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -457,7 +457,7 @@ func TestClientImpl_DisableProjection(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	options := DisableOptionsRequest{}
 	options.SetName("some name")
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -536,7 +536,7 @@ func TestClientImpl_DisableProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToDisableProjectionErr).Return(errors.NewErrorCode(FailedToDisableProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -545,7 +545,7 @@ func TestClientImpl_DisableProjection(t *testing.T) {
 		}
 
 		err := client.DisableProjection(ctx, options)
-		require.Equal(t, FailedToDisableProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -558,7 +558,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	options := AbortOptionsRequest{}
 	options.SetName("some name")
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -637,7 +637,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToAbortProjectionErr).Return(errors.NewErrorCode(FailedToAbortProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -646,7 +646,7 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 		}
 
 		err := client.AbortProjection(ctx, options)
-		require.Equal(t, FailedToAbortProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -659,7 +659,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	options := EnableOptionsRequest{}
 	options.SetName("some name")
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -738,7 +738,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToEnableProjectionErr).Return(errors.NewErrorCode(FailedToEnableProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -746,7 +746,7 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 			grpcProjectionsClientFactory: grpcProjectionsClientFactoryInstance,
 		}
 		err := client.EnableProjection(ctx, options)
-		require.Equal(t, FailedToEnableProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -759,7 +759,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	options := ResetOptionsRequest{}
 	options.SetName("some name").SetWriteCheckpoint(true)
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -839,7 +839,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToResetProjectionErr).Return(errors.NewErrorCode(FailedToResetProjectionErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -848,7 +848,7 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 		}
 
 		err := client.ResetProjection(ctx, options)
-		require.Equal(t, FailedToResetProjectionErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -861,7 +861,7 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	options := StateOptionsRequest{}
 	options.SetName("some name").SetPartition("some partition")
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	response := &projections.StateResp{
 		State: &structpb.Value{
@@ -950,7 +950,7 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToGetProjectionStateErr).Return(errors.NewErrorCode(FailedToGetProjectionStateErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -960,7 +960,7 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 
 		state, err := client.GetProjectionState(ctx, options)
 		require.Nil(t, state)
-		require.Equal(t, FailedToGetProjectionStateErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -973,7 +973,7 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 	grpcClientConn := &grpc.ClientConn{}
 	options := ResultOptionsRequest{}
 	options.SetName("some name").SetPartition("some partition")
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	response := &projections.ResultResp{
 		Result: &structpb.Value{
@@ -1062,7 +1062,7 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToGetProjectionResultErr).Return(errors.NewErrorCode(FailedToGetProjectionResultErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -1072,7 +1072,7 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 
 		state, err := client.GetProjectionResult(ctx, options)
 		require.Nil(t, state)
-		require.Equal(t, FailedToGetProjectionResultErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -1187,8 +1187,8 @@ func TestClientImpl_RestartProjectionsSubsystem(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToRestartProjectionsSubsystemErr).Return(
-				errors.NewErrorCode(FailedToRestartProjectionsSubsystemErr)),
+				errors.FatalError).Return(
+				errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -1197,7 +1197,7 @@ func TestClientImpl_RestartProjectionsSubsystem(t *testing.T) {
 		}
 
 		err := client.RestartProjectionsSubsystem(ctx)
-		require.Equal(t, FailedToRestartProjectionsSubsystemErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 }
 
@@ -1211,7 +1211,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 	options := StatisticsOptionsRequest{}
 	options.SetMode(StatisticsOptionsRequestModeAll{})
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -1299,8 +1299,8 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToFetchProjectionStatisticsErr).Return(
-				errors.NewErrorCode(FailedToFetchProjectionStatisticsErr)),
+				errors.FatalError).Return(
+				errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -1311,7 +1311,7 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 		allProjectionsResult, err := client.ListAllProjections(ctx)
 		require.Error(t, err)
 		require.Nil(t, allProjectionsResult)
-		require.Equal(t, FailedToFetchProjectionStatisticsErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 
 	t.Run("Error returned from statistics client read", func(t *testing.T) {
@@ -1362,7 +1362,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 	options := StatisticsOptionsRequest{}
 	options.SetMode(StatisticsOptionsRequestModeContinuous{})
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -1449,8 +1449,8 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToFetchProjectionStatisticsErr).Return(
-				errors.NewErrorCode(FailedToFetchProjectionStatisticsErr)),
+				errors.FatalError).Return(
+				errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -1461,7 +1461,7 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 		allProjectionsResult, err := client.ListContinuousProjections(ctx)
 		require.Error(t, err)
 		require.Nil(t, allProjectionsResult)
-		require.Equal(t, FailedToFetchProjectionStatisticsErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 
 	t.Run("Error returned from statistics client read", func(t *testing.T) {
@@ -1512,7 +1512,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 	options := StatisticsOptionsRequest{}
 	options.SetMode(StatisticsOptionsRequestModeOneTime{})
 
-	grpcOptions := options.Build()
+	grpcOptions := options.build()
 
 	t.Run("Success", func(t *testing.T) {
 		grpcClient := connection.NewMockGrpcClient(ctrl)
@@ -1599,7 +1599,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 					return nil, errorResult
 				}),
 			grpcClient.EXPECT().HandleError(handle, expectedHeader, expectedTrailer, errorResult,
-				FailedToFetchProjectionStatisticsErr).Return(errors.NewErrorCode(FailedToFetchProjectionStatisticsErr)),
+				errors.FatalError).Return(errors.NewErrorCode(errors.FatalError)),
 		)
 
 		client := Client{
@@ -1610,7 +1610,7 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 		allProjectionsResult, err := client.ListOneTimeProjections(ctx)
 		require.Error(t, err)
 		require.Nil(t, allProjectionsResult)
-		require.Equal(t, FailedToFetchProjectionStatisticsErr, err.Code())
+		require.Equal(t, errors.FatalError, err.Code())
 	})
 
 	t.Run("Error returned from statistics client read", func(t *testing.T) {

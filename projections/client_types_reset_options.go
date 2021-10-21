@@ -21,7 +21,7 @@ func (resetOptionsRequest *ResetOptionsRequest) SetWriteCheckpoint(writeCheckpoi
 	return resetOptionsRequest
 }
 
-func (resetOptionsRequest *ResetOptionsRequest) Build() *projections.ResetReq {
+func (resetOptionsRequest *ResetOptionsRequest) build() *projections.ResetReq {
 	if strings.TrimSpace(resetOptionsRequest.name) == "" {
 		panic("Failed to build ResetOptionsRequest. Trimmed name is an empty string")
 	}

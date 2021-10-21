@@ -21,7 +21,7 @@ func (resultOptionsRequest *ResultOptionsRequest) SetPartition(partition string)
 	return resultOptionsRequest
 }
 
-func (resultOptionsRequest *ResultOptionsRequest) Build() *projections.ResultReq {
+func (resultOptionsRequest *ResultOptionsRequest) build() *projections.ResultReq {
 	if strings.TrimSpace(resultOptionsRequest.name) == "" {
 		panic("Failed to build ResultOptionsRequest. Trimmed name is an empty string")
 	}

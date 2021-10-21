@@ -95,7 +95,7 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("some query")
 		options.SetMode(CreateConfigModeOneTimeOption{})
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.CreateReq{
 			Options: &projections.CreateReq_Options{
@@ -114,7 +114,7 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery(" some query ")
 		options.SetMode(CreateConfigModeOneTimeOption{})
 
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.CreateReq{
 			Options: &projections.CreateReq_Options{
@@ -133,7 +133,7 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 		options.SetMode(CreateConfigModeOneTimeOption{})
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -143,7 +143,7 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("    ")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -152,7 +152,7 @@ func TestCreateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("some query")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

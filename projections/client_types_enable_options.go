@@ -16,7 +16,7 @@ func (enableOptionsRequest *EnableOptionsRequest) SetName(name string) *EnableOp
 	return enableOptionsRequest
 }
 
-func (enableOptionsRequest *EnableOptionsRequest) Build() *projections.EnableReq {
+func (enableOptionsRequest *EnableOptionsRequest) build() *projections.EnableReq {
 	if strings.TrimSpace(enableOptionsRequest.name) == "" {
 		panic("Failed to build EnableOptionsRequest. Trimmed name is an empty string")
 	}

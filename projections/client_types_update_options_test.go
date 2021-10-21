@@ -127,7 +127,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("some query").
 			SetName("some name").
 			SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.UpdateReq{
 			Options: &projections.UpdateReq_Options{
@@ -150,7 +150,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 				SetEmitOption(UpdateOptionsEmitOptionEnabled{
 					EmitEnabled: false,
 				})
-			result := options.Build()
+			result := options.build()
 
 			expectedResult := &projections.UpdateReq{
 				Options: &projections.UpdateReq_Options{
@@ -173,7 +173,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 				SetEmitOption(UpdateOptionsEmitOptionEnabled{
 					EmitEnabled: true,
 				})
-			result := options.Build()
+			result := options.build()
 
 			expectedResult := &projections.UpdateReq{
 				Options: &projections.UpdateReq_Options{
@@ -193,7 +193,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("some query").
 			SetName(" some name ").
 			SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.UpdateReq{
 			Options: &projections.UpdateReq_Options{
@@ -213,7 +213,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery(" some query ").
 			SetName("some name").
 			SetEmitOption(UpdateOptionsEmitOptionNoEmit{})
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.UpdateReq{
 			Options: &projections.UpdateReq_Options{
@@ -233,7 +233,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetName("")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -242,7 +242,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetName("     ")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -251,7 +251,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -260,7 +260,7 @@ func TestUpdateOptionsRequest_Build(t *testing.T) {
 		options.SetQuery("     ")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

@@ -33,7 +33,7 @@ func (deleteOptions *DeleteOptionsRequest) SetDeleteCheckpointStream(delete bool
 	return deleteOptions
 }
 
-func (deleteOptions *DeleteOptionsRequest) Build() *projections.DeleteReq {
+func (deleteOptions *DeleteOptionsRequest) build() *projections.DeleteReq {
 	if strings.TrimSpace(deleteOptions.name) == "" {
 		panic("Failed to build DeleteOptionsRequest. Trimmed name is an empty string")
 	}

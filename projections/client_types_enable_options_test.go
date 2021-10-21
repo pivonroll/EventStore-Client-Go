@@ -27,7 +27,7 @@ func TestEnableOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name", func(t *testing.T) {
 		options := EnableOptionsRequest{}
 		options.SetName("name")
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.EnableReq{
 			Options: &projections.EnableReq_Options{
@@ -41,7 +41,7 @@ func TestEnableOptionsRequest_Build(t *testing.T) {
 	t.Run("Non empty name with trailing spaces", func(t *testing.T) {
 		options := EnableOptionsRequest{}
 		options.SetName(" name ")
-		result := options.Build()
+		result := options.build()
 
 		expectedResult := &projections.EnableReq{
 			Options: &projections.EnableReq_Options{
@@ -57,7 +57,7 @@ func TestEnableOptionsRequest_Build(t *testing.T) {
 		options.SetName("")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 
@@ -66,7 +66,7 @@ func TestEnableOptionsRequest_Build(t *testing.T) {
 		options.SetName("    ")
 
 		require.Panics(t, func() {
-			options.Build()
+			options.build()
 		})
 	})
 }

@@ -15,7 +15,7 @@ func (disableOptionsRequest *DisableOptionsRequest) SetName(name string) *Disabl
 	return disableOptionsRequest
 }
 
-func (disableOptionsRequest *DisableOptionsRequest) Build() *projections.DisableReq {
+func (disableOptionsRequest *DisableOptionsRequest) build() *projections.DisableReq {
 	if strings.TrimSpace(disableOptionsRequest.name) == "" {
 		panic("Failed to build DisableOptionsRequest. Trimmed name is an empty string")
 	}

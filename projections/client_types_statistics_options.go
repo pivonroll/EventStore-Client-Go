@@ -62,7 +62,7 @@ func (statisticsOptions *StatisticsOptionsRequest) SetMode(mode StatisticsOption
 	return statisticsOptions
 }
 
-func (statisticsOptions *StatisticsOptionsRequest) Build() *projections.StatisticsReq {
+func (statisticsOptions *StatisticsOptionsRequest) build() *projections.StatisticsReq {
 	result := &projections.StatisticsReq{
 		Options: &projections.StatisticsReq_Options{
 			Mode: nil,

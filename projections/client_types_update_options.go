@@ -53,7 +53,7 @@ func (updateConfig *UpdateOptionsRequest) SetEmitOption(option UpdateOptionsEmit
 	return updateConfig
 }
 
-func (updateConfig *UpdateOptionsRequest) Build() *projections.UpdateReq {
+func (updateConfig *UpdateOptionsRequest) build() *projections.UpdateReq {
 	if strings.TrimSpace(updateConfig.name) == "" {
 		panic("Failed to build UpdateOptionsRequest. Trimmed name is an empty string")
 	}

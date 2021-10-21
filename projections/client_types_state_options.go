@@ -21,7 +21,7 @@ func (stateOptionsRequest *StateOptionsRequest) SetPartition(partition string) *
 	return stateOptionsRequest
 }
 
-func (stateOptionsRequest *StateOptionsRequest) Build() *projections.StateReq {
+func (stateOptionsRequest *StateOptionsRequest) build() *projections.StateReq {
 	if strings.TrimSpace(stateOptionsRequest.name) == "" {
 		panic("Failed to build StateOptionsRequest. Trimmed name is an empty string")
 	}
