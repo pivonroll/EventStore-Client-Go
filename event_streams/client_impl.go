@@ -32,7 +32,7 @@ func NewClient(grpcClient connection.GrpcClient) *Client {
 	}
 }
 
-// Client is an implementation of a Client interface which can interact with EventStoreDB streams.
+// Client which can interact with EventStoreDB streams.
 type Client struct {
 	grpcClient               connection.GrpcClient
 	deleteResponseAdapter    deleteResponseAdapter
