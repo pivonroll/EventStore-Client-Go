@@ -115,7 +115,7 @@ func (client *Client) GetProjectionStatistics(
 // DisableProjection disables an existing projection.
 func (client *Client) DisableProjection(
 	ctx context.Context,
-	options DisableOptionsRequest) errors.Error {
+	projectionName string) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -125,7 +125,8 @@ func (client *Client) DisableProjection(
 
 	var headers, trailers metadata.MD
 
-	_, protoErr := projectionsClient.Disable(ctx, options.build(), grpc.Header(&headers), grpc.Trailer(&trailers))
+	_, protoErr := projectionsClient.Disable(ctx, disableOptionsRequest(projectionName).build(),
+		grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
 		err := client.grpcClient.HandleError(handle, headers, trailers, protoErr, errors.FatalError)
 		return err
