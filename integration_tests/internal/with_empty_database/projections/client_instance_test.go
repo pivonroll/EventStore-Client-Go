@@ -16,7 +16,7 @@ func initializeContainerAndClient(t *testing.T) (projections.Client,
 			"EVENTSTORE_START_STANDARD_PROJECTIONS": "true",
 		})
 
-	client := projections.ClientFactoryImpl{}.Create(grpcClient)
+	client := projections.NewClientImpl(grpcClient)
 
 	return client, closeFunc
 }
@@ -30,7 +30,7 @@ func initializeClientAndEventStreamsClient(t *testing.T) (projections.Client,
 			"EVENTSTORE_START_STANDARD_PROJECTIONS": "true",
 		})
 
-	client := projections.ClientFactoryImpl{}.Create(grpcClient)
+	client := projections.NewClientImpl(grpcClient)
 	eventStreamsClient := event_streams.NewClient(grpcClient)
 
 	return client, eventStreamsClient, closeFunc
@@ -41,6 +41,6 @@ func initializeContainerAndClientWithCredentials(t *testing.T,
 	password string, envVariableOverrides map[string]string) (projections.Client, test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClientWithCredentials(t, username, password, envVariableOverrides)
 
-	client := projections.ClientFactoryImpl{}.Create(grpcClient)
+	client := projections.NewClientImpl(grpcClient)
 	return client, closeFunc
 }

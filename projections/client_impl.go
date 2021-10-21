@@ -1,3 +1,8 @@
+// Header
+
+// Package projections provides interaction with projections in EventStoreDB.
+// Before accessing streams a grpc connection needs to be established with EventStore through
+// github.com/pivonroll/EventStore-Client-Go/connection package.
 package projections
 
 import (
@@ -350,13 +355,11 @@ func (client *ClientImpl) ListOneTimeProjections(
 	return result, nil
 }
 
-func newClientImpl(
-	grpcClient connection.GrpcClient,
-	grpcProjectionsClientFactory grpcProjectionsClientFactory,
-	statisticsClientSyncFactory statisticsClientSyncFactory) *ClientImpl {
+func NewClientImpl(
+	grpcClient connection.GrpcClient) *ClientImpl {
 	return &ClientImpl{
-		grpcProjectionsClientFactory: grpcProjectionsClientFactory,
+		grpcProjectionsClientFactory: grpcProjectionsClientFactoryImpl{},
 		grpcClient:                   grpcClient,
-		statisticsClientSyncFactory:  statisticsClientSyncFactory,
+		statisticsClientSyncFactory:  statisticsClientSyncFactoryImpl{},
 	}
 }

@@ -1,7 +1,5 @@
 package projections
 
-//go:generate mockgen -source=client.go -destination=client_mock.go -package=projections
-
 import (
 	"context"
 
