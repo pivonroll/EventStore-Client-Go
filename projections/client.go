@@ -92,7 +92,7 @@ func (client *Client) DeleteProjection(
 // GetProjectionStatistics returns a reader for projection's statistics.
 func (client *Client) GetProjectionStatistics(
 	ctx context.Context,
-	options StatisticsOptionsRequest) (statistics.ClientSync, errors.Error) {
+	mode StatisticsOptionsRequestMode) (statistics.ClientSync, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -102,7 +102,7 @@ func (client *Client) GetProjectionStatistics(
 
 	var headers, trailers metadata.MD
 
-	statisticsClient, protoErr := projectionsClient.Statistics(ctx, options.build(),
+	statisticsClient, protoErr := projectionsClient.Statistics(ctx, buildStatisticsRequest(mode),
 		grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
 		err := client.grpcClient.HandleError(handle, headers, trailers, protoErr, errors.FatalError)
@@ -266,10 +266,7 @@ func (client *Client) RestartProjectionsSubsystem(ctx context.Context) errors.Er
 func (client *Client) ListAllProjections(
 	ctx context.Context) ([]statistics.Response, errors.Error) {
 
-	options := StatisticsOptionsRequest{}
-	options.SetMode(StatisticsOptionsRequestModeAll{})
-
-	statisticsClient, err := client.GetProjectionStatistics(ctx, options)
+	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsOptionsRequestModeAll{})
 	if err != nil {
 		return nil, err
 	}
@@ -295,10 +292,8 @@ func (client *Client) ListAllProjections(
 // ListContinuousProjections lists details of all continuous projections.
 func (client *Client) ListContinuousProjections(
 	ctx context.Context) ([]statistics.Response, errors.Error) {
-	options := StatisticsOptionsRequest{}
-	options.SetMode(StatisticsOptionsRequestModeContinuous{})
 
-	statisticsClient, err := client.GetProjectionStatistics(ctx, options)
+	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsOptionsRequestModeContinuous{})
 	if err != nil {
 		return nil, err
 	}
@@ -323,10 +318,8 @@ func (client *Client) ListContinuousProjections(
 // ListOneTimeProjections lists details of all one-time projections.
 func (client *Client) ListOneTimeProjections(
 	ctx context.Context) ([]statistics.Response, errors.Error) {
-	options := StatisticsOptionsRequest{}
-	options.SetMode(StatisticsOptionsRequestModeOneTime{})
 
-	statisticsClient, err := client.GetProjectionStatistics(ctx, options)
+	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsOptionsRequestModeOneTime{})
 	if err != nil {
 		return nil, err
 	}

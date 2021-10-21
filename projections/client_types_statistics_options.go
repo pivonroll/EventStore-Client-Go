@@ -53,40 +53,31 @@ func (s StatisticsOptionsRequestModeOneTime) GetType() StatisticsOptionsRequestM
 	return StatisticsOptionsRequestModeOneTimeType
 }
 
-type StatisticsOptionsRequest struct {
-	mode StatisticsOptionsRequestMode
-}
-
-func (statisticsOptions *StatisticsOptionsRequest) SetMode(mode StatisticsOptionsRequestMode) *StatisticsOptionsRequest {
-	statisticsOptions.mode = mode
-	return statisticsOptions
-}
-
-func (statisticsOptions *StatisticsOptionsRequest) build() *projections.StatisticsReq {
+func buildStatisticsRequest(mode StatisticsOptionsRequestMode) *projections.StatisticsReq {
 	result := &projections.StatisticsReq{
 		Options: &projections.StatisticsReq_Options{
 			Mode: nil,
 		},
 	}
 
-	if statisticsOptions.mode.GetType() == StatisticsOptionsRequestModeAllType {
+	if mode.GetType() == StatisticsOptionsRequestModeAllType {
 		result.Options.Mode = &projections.StatisticsReq_Options_All{
 			All: &shared.Empty{},
 		}
-	} else if statisticsOptions.mode.GetType() == StatisticsOptionsRequestModeTransientType {
+	} else if mode.GetType() == StatisticsOptionsRequestModeTransientType {
 		result.Options.Mode = &projections.StatisticsReq_Options_Transient{
 			Transient: &shared.Empty{},
 		}
-	} else if statisticsOptions.mode.GetType() == StatisticsOptionsRequestModeContinuousType {
+	} else if mode.GetType() == StatisticsOptionsRequestModeContinuousType {
 		result.Options.Mode = &projections.StatisticsReq_Options_Continuous{
 			Continuous: &shared.Empty{},
 		}
-	} else if statisticsOptions.mode.GetType() == StatisticsOptionsRequestModeOneTimeType {
+	} else if mode.GetType() == StatisticsOptionsRequestModeOneTimeType {
 		result.Options.Mode = &projections.StatisticsReq_Options_OneTime{
 			OneTime: &shared.Empty{},
 		}
-	} else if statisticsOptions.mode.GetType() == StatisticsOptionsRequestModeNameType {
-		mode := statisticsOptions.mode.(StatisticsOptionsRequestModeName)
+	} else if mode.GetType() == StatisticsOptionsRequestModeNameType {
+		mode := mode.(StatisticsOptionsRequestModeName)
 		if strings.TrimSpace(mode.Name) == "" {
 			panic("Failed to build StatisticsOptionsRequest. Trimmed name is an empty string")
 		}

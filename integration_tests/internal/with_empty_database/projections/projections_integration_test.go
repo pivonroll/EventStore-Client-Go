@@ -204,11 +204,9 @@ func Test_AbortProjection(t *testing.T) {
 	err := client.AbortProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
-	stateOptions := projections.StatisticsOptionsRequest{}
-	stateOptions.SetMode(projections.StatisticsOptionsRequestModeName{
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
 		Name: StandardProjectionStreams,
 	})
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), stateOptions)
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
 
@@ -224,11 +222,9 @@ func Test_DisableProjection(t *testing.T) {
 	err := client.DisableProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
-	stateOptions := projections.StatisticsOptionsRequest{}
-	stateOptions.SetMode(projections.StatisticsOptionsRequestModeName{
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
 		Name: StandardProjectionStreams,
 	})
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), stateOptions)
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
 
@@ -244,11 +240,9 @@ func Test_EnableProjection(t *testing.T) {
 	err := client.EnableProjection(context.Background(), StandardProjectionStreams)
 	require.NoError(t, err)
 
-	stateOptions := projections.StatisticsOptionsRequest{}
-	stateOptions.SetMode(projections.StatisticsOptionsRequestModeName{
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
 		Name: StandardProjectionStreams,
 	})
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), stateOptions)
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
 
@@ -388,11 +382,9 @@ func Test_GetStatusOfProjection(t *testing.T) {
 	client, closeFunc := initializeContainerAndClient(t)
 	defer closeFunc()
 
-	stateOptions := projections.StatisticsOptionsRequest{}
-	stateOptions.SetMode(projections.StatisticsOptionsRequestModeName{
+	statisticsClient, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
 		Name: StandardProjectionStreams,
 	})
-	statisticsClient, err := client.GetProjectionStatistics(context.Background(), stateOptions)
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
 
@@ -410,12 +402,10 @@ func Test_ResetProjection(t *testing.T) {
 	err := client.ResetProjection(context.Background(), resetOptions)
 	require.NoError(t, err)
 
-	stateOptions := projections.StatisticsOptionsRequest{}
-	stateOptions.SetMode(projections.StatisticsOptionsRequestModeName{
-		Name: StandardProjectionStreams,
-	})
 	statisticsClient, err := client.
-		GetProjectionStatistics(context.Background(), stateOptions)
+		GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
+			Name: StandardProjectionStreams,
+		})
 	require.NoError(t, err)
 	require.NotNil(t, statisticsClient)
 
@@ -594,11 +584,9 @@ func Test_GetProjectionStatistics_WithIncorrectCredentials_DoesNotFail(t *testin
 		"wrong_user_name", "wrong_password", nil)
 	defer closeFunc()
 
-	stateOptions := projections.StatisticsOptionsRequest{}
-	stateOptions.SetMode(projections.StatisticsOptionsRequestModeName{
+	_, err := client.GetProjectionStatistics(context.Background(), projections.StatisticsOptionsRequestModeName{
 		Name: StandardProjectionStreams,
 	})
-	_, err := client.GetProjectionStatistics(context.Background(), stateOptions)
 	require.NoError(t, err)
 }
 
