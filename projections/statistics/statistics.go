@@ -1,36 +1,29 @@
-package projections
+package statistics
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/errors"
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-//go:generate mockgen -source=statistics_client_sync.go -destination=statistics_client_sync_mock.go -package=projections
+//go:generate mockgen -source=statistics.go -destination=../internal/statistics/statistics_client_sync_mock.go -package=statistics
 
-type StatisticsClientSync interface {
-	Read() (StatisticsClientResponse, errors.Error)
+type ClientSync interface {
+	Read() (Response, errors.Error)
 }
 
-type statisticsClientSyncFactory interface {
-	Create(client projections.Projections_StatisticsClient) StatisticsClientSync
-}
-
-type statisticsClientSyncFactoryImpl struct{}
-
-func (factory statisticsClientSyncFactoryImpl) Create(
-	statisticsClient projections.Projections_StatisticsClient) StatisticsClientSync {
-	return newStatisticsClientSyncImpl(statisticsClient)
+type ClientSyncFactory interface {
+	Create(client projections.Projections_StatisticsClient) ClientSync
 }
 
 const (
-	StatisticsStatusAborted = "Stopped"
-	StatisticsStatusStopped = "Aborted/Stopped"
-	StatisticsStatusRunning = "Running"
+	StatusAborted = "Stopped"
+	StatusStopped = "Aborted/Stopped"
+	StatusRunning = "Running"
 )
 
-const StatisticsModeOneTime = "OneTime"
+const ModeOneTime = "OneTime"
 
-type StatisticsClientResponse struct {
+type Response struct {
 	CoreProcessingTime                 int64
 	Version                            int64
 	Epoch                              int64

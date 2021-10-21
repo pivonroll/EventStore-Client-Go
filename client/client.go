@@ -31,8 +31,8 @@ func (client *Client) Close() {
 	client.grpcClient.Close()
 }
 
-func (client *Client) Projections() projections.Client {
-	return projections.NewClientImpl(client.grpcClient)
+func (client *Client) Projections() *projections.Client {
+	return projections.NewClient(client.grpcClient)
 }
 
 func (client *Client) UserManagement() *user_management.Client {

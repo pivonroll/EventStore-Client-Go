@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
 
 	"github.com/stretchr/testify/require"
 
@@ -215,7 +216,7 @@ func Test_AbortProjection(t *testing.T) {
 
 	result, stdErr := statisticsClient.Read()
 	require.NoError(t, stdErr)
-	require.EqualValues(t, projections.StatisticsStatusAborted, result.Status)
+	require.EqualValues(t, statistics.StatusAborted, result.Status)
 }
 
 func Test_DisableProjection(t *testing.T) {
@@ -237,7 +238,7 @@ func Test_DisableProjection(t *testing.T) {
 
 	result, stdErr := statisticsClient.Read()
 	require.NoError(t, stdErr)
-	require.EqualValues(t, projections.StatisticsStatusStopped, result.Status)
+	require.EqualValues(t, statistics.StatusStopped, result.Status)
 }
 
 func Test_EnableProjection(t *testing.T) {
@@ -259,7 +260,7 @@ func Test_EnableProjection(t *testing.T) {
 
 	result, stdErr := statisticsClient.Read()
 	require.NoError(t, stdErr)
-	require.EqualValues(t, projections.StatisticsStatusRunning, result.Status)
+	require.EqualValues(t, statistics.StatusRunning, result.Status)
 }
 
 func Test_GetResultOfProjection(t *testing.T) {
@@ -426,7 +427,7 @@ func Test_ResetProjection(t *testing.T) {
 
 	result, stdErr := statisticsClient.Read()
 	require.NoError(t, stdErr)
-	require.EqualValues(t, projections.StatisticsStatusRunning, result.Status)
+	require.EqualValues(t, statistics.StatusRunning, result.Status)
 }
 
 func Test_RestartProjectionSubsystem(t *testing.T) {
@@ -513,7 +514,7 @@ func Test_ListOneTimeProjections(t *testing.T) {
 	require.NotNil(t, result)
 	require.Len(t, result, 1)
 
-	require.Equal(t, projections.StatisticsModeOneTime, result[0].Mode)
+	require.Equal(t, statistics.ModeOneTime, result[0].Mode)
 }
 
 func Test_CreateProjection_WithIncorrectCredentials(t *testing.T) {

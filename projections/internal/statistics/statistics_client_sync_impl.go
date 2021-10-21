@@ -1,24 +1,25 @@
-package projections
+package statistics
 
 import (
 	"io"
 
 	"github.com/pivonroll/EventStore-Client-Go/connection"
 	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
 	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
 )
 
-type StatisticsClientSyncImpl struct {
+type ClientSyncImpl struct {
 	client             projections.Projections_StatisticsClient
 	readRequestChannel chan chan statisticsReadResult
 }
 
 type statisticsReadResult struct {
-	statisticsClientResponse StatisticsClientResponse
+	statisticsClientResponse statistics.Response
 	err                      errors.Error
 }
 
-func (this *StatisticsClientSyncImpl) Read() (StatisticsClientResponse, errors.Error) {
+func (this *ClientSyncImpl) Read() (statistics.Response, errors.Error) {
 	channel := make(chan statisticsReadResult)
 
 	this.readRequestChannel <- channel
@@ -27,21 +28,21 @@ func (this *StatisticsClientSyncImpl) Read() (StatisticsClientResponse, errors.E
 	return resp.statisticsClientResponse, resp.err
 }
 
-func (statisticsSync *StatisticsClientSyncImpl) readOne() (StatisticsClientResponse, errors.Error) {
+func (statisticsSync *ClientSyncImpl) readOne() (statistics.Response, errors.Error) {
 	result, protoErr := statisticsSync.client.Recv()
 	if protoErr != nil {
 		if protoErr == io.EOF {
-			return StatisticsClientResponse{}, errors.NewError(errors.EndOfStream, protoErr)
+			return statistics.Response{}, errors.NewError(errors.EndOfStream, protoErr)
 		}
 		trailer := statisticsSync.client.Trailer()
 		err := connection.GetErrorFromProtoException(trailer, protoErr)
 		if err != nil {
-			return StatisticsClientResponse{}, err
+			return statistics.Response{}, err
 		}
-		return StatisticsClientResponse{}, errors.NewError(errors.FatalError, protoErr)
+		return statistics.Response{}, errors.NewError(errors.FatalError, protoErr)
 	}
 
-	return StatisticsClientResponse{
+	return statistics.Response{
 		CoreProcessingTime:                 result.Details.CoreProcessingTime,
 		Version:                            result.Details.Version,
 		Epoch:                              result.Details.Epoch,
@@ -64,7 +65,7 @@ func (statisticsSync *StatisticsClientSyncImpl) readOne() (StatisticsClientRespo
 	}, nil
 }
 
-func (statisticsSync *StatisticsClientSyncImpl) readLoop() {
+func (statisticsSync *ClientSyncImpl) readLoop() {
 	for {
 		responseChannel := <-statisticsSync.readRequestChannel
 		result, err := statisticsSync.readOne()
@@ -78,8 +79,8 @@ func (statisticsSync *StatisticsClientSyncImpl) readLoop() {
 	}
 }
 
-func newStatisticsClientSyncImpl(client projections.Projections_StatisticsClient) *StatisticsClientSyncImpl {
-	statisticsReadClient := &StatisticsClientSyncImpl{
+func newStatisticsClientSyncImpl(client projections.Projections_StatisticsClient) *ClientSyncImpl {
+	statisticsReadClient := &ClientSyncImpl{
 		client:             client,
 		readRequestChannel: make(chan chan statisticsReadResult),
 	}
