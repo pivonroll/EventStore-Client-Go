@@ -11,41 +11,41 @@ jobs:
             matrix:
                 include:
                     - target: connection
-                      impl_dir: './core/connection/**'
+                      source_dir: './core/connection/**'
                       test_dir: './integration_tests/internal/with_empty_database/connection/**'
                     - target: event_streams/append_to_stream
-                      impl_dir: './event_streams/**'
+                      source_dir: './event_streams/**'
                       test_dir: './integration_tests/internal/with_empty_database/event_streams/append_to_stream/**'
                     - target: event_streams/batch_append_to_stream
-                      impl_dir: './event_streams/**'
+                      source_dir: './event_streams/**'
                       test_dir: './integration_tests/internal/with_empty_database/event_streams/batch_append_to_stream/**'
                     - target: event_streams/delete_stream
-                      impl_dir: './event_streams/**'
+                      source_dir: './event_streams/**'
                       test_dir: './integration_tests/internal/with_empty_database/event_streams/delete_stream/**'
                     - target: event_streams/read_from_stream
-                      impl_dir: './event_streams/**'
+                      source_dir: './event_streams/**'
                       test_dir: './integration_tests/internal/with_empty_database/event_streams/read_from_stream/**'
                     - target: event_streams/stream_metadata
-                      impl_dir: './event_streams/**'
+                      source_dir: './event_streams/**'
                       test_dir: './integration_tests/internal/with_empty_database/event_streams/stream_metadata/**'
                     - target: event_streams/subscribe_to_stream
-                      impl_dir: './event_streams/**'
+                      source_dir: './event_streams/**'
                       test_dir: './integration_tests/internal/with_empty_database/event_streams/subscribe_to_stream/**'
                     - target: operations
-                      impl_dir: './operations/**'
+                      source_dir: './operations/**'
                       test_dir: './integration_tests/internal/with_empty_database/operations/**'
                     - target: persistent
-                      impl_dir: './persistent/**'
+                      source_dir: './persistent/**'
                       test_dir: './integration_tests/internal/with_empty_database/persistent/**'
                     - target: projections
-                      impl_dir: './projections/**'
+                      source_dir: './projections/**'
                       test_dir: './integration_tests/internal/with_empty_database/projections/**'
                     - target: user_management
-                      impl_dir: './user_management/**'
+                      source_dir: './user_management/**'
                       test_dir: './integration_tests/internal/with_empty_database/user_management/**'
             fail-fast: false
 
-        name: Run - ${{ matrix.target }}
+        name: Test - ${{ matrix.target }}
 
         steps:
             - uses: actions/checkout@v1
@@ -55,7 +55,7 @@ jobs:
               uses: actions/cache@v2
               with:
                   path: ./README.md
-                  key: ${{ runner.os }}-integration-prepop-test-${{ hashFiles(matrix.test_dir, matrix.impl_dir, 'core/**', 'protos/**') }}
+                  key: ${{ runner.os }}-integration-empty-db-test-${{ hashFiles(matrix.test_dir, matrix.source_dir, 'core/**', 'protos/**') }}
 
             - name: Docker Pull
               if: ${{ steps.cache-events.outputs.cache-hit != 'true' }}

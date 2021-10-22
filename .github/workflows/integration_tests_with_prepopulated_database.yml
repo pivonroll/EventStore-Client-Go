@@ -6,17 +6,29 @@ on:
             - develop
 jobs:
     integration-tests-with-prepopulated-database:
-        name: Run
         strategy:
             matrix:
-                domain: [ event_streams ]
+                include:
+                    - target: event_streams
+                      source_dir: 'event_streams/**'
+                      test_dir: './integration_tests/internal/with_prepopulated_database/event_streams/**'
             fail-fast: false
         runs-on: ubuntu-18.04
+
+        name: Test - ${{ matrix.domain }}
 
         steps:
             -   uses: actions/checkout@v1
 
+            -   name: Cache tests
+                id: cache
+                uses: actions/cache@v2
+                with:
+                    path: ./README.md
+                    key: ${{ runner.os }}-integration-prepop-db-test-${{ hashFiles(matrix.test_dir, matrix.source_dir, 'core/**', 'protos/**') }}
+
             -   name: Docker Login
+                if: ${{ steps.cache.outputs.cache-hit != 'true' }}
                 run: |
                     (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
                     (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
@@ -29,23 +41,10 @@ jobs:
                     (exit 1)
 
             -   name: Tests
+                if: ${{ steps.cache.outputs.cache-hit != 'true' }}
                 run: |
                     touch vars.env
                     docker-compose up
                     cd integration_tests/internal/with_prepopulated_database/${{ matrix.domain }}
                     go test -v ./...
                     docker-compose down
-
-    linting:
-        needs: integration-tests-with-prepopulated-database
-        name: Linting
-        runs-on: ubuntu-18.04
-
-        steps:
-            - uses: actions/checkout@v1
-
-            - name: Linting
-              run: go vet ./...
-
-            - name: Code formatting checks
-              run: diff -u <(echo -n) <(goimports -d ./)
