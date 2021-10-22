@@ -6,7 +6,7 @@ on:
             - develop
 jobs:
     integration-tests-with-prepopulated-database:
-        name: Integration Tests With Prepopulated Database
+        name: Run
         strategy:
             matrix:
                 domain: [ event_streams ]
