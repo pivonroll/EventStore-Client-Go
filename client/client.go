@@ -11,18 +11,16 @@ import (
 
 // Client ...
 type Client struct {
-	grpcClient              connection.GrpcClient
-	Config                  *connection.Configuration
-	operationsClientFactory operations.ClientFactory
+	grpcClient connection.GrpcClient
+	Config     *connection.Configuration
 }
 
 // NewClient ...
 func NewClient(configuration *connection.Configuration) (*Client, error) {
 	grpcClient := connection.NewGrpcClient(*configuration)
 	return &Client{
-		grpcClient:              grpcClient,
-		Config:                  configuration,
-		operationsClientFactory: operations.ClientFactoryImpl{},
+		grpcClient: grpcClient,
+		Config:     configuration,
 	}, nil
 }
 
@@ -47,6 +45,6 @@ func (client *Client) PersistentSubscriptions() *persistent.Client {
 	return persistent.NewClient(client.grpcClient)
 }
 
-func (client *Client) Operations() operations.Client {
-	return client.operationsClientFactory.Create(client.grpcClient)
+func (client *Client) Operations() *operations.Client {
+	return operations.NewClient(client.grpcClient)
 }
