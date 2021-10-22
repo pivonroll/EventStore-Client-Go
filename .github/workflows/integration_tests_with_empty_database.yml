@@ -1,0 +1,61 @@
+name: Integration Tests With Empty Database
+on:
+    pull_request:
+    push:
+        branches:
+            - develop
+jobs:
+    integration-tests-with-empty-database:
+        name: Integration Tests With Empty Database
+        strategy:
+            matrix:
+                domain:
+                    - connection
+                    - event_streams/append_to_stream
+                    - event_streams/batch_append_to_stream
+                    - event_streams/delete_stream
+                    - event_streams/read_from_stream
+                    - event_streams/stream_metadata
+                    - event_streams/subscribe_to_stream
+                    - operations
+                    - persistent
+                    - projections
+                    - user_management
+            fail-fast: false
+        runs-on: ubuntu-18.04
+
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Docker Login
+              run: |
+                  (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
+                  (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
+                  (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
+                  (exit 1)
+                  (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                  (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                  (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                  (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                  (exit 1)
+
+            - name: Tests
+              if: ${{ matrix.domain != 'connection' }}
+              run: |
+                  touch vars.env
+                  docker-compose up
+                  cd integration_tests/internal/with_empty_database/${{ matrix.domain }}
+                  go test -v ./...
+                  docker-compose down
+
+            - name: Tests with cluster
+              if: ${{ matrix.domain == 'connection' }}
+              run: |
+                  touch vars.env
+                  docker-compose up
+                  docker-compose -f cluster-docker-compose.yml up -d
+                  cd integration_tests/internal/with_empty_database/${{ matrix.domain }}
+                  go test -v ./...
+                  cd ../../../..
+                  docker-compose -f cluster-docker-compose.yml down
+                  docker-compose down

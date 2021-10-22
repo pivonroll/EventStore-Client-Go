@@ -463,7 +463,7 @@ func TestConnectionStringWithCertificateFile(t *testing.T) {
 	assert.Nil(t, config)
 	assert.Contains(t, err.Error(), "open invalidPath")
 
-	config, err = connection.ParseConnectionString("esdb://user:pass@127.0.0.1/?tlsCAFile=../certs/node/node.crt")
+	config, err = connection.ParseConnectionString("esdb://user:pass@127.0.0.1/?tlsCAFile=../../certs/node/node.crt")
 	assert.Nil(t, err)
 	require.NotNil(t, config)
 	assert.NotNil(t, config.RootCAs)
