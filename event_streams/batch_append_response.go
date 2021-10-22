@@ -28,6 +28,8 @@ type BatchAppendResponse struct {
 	expectedStreamPosition isBatchAppendResponseExpectedStreamPosition
 }
 
+const unusedVar = "aa"
+
 // GetCorrelationId returns a correlation id the client has sent along with a
 // chunk of events to append to EventStoreDB stream.
 func (response BatchAppendResponse) GetCorrelationId() uuid.UUID {
