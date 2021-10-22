@@ -16,6 +16,8 @@ type SubscriptionGroupForStreamAllRequest struct {
 	Settings SubscriptionGroupSettings // setting for a persistent subscription group
 }
 
+const unused = "aaa"
+
 func (request SubscriptionGroupForStreamAllRequest) build() *persistent.CreateReq {
 	streamOption := &persistent.CreateReq_Options_All{
 		All: &persistent.CreateReq_AllOptions{},
