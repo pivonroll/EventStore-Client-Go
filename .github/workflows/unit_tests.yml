@@ -6,7 +6,7 @@ on:
             - develop
 jobs:
     unit-tests:
-        name: Unit Tests
+        name: Run
         runs-on: ubuntu-18.04
 
         steps:

@@ -6,28 +6,59 @@ on:
             - develop
 jobs:
     integration-tests-with-empty-database:
-        name: Integration Tests With Empty Database
+        runs-on: ubuntu-18.04
         strategy:
             matrix:
-                domain:
-                    - connection
-                    - event_streams/append_to_stream
-                    - event_streams/batch_append_to_stream
-                    - event_streams/delete_stream
-                    - event_streams/read_from_stream
-                    - event_streams/stream_metadata
-                    - event_streams/subscribe_to_stream
-                    - operations
-                    - persistent
-                    - projections
-                    - user_management
+                include:
+                    - target: connection
+                      source_dir: './core/connection/**'
+                      test_dir: './integration_tests/internal/with_empty_database/connection/**'
+                    - target: event_streams/append_to_stream
+                      source_dir: './event_streams/**'
+                      test_dir: './integration_tests/internal/with_empty_database/event_streams/append_to_stream/**'
+                    - target: event_streams/batch_append_to_stream
+                      source_dir: './event_streams/**'
+                      test_dir: './integration_tests/internal/with_empty_database/event_streams/batch_append_to_stream/**'
+                    - target: event_streams/delete_stream
+                      source_dir: './event_streams/**'
+                      test_dir: './integration_tests/internal/with_empty_database/event_streams/delete_stream/**'
+                    - target: event_streams/read_from_stream
+                      source_dir: './event_streams/**'
+                      test_dir: './integration_tests/internal/with_empty_database/event_streams/read_from_stream/**'
+                    - target: event_streams/stream_metadata
+                      source_dir: './event_streams/**'
+                      test_dir: './integration_tests/internal/with_empty_database/event_streams/stream_metadata/**'
+                    - target: event_streams/subscribe_to_stream
+                      source_dir: './event_streams/**'
+                      test_dir: './integration_tests/internal/with_empty_database/event_streams/subscribe_to_stream/**'
+                    - target: operations
+                      source_dir: './operations/**'
+                      test_dir: './integration_tests/internal/with_empty_database/operations/**'
+                    - target: persistent
+                      source_dir: './persistent/**'
+                      test_dir: './integration_tests/internal/with_empty_database/persistent/**'
+                    - target: projections
+                      source_dir: './projections/**'
+                      test_dir: './integration_tests/internal/with_empty_database/projections/**'
+                    - target: user_management
+                      source_dir: './user_management/**'
+                      test_dir: './integration_tests/internal/with_empty_database/user_management/**'
             fail-fast: false
-        runs-on: ubuntu-18.04
+
+        name: Test - ${{ matrix.target }}
 
         steps:
             - uses: actions/checkout@v1
 
-            - name: Docker Login
+            - name: Cache tests
+              id: cache-events
+              uses: actions/cache@v2
+              with:
+                  path: ./README.md
+                  key: ${{ runner.os }}-integration-empty-db-test-${{ hashFiles(matrix.test_dir, matrix.source_dir, 'core/**', 'protos/**') }}
+
+            - name: Docker Pull
+              if: ${{ steps.cache-events.outputs.cache-hit != 'true' }}
               run: |
                   (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
                   (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
@@ -39,22 +70,27 @@ jobs:
                   (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
                   (exit 1)
 
+            - name: Tests with cache hit
+              if: ${{ steps.cache-events.outputs.cache-hit == 'true' }}
+              run: |
+                  echo "Cache Hit"
+
             - name: Tests
-              if: ${{ matrix.domain != 'connection' }}
+              if: ${{ matrix.target != 'connection' && steps.cache-events.outputs.cache-hit != 'true' }}
               run: |
                   touch vars.env
                   docker-compose up
-                  cd integration_tests/internal/with_empty_database/${{ matrix.domain }}
+                  cd integration_tests/internal/with_empty_database/${{ matrix.target }}
                   go test -v ./...
                   docker-compose down
 
             - name: Tests with cluster
-              if: ${{ matrix.domain == 'connection' }}
+              if: ${{ matrix.target == 'connection' && steps.cache-events.outputs.cache-hit != 'true' }}
               run: |
                   touch vars.env
                   docker-compose up
                   docker-compose -f cluster-docker-compose.yml up -d
-                  cd integration_tests/internal/with_empty_database/${{ matrix.domain }}
+                  cd integration_tests/internal/with_empty_database/${{ matrix.target }}
                   go test -v ./...
                   cd ../../../..
                   docker-compose -f cluster-docker-compose.yml down

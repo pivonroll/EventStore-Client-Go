@@ -1,0 +1,19 @@
+name: Linting
+on:
+    pull_request:
+    push:
+        branches:
+            - develop
+jobs:
+    linting:
+        name: Linting
+        runs-on: ubuntu-18.04
+
+        steps:
+            -   uses: actions/checkout@v1
+
+            -   name: Linting
+                run: go vet ./...
+
+            -   name: Code formatting checks
+                run: diff -u <(echo -n) <(goimports -d ./)
