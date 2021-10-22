@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/golang/mock/gomock"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 
 	"github.com/stretchr/testify/require"
 )

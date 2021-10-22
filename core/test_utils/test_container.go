@@ -11,7 +11,7 @@ import (
 	"testing"
 
 	"github.com/ory/dockertest/v3"
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/stretchr/testify/require"
 )
 

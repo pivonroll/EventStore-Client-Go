@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 
 	"github.com/stretchr/testify/require"
 )

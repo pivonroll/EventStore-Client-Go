@@ -7,10 +7,10 @@ import (
 	"reflect"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/connection"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example of reading events from the start of a stream.

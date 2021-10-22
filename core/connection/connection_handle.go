@@ -2,7 +2,7 @@ package connection
 
 import (
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"google.golang.org/grpc"
 )
 

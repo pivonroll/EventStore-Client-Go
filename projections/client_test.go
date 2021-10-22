@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	statistics_internal "github.com/pivonroll/EventStore-Client-Go/projections/internal/statistics"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 
 	"github.com/stretchr/testify/require"
 

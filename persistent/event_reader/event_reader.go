@@ -3,7 +3,7 @@ package event_reader
 //go:generate mockgen -source=event_reader.go -destination=../internal/event_reader_mock/event_reader_mock.go -package=event_reader_mock
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_action"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
 )

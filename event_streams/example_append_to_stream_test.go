@@ -5,12 +5,12 @@ import (
 	"fmt"
 	"log"
 
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 
 	"github.com/google/uuid"
 
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 )
 
 // Example of appending an event to a stream which does not exist with WriteStreamRevisionNoStream.

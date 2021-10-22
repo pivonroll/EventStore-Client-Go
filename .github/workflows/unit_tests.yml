@@ -1,0 +1,54 @@
+name: Unit Tests
+on:
+    pull_request:
+    push:
+        branches:
+            - develop
+jobs:
+    unit-tests:
+        name: Unit Tests
+        runs-on: ubuntu-18.04
+
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Generate certificates
+              run: |
+                  docker-compose up
+                  docker-compose down
+
+            - name: Run Connection Tests
+              run: |
+                  cd core/connection
+                  go test -v ./...
+                  cd ../..
+
+            - name: Run Event Stream Tests
+              run: |
+                  cd event_streams
+                  go test -v ./...
+                  cd ..
+
+            - name: Run Persistent Tests
+              run: |
+                  cd persistent
+                  go test -v ./...
+                  cd ..
+
+            - name: Run Projections Tests
+              run: |
+                  cd projections
+                  go test -v ./...
+                  cd ..
+
+            - name: Run Operations Tests
+              run: |
+                  cd operations
+                  go test -v ./...
+                  cd ..
+
+            - name: Run User Management Tests
+              run: |
+                  cd user_management
+                  go test -v ./...
+                  cd ..

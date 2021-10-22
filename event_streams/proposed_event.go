@@ -2,7 +2,7 @@ package event_streams
 
 import (
 	"github.com/google/uuid"
-	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 )
 
 // ProposedEvent represents an event we want to append to a stream.

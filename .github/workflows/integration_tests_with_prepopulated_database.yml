@@ -1,0 +1,51 @@
+name: Integration Tests With Prepopulated Database
+on:
+    pull_request:
+    push:
+        branches:
+            - develop
+jobs:
+    integration-tests-with-prepopulated-database:
+        name: Integration Tests With Prepopulated Database
+        strategy:
+            matrix:
+                domain: [ event_streams ]
+            fail-fast: false
+        runs-on: ubuntu-18.04
+
+        steps:
+            -   uses: actions/checkout@v1
+
+            -   name: Docker Login
+                run: |
+                    (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
+                    (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
+                    (echo ${{ secrets.GITHUB_TOKEN }} | docker login -u pivonroll --password-stdin docker.pkg.github.com) || \
+                    (exit 1)
+                    (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                    (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                    (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                    (docker pull docker.pkg.github.com/eventstore/eventstore-client-grpc-testdata/eventstore-client-grpc-testdata:21.6.0-buster-slim) || \
+                    (exit 1)
+
+            -   name: Tests
+                run: |
+                    touch vars.env
+                    docker-compose up
+                    cd integration_tests/internal/with_prepopulated_database/${{ matrix.domain }}
+                    go test -v ./...
+                    docker-compose down
+
+    linting:
+        needs: integration-tests-with-prepopulated-database
+        name: Linting
+        runs-on: ubuntu-18.04
+
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Linting
+              run: go vet ./...
+
+            - name: Code formatting checks
+              run: diff -u <(echo -n) <(goimports -d ./)

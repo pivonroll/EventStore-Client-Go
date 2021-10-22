@@ -3,9 +3,9 @@ package connection_integration_test
 import (
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/test_utils"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
-	"github.com/pivonroll/EventStore-Client-Go/test_utils"
 )
 
 func initializeContainerAndClient(t *testing.T,

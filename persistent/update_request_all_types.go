@@ -1,9 +1,9 @@
 package persistent
 
 import (
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // UpdateSubscriptionGroupForStreamAllRequest is a set of data necessary to update a subscription to stream $all.

@@ -1,9 +1,9 @@
 package event_streams
 
 import (
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 type tombstoneRequest struct {

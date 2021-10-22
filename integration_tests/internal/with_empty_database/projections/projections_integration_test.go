@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
 
 	"github.com/stretchr/testify/require"

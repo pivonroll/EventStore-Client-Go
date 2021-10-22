@@ -1,0 +1,26 @@
+name: Build
+on:
+    pull_request:
+    push:
+        branches:
+            - develop
+jobs:
+    build:
+        name: Code generation & compile
+        strategy:
+            matrix:
+                os: [ubuntu-18.04, windows-2019, macos-10.15]
+
+        runs-on: ${{ matrix.os }}
+
+        steps:
+            - uses: actions/checkout@v1
+
+            - name: Generate protos and build project (Powershell)
+              if: ${{ matrix.os == 'windows-2019' }}
+              run: .\build.ps1 -generateProtos
+              shell: pwsh
+
+            - name: Generate protos and build project (Bash)
+              if: ${{ matrix.os != 'windows-2019' }}
+              run: ./build.sh --generate-protos

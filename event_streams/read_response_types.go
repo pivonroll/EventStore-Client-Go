@@ -5,13 +5,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 
-	"github.com/pivonroll/EventStore-Client-Go/position"
+	"github.com/pivonroll/EventStore-Client-Go/core/position"
 
-	"github.com/pivonroll/EventStore-Client-Go/ptr"
+	"github.com/pivonroll/EventStore-Client-Go/core/ptr"
 
-	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"

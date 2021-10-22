@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	connection "github.com/pivonroll/EventStore-Client-Go/connection"
+	connection "github.com/pivonroll/EventStore-Client-Go/core/connection"
 )
 
 // MockClientFactory is a mock of ClientFactory interface.

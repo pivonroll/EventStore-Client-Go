@@ -7,9 +7,9 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 )
 
 // Example demonstrates how to do a batch append to a stream which does not exist.

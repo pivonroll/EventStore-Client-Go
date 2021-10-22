@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/position"
+	"github.com/pivonroll/EventStore-Client-Go/core/position"
 )
 
 // ResolvedEvent is an event received from a stream.
