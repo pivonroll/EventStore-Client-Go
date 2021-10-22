@@ -8,11 +8,11 @@ import (
 )
 
 func initializeClient(t *testing.T,
-	envVariableOverrides map[string]string) (operations.Client,
+	envVariableOverrides map[string]string) (*operations.Client,
 	test_utils.CloseFunc) {
 	grpcClient, closeFunc := test_utils.InitializeGrpcClient(t, envVariableOverrides)
 
-	client := operations.ClientFactoryImpl{}.Create(grpcClient)
+	client := operations.NewClient(grpcClient)
 
 	return client, closeFunc
 }

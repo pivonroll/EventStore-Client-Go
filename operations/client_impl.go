@@ -1,3 +1,8 @@
+// Header
+
+// Package operations provides interaction with EventStoreDb admin operations.
+// Before accessing streams a grpc connection needs to be established with EventStore through
+// github.com/pivonroll/EventStore-Client-Go/core/connection package.
 package operations
 
 import (
@@ -5,29 +10,31 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/operations"
+	"github.com/pivonroll/EventStore-Client-Go/operations/internal/grpc_operations_client"
+	protoOperations "github.com/pivonroll/EventStore-Client-Go/protos/operations"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
 
-type clientImpl struct {
+// Client provides interaction with admin operations at EvenStoreDB.
+type Client struct {
 	grpcClient                  connection.GrpcClient
 	scavengeResponseAdapter     scavengeResponseAdapter
-	grpcOperationsClientFactory grpcOperationsClientFactory
+	grpcOperationsClientFactory grpc_operations_client.Factory
 }
 
-func newClientImpl(grpcClient connection.GrpcClient,
-	scavengeResponseAdapter scavengeResponseAdapter,
-	grpcOperationsClientFactory grpcOperationsClientFactory) *clientImpl {
-	return &clientImpl{
+// NewClient creates a new client which interacts with admin operations at EventStoreDB.
+func NewClient(grpcClient connection.GrpcClient) *Client {
+	return &Client{
 		grpcClient:                  grpcClient,
-		scavengeResponseAdapter:     scavengeResponseAdapter,
-		grpcOperationsClientFactory: grpcOperationsClientFactory,
+		scavengeResponseAdapter:     scavengeResponseAdapterImpl{},
+		grpcOperationsClientFactory: grpc_operations_client.FactoryImpl{},
 	}
 }
 
-func (client *clientImpl) Shutdown(ctx context.Context) errors.Error {
+// Shutdown shuts down the EventStoreDB node.
+func (client *Client) Shutdown(ctx context.Context) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -46,9 +53,8 @@ func (client *clientImpl) Shutdown(ctx context.Context) errors.Error {
 	return nil
 }
 
-const MergeIndexesErr errors.ErrorCode = "MergeIndexesErr"
-
-func (client *clientImpl) MergeIndexes(ctx context.Context) errors.Error {
+// MergeIndexes initiates an index merge operation.
+func (client *Client) MergeIndexes(ctx context.Context) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -60,14 +66,15 @@ func (client *clientImpl) MergeIndexes(ctx context.Context) errors.Error {
 	_, protoErr := grpcOperationsClient.MergeIndexes(ctx, &shared.Empty{},
 		grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
-		err = client.grpcClient.HandleError(handle, headers, trailers, protoErr, MergeIndexesErr)
+		err = client.grpcClient.HandleError(handle, headers, trailers, protoErr, errors.FatalError)
 		return err
 	}
 
 	return nil
 }
 
-func (client *clientImpl) ResignNode(ctx context.Context) errors.Error {
+// ResignNode resigns a node.
+func (client *Client) ResignNode(ctx context.Context) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -86,7 +93,8 @@ func (client *clientImpl) ResignNode(ctx context.Context) errors.Error {
 	return nil
 }
 
-func (client *clientImpl) SetNodePriority(ctx context.Context, priority int32) errors.Error {
+// SetNodePriority sets the node priority.
+func (client *Client) SetNodePriority(ctx context.Context, priority int32) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -94,7 +102,7 @@ func (client *clientImpl) SetNodePriority(ctx context.Context, priority int32) e
 
 	grpcOperationsClient := client.grpcOperationsClientFactory.Create(handle.Connection())
 
-	request := &operations.SetNodePriorityReq{
+	request := &protoOperations.SetNodePriorityReq{
 		Priority: priority,
 	}
 
@@ -109,7 +117,8 @@ func (client *clientImpl) SetNodePriority(ctx context.Context, priority int32) e
 	return nil
 }
 
-func (client *clientImpl) RestartPersistentSubscriptions(ctx context.Context) errors.Error {
+// RestartPersistentSubscriptions restart persistent subscriptions
+func (client *Client) RestartPersistentSubscriptions(ctx context.Context) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -134,7 +143,8 @@ const (
 	StartScavenge_StartFromChunkLessThanZeroErr errors.ErrorCode = "StartScavenge_StartFromChunkLessThanZeroErr"
 )
 
-func (client *clientImpl) StartScavenge(ctx context.Context,
+// StartScavenge starts a scavenge operation.
+func (client *Client) StartScavenge(ctx context.Context,
 	request StartScavengeRequest) (ScavengeResponse, errors.Error) {
 
 	if request.ThreadCount <= 0 {
@@ -153,7 +163,7 @@ func (client *clientImpl) StartScavenge(ctx context.Context,
 	grpcOperationsClient := client.grpcOperationsClientFactory.Create(handle.Connection())
 
 	var headers, trailers metadata.MD
-	protoResponse, protoErr := grpcOperationsClient.StartScavenge(ctx, request.Build(),
+	protoResponse, protoErr := grpcOperationsClient.StartScavenge(ctx, request.build(),
 		grpc.Header(&headers), grpc.Trailer(&trailers))
 	if protoErr != nil {
 		err = client.grpcClient.HandleError(handle, headers, trailers, protoErr,
@@ -164,15 +174,16 @@ func (client *clientImpl) StartScavenge(ctx context.Context,
 	return client.scavengeResponseAdapter.create(protoResponse), nil
 }
 
-func (client *clientImpl) StopScavenge(ctx context.Context,
+// StopScavenge stops a scavenge operation.
+func (client *Client) StopScavenge(ctx context.Context,
 	scavengeId string) (ScavengeResponse, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return ScavengeResponse{}, err
 	}
 
-	request := &operations.StopScavengeReq{
-		Options: &operations.StopScavengeReq_Options{
+	request := &protoOperations.StopScavengeReq{
+		Options: &protoOperations.StopScavengeReq_Options{
 			ScavengeId: scavengeId,
 		},
 	}
