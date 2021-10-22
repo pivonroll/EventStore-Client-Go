@@ -45,9 +45,6 @@ $ go get github.com/pivonroll/EventStore-Client-Go
   * Set Node Priority
   * Shutdown
 
-## Roadmap
-* Add API documentation
-
 ## Developing
 
 Integration tests run against a server using Docker, with the [EventStoreDB gRPC Client Test Container][container]. 
