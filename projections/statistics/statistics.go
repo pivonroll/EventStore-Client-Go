@@ -1,7 +1,7 @@
 package statistics
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 )
 
 //go:generate mockgen -source=statistics.go -destination=../internal/statistics/statistics_client_sync_mock.go -package=statistics

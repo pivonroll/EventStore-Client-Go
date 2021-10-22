@@ -3,7 +3,7 @@ package operations
 import (
 	"context"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 )
 
 type Client interface {

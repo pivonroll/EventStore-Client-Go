@@ -4,10 +4,10 @@ import (
 	"context"
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 
-	"github.com/pivonroll/EventStore-Client-Go/systemmetadata"
+	"github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/stretchr/testify/require"

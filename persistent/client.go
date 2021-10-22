@@ -16,8 +16,8 @@ package persistent
 import (
 	"context"
 
-	"github.com/pivonroll/EventStore-Client-Go/connection"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/event_reader"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/event_reader_factory"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/grpc_subscription_client"

@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	uuid "github.com/google/uuid"
-	errors "github.com/pivonroll/EventStore-Client-Go/errors"
+	errors "github.com/pivonroll/EventStore-Client-Go/core/errors"
 	grpc "google.golang.org/grpc"
 	metadata "google.golang.org/grpc/metadata"
 )

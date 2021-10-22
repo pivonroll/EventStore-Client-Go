@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	errors "github.com/pivonroll/EventStore-Client-Go/errors"
+	errors "github.com/pivonroll/EventStore-Client-Go/core/errors"
 	persistent_action "github.com/pivonroll/EventStore-Client-Go/persistent/persistent_action"
 	persistent_event "github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
 )

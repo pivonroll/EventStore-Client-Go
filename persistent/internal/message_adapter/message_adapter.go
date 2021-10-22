@@ -5,12 +5,12 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/pivonroll/EventStore-Client-Go/core/position"
+	"github.com/pivonroll/EventStore-Client-Go/core/protobuf_uuid"
+	"github.com/pivonroll/EventStore-Client-Go/core/ptr"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/position"
-	"github.com/pivonroll/EventStore-Client-Go/protobuf_uuid"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/ptr"
-	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 )
 
 type MessageAdapter interface {

@@ -4,15 +4,15 @@ import (
 	"context"
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/event_reader_mock"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/mocks"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 
 	"github.com/golang/mock/gomock"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"

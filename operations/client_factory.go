@@ -3,7 +3,7 @@ package operations
 //go:generate mockgen -source=client_factory.go -destination=client_factory_mock.go -package=operations
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 )
 
 type ClientFactory interface {

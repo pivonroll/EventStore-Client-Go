@@ -3,8 +3,8 @@ package operations_integration_test
 import (
 	"testing"
 
+	"github.com/pivonroll/EventStore-Client-Go/core/test_utils"
 	"github.com/pivonroll/EventStore-Client-Go/operations"
-	"github.com/pivonroll/EventStore-Client-Go/test_utils"
 )
 
 func initializeClient(t *testing.T,

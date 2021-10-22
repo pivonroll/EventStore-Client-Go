@@ -4,7 +4,7 @@ import (
 	"testing"
 
 	"github.com/google/uuid"
-	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 	"github.com/stretchr/testify/require"
 )
 

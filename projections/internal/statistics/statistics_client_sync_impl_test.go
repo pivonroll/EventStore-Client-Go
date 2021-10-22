@@ -4,7 +4,7 @@ import (
 	stdErrors "errors"
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
 
 	"google.golang.org/grpc/metadata"

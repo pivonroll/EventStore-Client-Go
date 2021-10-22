@@ -5,11 +5,11 @@ import (
 	"testing"
 	"time"
 
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/stretchr/testify/require"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/event_streams"
 	"github.com/stretchr/testify/assert"
 )

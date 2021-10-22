@@ -2,10 +2,10 @@ package event_streams
 
 import (
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/protobuf_uuid"
+	"github.com/pivonroll/EventStore-Client-Go/core/protobuf_uuid"
 
 	"github.com/golang/protobuf/ptypes/any"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
 )
 

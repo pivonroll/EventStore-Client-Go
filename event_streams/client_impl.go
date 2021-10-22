@@ -2,7 +2,7 @@
 
 // Package event_streams provides interaction with EventStoreDb event streams.
 // Before accessing streams a grpc connection needs to be established with EventStore through
-// github.com/pivonroll/EventStore-Client-Go/connection package.
+// github.com/pivonroll/EventStore-Client-Go/core/connection package.
 package event_streams
 
 import (
@@ -11,10 +11,10 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/connection"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
-	"github.com/pivonroll/EventStore-Client-Go/stream_revision"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

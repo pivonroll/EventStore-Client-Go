@@ -10,7 +10,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/gossip"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"google.golang.org/grpc"

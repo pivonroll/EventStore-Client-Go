@@ -3,7 +3,7 @@ package user_management_integration_test
 import (
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/test_utils"
+	"github.com/pivonroll/EventStore-Client-Go/core/test_utils"
 	"github.com/pivonroll/EventStore-Client-Go/user_management"
 )
 

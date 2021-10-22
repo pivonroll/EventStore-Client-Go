@@ -1,6 +1,6 @@
 package event_streams
 
-import "github.com/pivonroll/EventStore-Client-Go/errors"
+import "github.com/pivonroll/EventStore-Client-Go/core/errors"
 
 const WrongExpectedVersionErr errors.ErrorCode = "WrongExpectedVersionErr"
 

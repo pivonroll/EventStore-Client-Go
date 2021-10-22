@@ -2,14 +2,14 @@
 
 // Package user_management provides user management capabilities for EventStoreDb.
 // A grpc connection needs to be established with EventStore through
-// github.com/pivonroll/EventStore-Client-Go/connection package.
+// github.com/pivonroll/EventStore-Client-Go/core/connection package.
 package user_management
 
 import (
 	"context"
 
-	"github.com/pivonroll/EventStore-Client-Go/connection"
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/connection"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

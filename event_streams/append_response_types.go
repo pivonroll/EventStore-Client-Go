@@ -1,7 +1,7 @@
 package event_streams
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
 )
 

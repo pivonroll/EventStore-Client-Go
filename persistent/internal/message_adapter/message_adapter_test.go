@@ -6,11 +6,11 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/pivonroll/EventStore-Client-Go/core/position"
+	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/position"
 	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
-	system_metadata "github.com/pivonroll/EventStore-Client-Go/systemmetadata"
 	"github.com/stretchr/testify/require"
 )
 

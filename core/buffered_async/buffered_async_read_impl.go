@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/pivonroll/EventStore-Client-Go/errors"
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 )
 
 type ReaderImpl struct {

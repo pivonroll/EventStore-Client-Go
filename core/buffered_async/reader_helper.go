@@ -1,6 +1,6 @@
 package buffered_async
 
-import "github.com/pivonroll/EventStore-Client-Go/errors"
+import "github.com/pivonroll/EventStore-Client-Go/core/errors"
 
 //go:generate mockgen -source=reader_helper.go -destination=reader_helper_mock.go -package=buffered_async
 
