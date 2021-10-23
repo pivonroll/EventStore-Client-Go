@@ -14,75 +14,13 @@ import (
 	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/gossip"
 	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/keepalive"
 	"google.golang.org/grpc/metadata"
-	"google.golang.org/grpc/status"
 )
 
 type grpcClientImpl struct {
 	channel chan msg
-}
-
-const (
-	protoStreamDeleted                 = "stream-deleted"
-	protoStreamNotFound                = "stream-not-found"
-	protoMaximumAppendSizeExceeded     = "maximum-append-size-exceeded"
-	protoWrongExpectedVersion          = "wrong-expected-version"
-	protoNotLeader                     = "not-leader"
-	protoUserNotFound                  = "user-not-found"
-	protoMaximumSubscriberCountReached = "maximum-subscribers-reached"
-	protoPersistentSubscriptionDropped = "persistent-subscription-dropped"
-	protoScavengeNotFound              = "scavenge-not-found"
-)
-
-func isProtoException(trailers metadata.MD, protoException string) bool {
-	values := trailers.Get("exception")
-	return values != nil && values[0] == protoException
-}
-
-func ErrorFromStdErrorByStatus(err error) errors.Error {
-	protoStatus, _ := status.FromError(err)
-	if protoStatus.Code() == codes.PermissionDenied {
-		return errors.NewError(errors.PermissionDeniedErr, err)
-	} else if protoStatus.Code() == codes.Unauthenticated {
-		return errors.NewError(errors.UnauthenticatedErr, err)
-	} else if protoStatus.Code() == codes.DeadlineExceeded {
-		return errors.NewError(errors.DeadlineExceededErr, err)
-	} else if protoStatus.Code() == codes.Canceled {
-		return errors.NewError(errors.CanceledErr, err)
-	}
-	return nil
-}
-
-func GetErrorFromProtoException(trailers metadata.MD, stdErr error) errors.Error {
-	if isProtoException(trailers, protoStreamDeleted) {
-		return errors.NewError(errors.StreamDeletedErr, stdErr)
-	} else if isProtoException(trailers, protoMaximumAppendSizeExceeded) {
-		return errors.NewError(errors.MaximumAppendSizeExceededErr, stdErr)
-	} else if isProtoException(trailers, protoStreamNotFound) {
-		return errors.NewError(errors.StreamNotFoundErr, stdErr)
-	} else if isProtoException(trailers, protoWrongExpectedVersion) {
-		return errors.NewError(errors.WrongExpectedStreamRevisionErr, stdErr)
-	} else if isProtoException(trailers, protoNotLeader) {
-		return errors.NewError(errors.NotLeaderErr, stdErr)
-	} else if isProtoException(trailers, protoUserNotFound) {
-		return errors.NewError(errors.UserNotFoundErr, stdErr)
-	} else if isProtoException(trailers, protoMaximumSubscriberCountReached) {
-		return errors.NewError(errors.MaximumSubscriberCountReached, stdErr)
-	} else if isProtoException(trailers, protoPersistentSubscriptionDropped) {
-		return errors.NewError(errors.PersistentSubscriptionDroppedErr, stdErr)
-	} else if isProtoException(trailers, protoScavengeNotFound) {
-		return errors.NewError(errors.ScavengeNotFoundErr, stdErr)
-	}
-
-	err := ErrorFromStdErrorByStatus(stdErr)
-	if err != nil {
-		return err
-	}
-
-	return nil
 }
 
 func (client grpcClientImpl) HandleError(
@@ -179,8 +117,6 @@ type msg interface {
 	handle(*connectionState)
 }
 
-const EsdbConnectionIsClosed errors.ErrorCode = "EsdbConnectionIsClosed"
-
 func connectionStateMachine(config Configuration, channel chan msg) {
 	state := newConnectionState(config)
 
@@ -254,11 +190,6 @@ func allowedNodeState() []gossipApi.MemberInfo_VNodeState {
 	}
 }
 
-const (
-	MaximumDiscoveryAttemptCountReached errors.ErrorCode = "MaximumDiscoveryAttemptCountReached"
-	UnableToConnectToSingleNode         errors.ErrorCode = "UnableToConnectToSingleNode"
-)
-
 func discoverNode(conf Configuration) (*grpc.ClientConn, errors.Error) {
 	if conf.DnsDiscover || len(conf.GossipSeeds) > 0 {
 		return connectOverDnsOrGossipSeeds(conf)
@@ -292,10 +223,10 @@ func connectOverDnsOrGossipSeeds(conf Configuration) (*grpc.ClientConn, errors.E
 }
 
 const (
-	failedToCreateGrpcConectionToBestCandidate errors.ErrorCode = "failedToCreateGrpcConectionToBestCandidate"
-	failedToPickCandidate                      errors.ErrorCode = "failedToPickCandidate"
-	failedToReadGossipFromCandidate            errors.ErrorCode = "failedToReadGossipFromCandidate"
-	failedToCreateGrpcConnectionForCandidate   errors.ErrorCode = "failedToCreateGrpcConnectionForCandidate"
+	failedToCreateGrpcConnectionToBestCandidate errors.ErrorCode = "failedToCreateGrpcConnectionToBestCandidate"
+	failedToPickCandidate                       errors.ErrorCode = "failedToPickCandidate"
+	failedToReadGossipFromCandidate             errors.ErrorCode = "failedToReadGossipFromCandidate"
+	failedToCreateGrpcConnectionForCandidate    errors.ErrorCode = "failedToCreateGrpcConnectionForCandidate"
 )
 
 func connectToOneCandidate(candidate string, conf Configuration) (*grpc.ClientConn, errors.Error) {
@@ -331,7 +262,7 @@ func connectToOneCandidate(candidate string, conf Configuration) (*grpc.ClientCo
 
 		if err != nil {
 			log.Printf("[warn] Error when creating gRPC connection for best candidate %v", err)
-			return nil, errors.NewErrorCode(failedToCreateGrpcConectionToBestCandidate)
+			return nil, errors.NewErrorCode(failedToCreateGrpcConnectionToBestCandidate)
 		}
 	}
 
@@ -383,7 +314,9 @@ func shuffleMembers(src []*gossipApi.MemberInfo) []*gossipApi.MemberInfo {
 	return src
 }
 
-func sortByState(members []*gossipApi.MemberInfo, nodeState gossipApi.MemberInfo_VNodeState) []*gossipApi.MemberInfo {
+func sortByState(members []*gossipApi.MemberInfo,
+	nodeState gossipApi.MemberInfo_VNodeState) []*gossipApi.MemberInfo {
+
 	sorted := make([]*gossipApi.MemberInfo, 0)
 	for _, member := range members {
 		if member.State == nodeState {
@@ -398,7 +331,9 @@ func sortByState(members []*gossipApi.MemberInfo, nodeState gossipApi.MemberInfo
 	return sorted
 }
 
-func pickBestCandidate(response *gossipApi.ClusterInfo, nodePreference NodePreference) (*gossipApi.MemberInfo, error) {
+func pickBestCandidate(response *gossipApi.ClusterInfo,
+	nodePreference NodePreference) (*gossipApi.MemberInfo, error) {
+
 	if len(response.Members) == 0 {
 		return nil, fmt.Errorf("there are no members to determine the best candidate from")
 	}

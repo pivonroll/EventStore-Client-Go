@@ -1,0 +1,30 @@
+package connection
+
+import "github.com/pivonroll/EventStore-Client-Go/core/errors"
+
+const (
+	DuplicateSettingsKeyValueDetected   errors.ErrorCode = "DuplicateSettingsKeyValueDetected"
+	EmptyHost                           errors.ErrorCode = "EmptyHost"
+	EmptyUsername                       errors.ErrorCode = "EmptyUsername"
+	EmptyPassword                       errors.ErrorCode = "EmptyPassword"
+	EsdbConnectionIsClosed              errors.ErrorCode = "EsdbConnectionIsClosed"
+	FailedToAppendCertificate           errors.ErrorCode = "FailedToAppendCertificate"
+	FailedToReadCertificate             errors.ErrorCode = "FailedToReadCertificate"
+	InvalidBoolSetting                  errors.ErrorCode = "InvalidBoolSetting"
+	InvalidConnectionScheme             errors.ErrorCode = "InvalidConnectionScheme"
+	InvalidHostname                     errors.ErrorCode = "InvalidHostname"
+	InvalidKeepAliveSetting             errors.ErrorCode = "InvalidKeepAliveSetting"
+	InvalidKeyValuePair                 errors.ErrorCode = "InvalidKeyValuePair"
+	InvalidNodePreference               errors.ErrorCode = "InvalidNodePreference"
+	InvalidPath                         errors.ErrorCode = "InvalidPath"
+	InvalidPortValue                    errors.ErrorCode = "InvalidPortValue"
+	InvalidSignedIntegerValue           errors.ErrorCode = "InvalidSignedIntegerValue"
+	InvalidUserCredentialsFormat        errors.ErrorCode = "InvalidUserCredentialsFormat"
+	InvalidUnsignedIntegerValue         errors.ErrorCode = "InvalidUnsignedIntegerValue"
+	MaximumDiscoveryAttemptCountReached errors.ErrorCode = "MaximumDiscoveryAttemptCountReached"
+	MissingConnectionScheme             errors.ErrorCode = "MissingConnectionScheme"
+	SettingsValueMissing                errors.ErrorCode = "SettingsValueMissing"
+	TooManyColonsInHost                 errors.ErrorCode = "TooManyColonsInHost"
+	UnknownSetting                      errors.ErrorCode = "UnknownSetting"
+	UnableToConnectToSingleNode         errors.ErrorCode = "UnableToConnectToSingleNode"
+)

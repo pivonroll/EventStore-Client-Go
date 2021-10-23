@@ -2,25 +2,31 @@ package connection
 
 import (
 	"crypto/x509"
-	"fmt"
 	"io/ioutil"
 	"log"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 )
 
 const (
 	SchemeDefaultPort       = 2113
 	SchemaHostsSeparator    = ","
-	SchemeName              = "esdb"
-	SchemeNameWithDiscover  = "esdb+discover"
 	SchemePathSeparator     = "/"
 	SchemePortSeparator     = ":"
 	SchemeQuerySeparator    = "?"
 	SchemeSeparator         = "://"
 	SchemeSettingSeparator  = "&"
 	SchemeUserInfoSeparator = "@"
+)
+
+type SchemaNameType string
+
+const (
+	SchemeName             SchemaNameType = "esdb"
+	SchemeNameWithDiscover SchemaNameType = "esdb+discover"
 )
 
 // Configuration describes how to connect to an instance of EventStoreDB.
@@ -88,7 +94,7 @@ func (conf Configuration) getCandidates() []string {
 }
 
 // ParseConnectionString creates a Configuration based on an EventStoreDb connection string.
-func ParseConnectionString(connectionString string) (*Configuration, error) {
+func ParseConnectionString(connectionString string) (*Configuration, errors.Error) {
 	config := &Configuration{
 		DiscoveryInterval:   100,
 		GossipTimeout:       5,
@@ -97,14 +103,9 @@ func ParseConnectionString(connectionString string) (*Configuration, error) {
 		KeepAliveTimeout:    10 * time.Second,
 	}
 
-	schemeIndex := strings.Index(connectionString, SchemeSeparator)
-	if schemeIndex == -1 {
-		return nil, fmt.Errorf("The scheme is missing from the connection string")
-	}
-
-	scheme := connectionString[:schemeIndex]
-	if scheme != SchemeName && scheme != SchemeNameWithDiscover {
-		return nil, fmt.Errorf("An invalid scheme is specified, expecting esdb:// or esdb+discover://")
+	scheme, schemeIndex, err := getScheme(connectionString)
+	if err != nil {
+		return nil, err
 	}
 	currentConnectionString := connectionString[schemeIndex+len(SchemeSeparator):]
 
@@ -136,7 +137,8 @@ func ParseConnectionString(connectionString string) (*Configuration, error) {
 
 	path = strings.TrimLeft(path, SchemePathSeparator)
 	if len(path) > 0 {
-		return nil, fmt.Errorf("The specified path must be either an empty string or a forward slash (/) but the following path was found instead: '%s'", path)
+		return nil, errors.NewErrorCodeMsgf(InvalidPath,
+			"The specified path must be either an empty string or a forward slash (/) but the following path was found instead: '%s'", path)
 	}
 
 	err = parseSettings(settings, config)
@@ -152,23 +154,40 @@ func ParseConnectionString(connectionString string) (*Configuration, error) {
 	return config, nil
 }
 
-func parseUserInfo(s string, config *Configuration) (int, error) {
+func getScheme(connectionString string) (SchemaNameType, int, errors.Error) {
+	schemeIndex := strings.Index(connectionString, SchemeSeparator)
+	if schemeIndex == -1 {
+		return "", 0, errors.NewErrorCodeMsgf(MissingConnectionScheme,
+			"The scheme is missing from the connection string")
+	}
+
+	scheme := connectionString[:schemeIndex]
+	if scheme != string(SchemeName) && scheme != string(SchemeNameWithDiscover) {
+		return "", 0, errors.NewErrorCodeMsgf(InvalidConnectionScheme,
+			"An invalid scheme is specified, expecting esdb:// or esdb+discover://")
+	}
+
+	return SchemaNameType(scheme), schemeIndex, nil
+}
+
+func parseUserInfo(s string, config *Configuration) (int, errors.Error) {
 	userInfoIndex := strings.Index(s, SchemeUserInfoSeparator)
 	if userInfoIndex != -1 {
 		userInfo := s[0:userInfoIndex]
 		tokens := strings.Split(userInfo, ":")
 		if len(tokens) != 2 {
-			return -1, fmt.Errorf("The user credentials are invalid and are expected to be in format {username}:{password}")
+			return -1, errors.NewErrorCodeMsgf(InvalidUserCredentialsFormat,
+				"The user credentials are invalid and are expected to be in format {username}:{password}")
 		}
 
 		username := tokens[0]
 		if username == "" {
-			return -1, fmt.Errorf("The specified username is empty")
+			return -1, errors.NewErrorCodeMsgf(EmptyUsername, "The specified username is empty")
 		}
 
 		password := tokens[1]
 		if password == "" {
-			return -1, fmt.Errorf("The specified password is empty")
+			return -1, errors.NewErrorCodeMsgf(EmptyPassword, "The specified password is empty")
 		}
 
 		config.Username = username
@@ -180,7 +199,7 @@ func parseUserInfo(s string, config *Configuration) (int, error) {
 	return -1, nil
 }
 
-func parseSettings(settings string, config *Configuration) error {
+func parseSettings(settings string, config *Configuration) errors.Error {
 	if settings == "" {
 		return nil
 	}
@@ -195,13 +214,15 @@ func parseSettings(settings string, config *Configuration) error {
 		}
 
 		normalizedKey := strings.ToLower(key)
-		duplicateKeyError := fmt.Errorf("The connection string cannot have duplicate key/value pairs, found: '%s'", key)
+		duplicateKeyError := errors.NewErrorCodeMsgf(DuplicateSettingsKeyValueDetected,
+			"The connection string cannot have duplicate key/value pairs, found: '%s'", key)
 
 		if _, ok := kvPairs[normalizedKey]; ok {
 			return duplicateKeyError
 		} else {
 			if value == "" {
-				return fmt.Errorf("No value specified for setting: '%s'", key)
+				return errors.NewErrorCodeMsgf(SettingsValueMissing,
+					"No value specified for setting: '%s'", key)
 			}
 			kvPairs[normalizedKey] = value
 			err := parseSetting(key, value, config)
@@ -214,16 +235,17 @@ func parseSettings(settings string, config *Configuration) error {
 	return nil
 }
 
-func parseKeyValuePair(s string) (string, string, error) {
+func parseKeyValuePair(s string) (string, string, errors.Error) {
 	keyValueTokens := strings.Split(s, "=")
 	if len(keyValueTokens) != 2 {
-		return "", "", fmt.Errorf("Invalid key/value pair specified in connection string, expecting {key}={value} got: '%s'", s)
+		return "", "", errors.NewErrorCodeMsgf(InvalidKeyValuePair,
+			"Invalid key/value pair specified in connection string, expecting {key}={value} got: '%s'", s)
 	}
 
 	return keyValueTokens[0], keyValueTokens[1], nil
 }
 
-func parseSetting(k, v string, config *Configuration) error {
+func parseSetting(k, v string, config *Configuration) errors.Error {
 	normalizedKey := strings.ToLower(k)
 	switch normalizedKey {
 	case "discoveryinterval":
@@ -276,21 +298,22 @@ func parseSetting(k, v string, config *Configuration) error {
 			return err
 		}
 	default:
-		return fmt.Errorf("Unknown setting: '%s'", k)
+		return errors.NewErrorCodeMsgf(UnknownSetting, "Unknown setting: '%s'", k)
 	}
 
 	return nil
 }
 
-func parseCertificateFile(certFile string, config *Configuration) error {
+func parseCertificateFile(certFile string, config *Configuration) errors.Error {
 	b, err := ioutil.ReadFile(certFile)
 	if err != nil {
-		return err
+		return errors.NewError(FailedToReadCertificate, err)
 	}
 
 	cp := x509.NewCertPool()
 	if !cp.AppendCertsFromPEM(b) {
-		return fmt.Errorf("failed to append certificate file")
+		return errors.NewErrorCodeMsgf(FailedToAppendCertificate,
+			"failed to append certificate file")
 	}
 
 	config.RootCAs = cp
@@ -298,11 +321,12 @@ func parseCertificateFile(certFile string, config *Configuration) error {
 	return nil
 }
 
-func parseBoolSetting(k, v string, b *bool, inverse bool) error {
+func parseBoolSetting(k, v string, b *bool, inverse bool) errors.Error {
 	var err error
 	*b, err = strconv.ParseBool(strings.ToLower(v))
 	if err != nil {
-		return fmt.Errorf("Setting '%s' must be either true or false", k)
+		return errors.NewErrorCodeMsgf(InvalidBoolSetting,
+			"Setting '%s' must be either true or false", k)
 	}
 
 	*b = *b != inverse
@@ -310,27 +334,29 @@ func parseBoolSetting(k, v string, b *bool, inverse bool) error {
 	return nil
 }
 
-func parseIntSetting(k, v string, i *int) error {
+func parseIntSetting(k, v string, i *int) errors.Error {
 	var err error
 	*i, err = strconv.Atoi(v)
 	if err != nil {
-		return fmt.Errorf("Setting '%s' must be an integer value", k)
+		return errors.NewErrorCodeMsgf(InvalidSignedIntegerValue,
+			"Setting '%s' must be an integer value", k)
 	}
 
 	return nil
 }
 
-func parseUintSetting(k, v string, i *uint64) error {
+func parseUintSetting(k, v string, i *uint64) errors.Error {
 	var err error
 	*i, err = strconv.ParseUint(v, 10, 64)
 	if err != nil {
-		return fmt.Errorf("Setting '%s' must be an integer value", k)
+		return errors.NewErrorCodeMsgf(InvalidUnsignedIntegerValue,
+			"Setting '%s' must be an unsigned integer value", k)
 	}
 
 	return nil
 }
 
-func parseNodePreference(v string, config *Configuration) error {
+func parseNodePreference(v string, config *Configuration) errors.Error {
 	switch strings.ToLower(v) {
 	case "follower":
 		config.NodePreference = NodePreference_Follower
@@ -341,17 +367,17 @@ func parseNodePreference(v string, config *Configuration) error {
 	case "readonlyreplica":
 		config.NodePreference = NodePreference_ReadOnlyReplica
 	default:
-		return fmt.Errorf("Invalid NodePreference: '%s'", v)
+		return errors.NewErrorCodeMsgf(InvalidNodePreference, "Invalid NodePreference: '%s'", v)
 	}
 
 	return nil
 }
 
-func parseHost(host string, config *Configuration) error {
+func parseHost(host string, config *Configuration) errors.Error {
 	endpoints := make([]*EndPoint, 0)
 	hosts := strings.Split(host, SchemaHostsSeparator)
 	for _, host := range hosts {
-		endpoint, err := ParseEndPoint(host)
+		endpoint, err := parseEndPoint(host)
 		if err != nil {
 			return err
 		}
@@ -368,10 +394,11 @@ func parseHost(host string, config *Configuration) error {
 	return nil
 }
 
-func parseKeepAliveSetting(k, v string, d *time.Duration) error {
+func parseKeepAliveSetting(k, v string, d *time.Duration) errors.Error {
 	i, err := strconv.Atoi(v)
 	if err != nil || i < -1 {
-		return fmt.Errorf("Invalid %s \"%s\". Please provide a positive integer, or -1 to disable", k, v)
+		return errors.NewErrorCodeMsgf(InvalidKeepAliveSetting,
+			"Invalid %s \"%s\". Please provide a positive integer, or -1 to disable", k, v)
 	}
 
 	if i == -1 {

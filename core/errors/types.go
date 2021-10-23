@@ -29,8 +29,12 @@ func (r errorImpl) Code() ErrorCode {
 	return r.code
 }
 
-func NewErrorCodeMsg(code ErrorCode, msg ...interface{}) Error {
-	return errorImpl{code: code, err: stdErrors.New(fmt.Sprint(msg...))}
+func NewErrorCodeMsg(code ErrorCode, errorString string) Error {
+	return errorImpl{code: code, err: stdErrors.New(errorString)}
+}
+
+func NewErrorCodeMsgf(code ErrorCode, msg string, params ...interface{}) Error {
+	return errorImpl{code: code, err: stdErrors.New(fmt.Sprintf(msg, params...))}
 }
 
 func NewErrorCode(code ErrorCode) Error {
