@@ -3,7 +3,7 @@ package grpc_subscription_client
 //go:generate mockgen -source=grpc_subscription_client_factory.go -destination=../mocks/grpc_subscription_client_factory_mock.go -mock_names=Factory=GrpcClientFactory -package=mocks
 
 import (
-	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 	"google.golang.org/grpc"
 )
 

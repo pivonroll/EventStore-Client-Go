@@ -11,7 +11,7 @@ import (
 	gomock "github.com/golang/mock/gomock"
 	event_reader "github.com/pivonroll/EventStore-Client-Go/persistent/event_reader"
 	message_adapter "github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
-	persistent "github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	persistent "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 )
 
 // EventReaderFactory is a mock of Factory interface.

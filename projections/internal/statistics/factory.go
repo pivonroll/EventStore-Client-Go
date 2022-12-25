@@ -4,7 +4,7 @@ package statistics
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
 )
 
 type ReaderFactory interface {

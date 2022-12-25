@@ -11,8 +11,8 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/operations/internal/grpc_operations_client"
-	protoOperations "github.com/pivonroll/EventStore-Client-Go/protos/operations"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	protoOperations "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

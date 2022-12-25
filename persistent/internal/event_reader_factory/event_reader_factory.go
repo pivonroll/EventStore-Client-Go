@@ -7,7 +7,7 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/persistent/event_reader"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 )
 
 type Factory interface {

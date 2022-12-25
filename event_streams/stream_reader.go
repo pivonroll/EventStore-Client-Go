@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
 )
 
 // StreamReader is an interface which represents a reader of a stream.

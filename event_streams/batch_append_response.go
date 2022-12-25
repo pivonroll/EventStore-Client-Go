@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
 )
 
 // BatchAppendResponse is a response returned by EventStoreDB after an entire batch of events (all chunks) were appended

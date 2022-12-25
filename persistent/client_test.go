@@ -15,7 +15,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 
 	"github.com/golang/mock/gomock"
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 	"github.com/stretchr/testify/require"
 )
 

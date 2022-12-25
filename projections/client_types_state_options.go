@@ -3,7 +3,7 @@ package projections
 import (
 	"strings"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
 )
 
 // StateRequest represents input required to fetch state of the projection.

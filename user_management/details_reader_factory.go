@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/users"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/users"
 )
 
 type detailsReaderFactory interface {

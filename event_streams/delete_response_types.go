@@ -1,6 +1,6 @@
 package event_streams
 
-import "github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+import "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
 
 // DeleteResponse is response received when stream is soft-deleted by using Client.DeleteStream.
 type DeleteResponse struct {

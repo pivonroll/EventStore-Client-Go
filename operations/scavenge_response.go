@@ -1,6 +1,6 @@
 package operations
 
-import "github.com/pivonroll/EventStore-Client-Go/protos/operations"
+import "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
 
 // ScavengeResponse is a result received when scavenge operation is started and stopped.
 type ScavengeResponse struct {

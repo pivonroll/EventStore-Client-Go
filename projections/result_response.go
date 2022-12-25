@@ -3,7 +3,7 @@ package projections
 import (
 	"encoding/json"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
 	"google.golang.org/protobuf/types/known/structpb"
 )
 

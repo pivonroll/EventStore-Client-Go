@@ -8,10 +8,10 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	statistics_internal "github.com/pivonroll/EventStore-Client-Go/projections/internal/statistics"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -21,7 +21,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
-	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
 )
 
 func TestClientImpl_CreateProjection(t *testing.T) {

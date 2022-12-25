@@ -7,7 +7,7 @@
 package operations
 
 import (
-	shared "github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	shared "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"

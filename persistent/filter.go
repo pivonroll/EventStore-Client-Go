@@ -1,8 +1,8 @@
 package persistent
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 )
 
 // Filter is used to specify a filter when reading events from stream $all.

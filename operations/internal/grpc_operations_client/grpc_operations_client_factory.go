@@ -3,7 +3,7 @@ package grpc_operations_client
 //go:generate mockgen -source=grpc_operations_client_factory.go -destination=grpc_operations_client_factory_mock.go -package=grpc_operations_client
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/protos/operations"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
 	"google.golang.org/grpc"
 )
 

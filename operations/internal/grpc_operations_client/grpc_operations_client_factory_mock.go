@@ -8,7 +8,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	operations "github.com/pivonroll/EventStore-Client-Go/protos/operations"
+	operations "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
 	grpc "google.golang.org/grpc"
 )
 

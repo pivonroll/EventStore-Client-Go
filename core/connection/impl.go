@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/gossip"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/gossip"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"

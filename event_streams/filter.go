@@ -1,8 +1,8 @@
 package event_streams
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
 )
 
 type isFilter interface {

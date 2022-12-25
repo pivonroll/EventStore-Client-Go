@@ -9,8 +9,8 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/position"
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	"github.com/stretchr/testify/require"
 )
 

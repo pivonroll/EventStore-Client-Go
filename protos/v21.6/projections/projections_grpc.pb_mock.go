@@ -9,7 +9,7 @@ import (
 	reflect "reflect"
 
 	gomock "github.com/golang/mock/gomock"
-	shared "github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	shared "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	grpc "google.golang.org/grpc"
 	metadata "google.golang.org/grpc/metadata"
 )

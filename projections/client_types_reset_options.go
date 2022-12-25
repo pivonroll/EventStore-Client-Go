@@ -3,7 +3,7 @@ package projections
 import (
 	"strings"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
 )
 
 // ResetRequest contains projection's name and whether

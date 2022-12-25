@@ -10,7 +10,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/ptr"
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 )
 
 type MessageAdapter interface {

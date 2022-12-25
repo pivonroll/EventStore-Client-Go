@@ -7,7 +7,7 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/users"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/users"
 )
 
 type detailsReader interface {

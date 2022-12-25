@@ -4,7 +4,7 @@ package operations
 
 import (
 	context "context"
-	shared "github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	shared "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"

@@ -7,7 +7,7 @@
 package streams2
 
 import (
-	shared "github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	shared "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	status "google.golang.org/genproto/googleapis/rpc/status"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"

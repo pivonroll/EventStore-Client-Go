@@ -11,8 +11,8 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_action"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 )
 
 // MAX_ACK_COUNT is maximum number of messages which can be acknowledged.

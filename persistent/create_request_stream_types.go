@@ -2,8 +2,8 @@ package persistent
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 )
 
 // SubscriptionGroupForStreamRequest is a set of data sent to EventStoreDB when a persistent subscription group

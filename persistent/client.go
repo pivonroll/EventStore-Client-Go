@@ -22,7 +22,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/event_reader_factory"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/grpc_subscription_client"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
-	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )

@@ -12,7 +12,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	statistics_internal "github.com/pivonroll/EventStore-Client-Go/projections/internal/statistics"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	"github.com/pivonroll/EventStore-Client-Go/protos/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 

@@ -3,7 +3,7 @@ package persistent
 import (
 	"fmt"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
 )
 
 const SUBSCRIBER_COUNT_UNLIMITED = 0
