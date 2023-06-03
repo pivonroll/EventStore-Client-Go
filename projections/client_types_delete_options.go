@@ -3,7 +3,7 @@ package projections
 import (
 	"strings"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/projections"
 )
 
 // DeleteRequest contains projection's name and a set of options what to do

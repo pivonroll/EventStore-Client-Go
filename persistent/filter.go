@@ -1,8 +1,8 @@
 package persistent
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 // Filter is used to specify a filter when reading events from stream $all.
@@ -153,7 +153,8 @@ func buildProtoFilter(filter Filter) *persistent.CreateReq_AllOptions_Filter {
 }
 
 func buildProtoFilterExpression(
-	matcher isFilterMatcher) *persistent.CreateReq_AllOptions_FilterOptions_Expression {
+	matcher isFilterMatcher,
+) *persistent.CreateReq_AllOptions_FilterOptions_Expression {
 	result := &persistent.CreateReq_AllOptions_FilterOptions_Expression{}
 	if regexMatcher, ok := matcher.(RegexFilterMatcher); ok {
 		result.Regex = regexMatcher.Regex

@@ -3,7 +3,7 @@ package persistent
 import (
 	"fmt"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
 )
 
 const SUBSCRIBER_COUNT_UNLIMITED = 0
@@ -115,14 +115,16 @@ func (c MessageTimeoutInMs) isCreateRequestMessageTimeout() {
 }
 
 func (c MessageTimeoutInMs) buildCreateRequestSettings(
-	protoSettings *persistent.CreateReq_Settings) {
+	protoSettings *persistent.CreateReq_Settings,
+) {
 	protoSettings.MessageTimeout = &persistent.CreateReq_Settings_MessageTimeoutMs{
 		MessageTimeoutMs: c.MilliSeconds,
 	}
 }
 
 func (c MessageTimeoutInMs) buildUpdateRequestSettings(
-	protoSettings *persistent.UpdateReq_Settings) {
+	protoSettings *persistent.UpdateReq_Settings,
+) {
 	protoSettings.MessageTimeout = &persistent.UpdateReq_Settings_MessageTimeoutMs{
 		MessageTimeoutMs: c.MilliSeconds,
 	}
@@ -138,14 +140,16 @@ func (c MessageTimeoutInTicks) isCreateRequestMessageTimeout() {
 }
 
 func (c MessageTimeoutInTicks) buildCreateRequestSettings(
-	protoSettings *persistent.CreateReq_Settings) {
+	protoSettings *persistent.CreateReq_Settings,
+) {
 	protoSettings.MessageTimeout = &persistent.CreateReq_Settings_MessageTimeoutTicks{
 		MessageTimeoutTicks: c.Ticks,
 	}
 }
 
 func (c MessageTimeoutInTicks) buildUpdateRequestSettings(
-	protoSettings *persistent.UpdateReq_Settings) {
+	protoSettings *persistent.UpdateReq_Settings,
+) {
 	protoSettings.MessageTimeout = &persistent.UpdateReq_Settings_MessageTimeoutTicks{
 		MessageTimeoutTicks: c.Ticks,
 	}
@@ -167,14 +171,16 @@ func (c CheckpointAfterTicks) isCreateRequestCheckpointAfter() {
 }
 
 func (c CheckpointAfterTicks) buildCreateRequestSettings(
-	protoSettings *persistent.CreateReq_Settings) {
+	protoSettings *persistent.CreateReq_Settings,
+) {
 	protoSettings.CheckpointAfter = &persistent.CreateReq_Settings_CheckpointAfterTicks{
 		CheckpointAfterTicks: c.Ticks,
 	}
 }
 
 func (c CheckpointAfterTicks) buildUpdateRequestSettings(
-	protoSettings *persistent.UpdateReq_Settings) {
+	protoSettings *persistent.UpdateReq_Settings,
+) {
 	protoSettings.CheckpointAfter = &persistent.UpdateReq_Settings_CheckpointAfterTicks{
 		CheckpointAfterTicks: c.Ticks,
 	}
@@ -195,7 +201,8 @@ func (c CheckpointAfterMs) buildCreateRequestSettings(protoSettings *persistent.
 }
 
 func (c CheckpointAfterMs) buildUpdateRequestSettings(
-	protoSettings *persistent.UpdateReq_Settings) {
+	protoSettings *persistent.UpdateReq_Settings,
+) {
 	protoSettings.CheckpointAfter = &persistent.UpdateReq_Settings_CheckpointAfterMs{
 		CheckpointAfterMs: c.MilliSeconds,
 	}

@@ -2,7 +2,7 @@ package event_streams
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 // AppendResponse is returned from Client.AppendToStream when events are written successfully.
@@ -164,8 +164,8 @@ type appendResponseAdapter interface {
 type appendResponseAdapterImpl struct{}
 
 func (this appendResponseAdapterImpl) CreateResponseWithError(
-	protoResponse *streams2.AppendResp) (AppendResponse, errors.Error) {
-
+	protoResponse *streams2.AppendResp,
+) (AppendResponse, errors.Error) {
 	switch protoResponse.Result.(type) {
 	case *streams2.AppendResp_WrongExpectedVersion_:
 		wrongExpectedVersionProto := protoResponse.Result.(*streams2.AppendResp_WrongExpectedVersion_)
@@ -179,7 +179,8 @@ func (this appendResponseAdapterImpl) CreateResponseWithError(
 }
 
 func (this appendResponseAdapterImpl) buildSuccessResponse(
-	protoSuccessResult *streams2.AppendResp_Success_) AppendResponse {
+	protoSuccessResult *streams2.AppendResp_Success_,
+) AppendResponse {
 	result := AppendResponse{}
 
 	switch protoSuccessResult.Success.CurrentRevisionOption.(type) {
@@ -208,7 +209,8 @@ func (this appendResponseAdapterImpl) buildSuccessResponse(
 }
 
 func (this appendResponseAdapterImpl) buildWrongExpectedVersionError(
-	proto *streams2.AppendResp_WrongExpectedVersion_) WrongExpectedVersion {
+	proto *streams2.AppendResp_WrongExpectedVersion_,
+) WrongExpectedVersion {
 	result := newWrongExpectedVersionError()
 
 	result.currentRevision2060 = this.buildCurrentRevision2060(proto.WrongExpectedVersion)
@@ -220,8 +222,8 @@ func (this appendResponseAdapterImpl) buildWrongExpectedVersionError(
 }
 
 func (this appendResponseAdapterImpl) buildCurrentRevision2060(
-	proto *streams2.AppendResp_WrongExpectedVersion) isAppendResponseWrongCurrentRevision2060 {
-
+	proto *streams2.AppendResp_WrongExpectedVersion,
+) isAppendResponseWrongCurrentRevision2060 {
 	if proto.CurrentRevisionOption_20_6_0 != nil {
 		switch proto.CurrentRevisionOption_20_6_0.(type) {
 		case *streams2.AppendResp_WrongExpectedVersion_CurrentRevision_20_6_0:
@@ -238,8 +240,8 @@ func (this appendResponseAdapterImpl) buildCurrentRevision2060(
 }
 
 func (this appendResponseAdapterImpl) buildExpectedRevision2060(
-	proto *streams2.AppendResp_WrongExpectedVersion) isAppendResponseWrongExpectedRevision2060 {
-
+	proto *streams2.AppendResp_WrongExpectedVersion,
+) isAppendResponseWrongExpectedRevision2060 {
 	if proto.ExpectedRevisionOption_20_6_0 != nil {
 		switch proto.ExpectedRevisionOption_20_6_0.(type) {
 		case *streams2.AppendResp_WrongExpectedVersion_ExpectedRevision_20_6_0:
@@ -258,8 +260,8 @@ func (this appendResponseAdapterImpl) buildExpectedRevision2060(
 }
 
 func (this appendResponseAdapterImpl) buildCurrentRevision(
-	proto *streams2.AppendResp_WrongExpectedVersion) isAppendResponseWrongCurrentRevision {
-
+	proto *streams2.AppendResp_WrongExpectedVersion,
+) isAppendResponseWrongCurrentRevision {
 	if proto.CurrentRevisionOption != nil {
 		switch proto.CurrentRevisionOption.(type) {
 		case *streams2.AppendResp_WrongExpectedVersion_CurrentRevision:
@@ -276,8 +278,8 @@ func (this appendResponseAdapterImpl) buildCurrentRevision(
 }
 
 func (this appendResponseAdapterImpl) buildExpectedRevision(
-	proto *streams2.AppendResp_WrongExpectedVersion) isAppendResponseWrongExpectedRevision {
-
+	proto *streams2.AppendResp_WrongExpectedVersion,
+) isAppendResponseWrongExpectedRevision {
 	if proto.ExpectedRevisionOption != nil {
 		switch proto.ExpectedRevisionOption.(type) {
 		case *streams2.AppendResp_WrongExpectedVersion_ExpectedRevision:

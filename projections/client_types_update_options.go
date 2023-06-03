@@ -3,8 +3,8 @@ package projections
 import (
 	"strings"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 type isEmit interface {
@@ -13,7 +13,7 @@ type isEmit interface {
 
 // EmitEnabled setting determines whether a projection can emit events and any projection
 // that calls emit() or linkTo() requires it.
-// Read more at https://developers.eventstore.com/server/v21.6/projections/projections-config.html#emit-enabled
+// Read more at https://developers.eventstore.com/server/v22.10/projections/projections-config.html#emit-enabled
 type EmitEnabled struct {
 	EmitEnabled bool
 }

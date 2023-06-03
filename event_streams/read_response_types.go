@@ -14,7 +14,7 @@ import (
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 // ReadResponse represents a response received when reading a stream.

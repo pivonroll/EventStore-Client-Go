@@ -8,10 +8,10 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	statistics_internal "github.com/pivonroll/EventStore-Client-Go/projections/internal/statistics"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	"google.golang.org/protobuf/types/known/structpb"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
@@ -21,7 +21,7 @@ import (
 	"github.com/stretchr/testify/require"
 
 	"github.com/golang/mock/gomock"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/projections"
 )
 
 func TestClientImpl_CreateProjection(t *testing.T) {
@@ -105,8 +105,8 @@ func TestClientImpl_CreateProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.CreateReq,
-					options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, error) {
-
+					options ...grpc.CallOption,
+				) (persistent.PersistentSubscriptions_ReadClient, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -213,8 +213,8 @@ func TestClientImpl_UpdateProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.UpdateReq,
-					options ...grpc.CallOption) (*persistent.UpdateResp, error) {
-
+					options ...grpc.CallOption,
+				) (*persistent.UpdateResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -316,8 +316,8 @@ func TestClientImpl_DeleteProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.DeleteReq,
-					options ...grpc.CallOption) (*persistent.DeleteResp, error) {
-
+					options ...grpc.CallOption,
+				) (*persistent.DeleteResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -423,8 +423,8 @@ func TestClientImpl_ProjectionStatistics(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.StatisticsReq,
-					options ...grpc.CallOption) (projections.Projections_StatisticsClient, error) {
-
+					options ...grpc.CallOption,
+				) (projections.Projections_StatisticsClient, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -525,8 +525,8 @@ func TestClientImpl_DisableProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.DisableReq,
-					options ...grpc.CallOption) (*projections.DisableResp, error) {
-
+					options ...grpc.CallOption,
+				) (*projections.DisableResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -625,8 +625,8 @@ func TestClientImpl_AbortProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.DisableReq,
-					options ...grpc.CallOption) (*projections.DisableResp, error) {
-
+					options ...grpc.CallOption,
+				) (*projections.DisableResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -726,8 +726,8 @@ func TestClientImpl_EnableProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.EnableReq,
-					options ...grpc.CallOption) (*projections.EnableResp, error) {
-
+					options ...grpc.CallOption,
+				) (*projections.EnableResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -829,8 +829,8 @@ func TestClientImpl_ResetProjection(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.ResetReq,
-					options ...grpc.CallOption) (*projections.ResetResp, error) {
-
+					options ...grpc.CallOption,
+				) (*projections.ResetResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -942,8 +942,8 @@ func TestClientImpl_ProjectionState(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.StateReq,
-					options ...grpc.CallOption) (*projections.StateResp, error) {
-
+					options ...grpc.CallOption,
+				) (*projections.StateResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -1056,8 +1056,8 @@ func TestClientImpl_ProjectionResult(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.ResultReq,
-					options ...grpc.CallOption) (*projections.ResultResp, error) {
-
+					options ...grpc.CallOption,
+				) (*projections.ResultResp, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -1181,8 +1181,8 @@ func TestClientImpl_RestartProjectionsSubsystem(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *shared.Empty,
-					options ...grpc.CallOption) (*shared.Empty, error) {
-
+					options ...grpc.CallOption,
+				) (*shared.Empty, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -1292,8 +1292,8 @@ func TestClientImpl_ListAllProjections(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.StatisticsReq,
-					options ...grpc.CallOption) (projections.Projections_StatisticsClient, error) {
-
+					options ...grpc.CallOption,
+				) (projections.Projections_StatisticsClient, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -1440,8 +1440,8 @@ func TestClientImpl_ListContinuousProjections(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.StatisticsReq,
-					options ...grpc.CallOption) (projections.Projections_StatisticsClient, error) {
-
+					options ...grpc.CallOption,
+				) (projections.Projections_StatisticsClient, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}
@@ -1588,8 +1588,8 @@ func TestClientImpl_ListOneTimeProjections(t *testing.T) {
 				DoAndReturn(func(
 					_ctx context.Context,
 					_protoRequest *projections.StatisticsReq,
-					options ...grpc.CallOption) (projections.Projections_StatisticsClient, error) {
-
+					options ...grpc.CallOption,
+				) (projections.Projections_StatisticsClient, error) {
 					*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 						"header_key": []string{"header_value"},
 					}

@@ -2,7 +2,7 @@ package event_reader
 
 import (
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 func toProtoUUID(id uuid.UUID) *shared.UUID {

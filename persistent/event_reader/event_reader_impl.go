@@ -11,8 +11,8 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_action"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 // MAX_ACK_COUNT is maximum number of messages which can be acknowledged.
@@ -106,7 +106,8 @@ func (reader *eventReaderImpl) Ack(messages ...persistent_event.ReadResponseEven
 // Nack sends Nack signal for a message.
 // Client must also specify a reason why message was nack-ed.
 func (reader *eventReaderImpl) Nack(reason string,
-	action persistent_action.Nack_Action, messages ...persistent_event.ReadResponseEvent) error {
+	action persistent_action.Nack_Action, messages ...persistent_event.ReadResponseEvent,
+) error {
 	if len(messages) == 0 {
 		return nil
 	}

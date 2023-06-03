@@ -3,8 +3,8 @@ package persistent
 import (
 	"testing"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	"github.com/stretchr/testify/require"
 )
 

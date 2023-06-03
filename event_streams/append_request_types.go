@@ -3,8 +3,8 @@ package event_streams
 import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 type appendRequest struct {
@@ -53,7 +53,8 @@ func (this *appendRequest) build() *streams2.AppendReq {
 
 func (this *appendRequest) buildExpectedStreamRevision(
 	options *streams2.AppendReq_Options_,
-	content appendRequestContentOptions) {
+	content appendRequestContentOptions,
+) {
 	switch content.expectedStreamRevision.(type) {
 	case stream_revision.WriteStreamRevision:
 		revision := content.expectedStreamRevision.(stream_revision.WriteStreamRevision)

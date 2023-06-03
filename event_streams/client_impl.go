@@ -14,7 +14,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -185,7 +185,8 @@ func (client *Client) SetStreamMetadata(
 	ctx context.Context,
 	streamID string,
 	expectedStreamRevision stream_revision.IsWriteStreamRevision,
-	metadata StreamMetadata) (AppendResponse, errors.Error) {
+	metadata StreamMetadata,
+) (AppendResponse, errors.Error) {
 	streamMetadataEvent := newMetadataEvent(metadata)
 
 	return client.appendToStreamWithError(ctx, appendRequestContentOptions{
@@ -197,8 +198,8 @@ func (client *Client) SetStreamMetadata(
 // GetStreamMetadata reads stream's latest metadata.
 func (client *Client) GetStreamMetadata(
 	ctx context.Context,
-	streamId string) (StreamMetadataResult, errors.Error) {
-
+	streamId string,
+) (StreamMetadataResult, errors.Error) {
 	events, err := client.readStreamEvents(ctx, readRequest{
 		streamOption: readRequestStreamOptions{
 			StreamIdentifier: getMetaStreamOf(streamId),
@@ -489,7 +490,6 @@ func (client *Client) ReadEventsFromStreamAll(
 	count uint64,
 	resolveLinks bool, // Todo add documentation for resolveLinks
 ) (ResolvedEventList, errors.Error) {
-
 	return client.readStreamEvents(ctx, readRequest{
 		streamOption: readRequestStreamOptionsAll{
 			Position: position,
@@ -576,8 +576,8 @@ func (client *Client) appendToStreamWithError(
 
 func (client *Client) readStreamEvents(
 	ctx context.Context,
-	readRequest readRequest) (ResolvedEventList, errors.Error) {
-
+	readRequest readRequest,
+) (ResolvedEventList, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -683,8 +683,8 @@ func (client *Client) subscribeToStream(
 
 func (client *Client) getStreamEventsReader(
 	ctx context.Context,
-	readRequest readRequest) (StreamReader, errors.Error) {
-
+	readRequest readRequest,
+) (StreamReader, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err

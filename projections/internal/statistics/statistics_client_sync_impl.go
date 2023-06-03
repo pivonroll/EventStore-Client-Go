@@ -6,7 +6,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/projections"
 )
 
 type ClientSyncImpl struct {

@@ -2,8 +2,8 @@ package persistent
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 // SubscriptionGroupForStreamRequest is a set of data sent to EventStoreDB when a persistent subscription group
@@ -39,7 +39,8 @@ func (request SubscriptionGroupForStreamRequest) buildCreateRequest() *persisten
 
 func buildCreateRequestRevision(
 	revision stream_revision.IsReadStreamRevision,
-	streamOptions *persistent.CreateReq_StreamOptions) {
+	streamOptions *persistent.CreateReq_StreamOptions,
+) {
 	switch revision.(type) {
 	case stream_revision.ReadStreamRevision:
 		streamOptions.RevisionOption = &persistent.CreateReq_StreamOptions_Revision{
@@ -80,7 +81,8 @@ func (request SubscriptionGroupForStreamRequest) buildUpdateRequest() *persisten
 
 func buildUpdateRequestRevision(
 	revision stream_revision.IsReadStreamRevision,
-	streamOptions *persistent.UpdateReq_StreamOptions) {
+	streamOptions *persistent.UpdateReq_StreamOptions,
+) {
 	switch revision.(type) {
 	case stream_revision.ReadStreamRevisionStart:
 		streamOptions.RevisionOption = &persistent.UpdateReq_StreamOptions_Start{

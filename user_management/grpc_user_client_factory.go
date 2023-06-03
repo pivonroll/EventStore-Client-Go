@@ -1,7 +1,7 @@
 package user_management
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/users"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/users"
 	"google.golang.org/grpc"
 )
 

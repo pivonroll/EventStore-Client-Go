@@ -2,8 +2,8 @@ package event_streams
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 const ReadCountMax = ^uint64(0)
@@ -85,7 +85,8 @@ func thisBuildStreamOptionAll(all readRequestStreamOptionsAll) *streams2.ReadReq
 }
 
 func (this readRequest) buildStreamOptions(
-	streamOptions readRequestStreamOptions) *streams2.ReadReq_Options_Stream {
+	streamOptions readRequestStreamOptions,
+) *streams2.ReadReq_Options_Stream {
 	result := &streams2.ReadReq_Options_Stream{
 		Stream: &streams2.ReadReq_Options_StreamOptions{
 			StreamIdentifier: &shared.StreamIdentifier{

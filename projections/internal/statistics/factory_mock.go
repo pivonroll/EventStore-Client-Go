@@ -9,7 +9,7 @@ import (
 
 	gomock "github.com/golang/mock/gomock"
 	statistics "github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	projections "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/projections"
+	projections "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/projections"
 )
 
 // MockReaderFactory is a mock of ReaderFactory interface.

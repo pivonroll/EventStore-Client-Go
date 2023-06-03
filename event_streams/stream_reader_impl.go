@@ -7,7 +7,7 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 // streamReaderImpl implements a StreamReader interface.
@@ -75,7 +75,8 @@ func (this *streamReaderImpl) Close() {
 func newReadClientImpl(
 	protoClient streams2.Streams_ReadClient,
 	cancelFunc context.CancelFunc,
-	readResponseAdapter readResponseAdapter) *streamReaderImpl {
+	readResponseAdapter readResponseAdapter,
+) *streamReaderImpl {
 	reader := &streamReaderImpl{
 		protoClient:         protoClient,
 		readResponseAdapter: readResponseAdapter,

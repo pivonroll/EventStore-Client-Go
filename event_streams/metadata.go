@@ -97,7 +97,7 @@ type CustomMetadataType map[string]interface{}
 
 // StreamMetadata is the metadata of a stream.
 // You can read more about stream metadata at
-// https://developers.eventstore.com/server/v21.6/streams/metadata-and-reserved-names.html#reserved-names
+// https://developers.eventstore.com/server/v22.10/streams/metadata-and-reserved-names.html#reserved-names
 type StreamMetadata struct {
 	// MaxAgeInSeconds Sets a sliding window based on dates.
 	// When data reaches a certain age it disappears automatically from the stream and is

@@ -7,7 +7,7 @@ import (
 	"math/bits"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 func GetUUID(protoUUID *shared.UUID) uuid.UUID {

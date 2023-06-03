@@ -10,7 +10,7 @@
 // it might occur that if messages are consumed very fast that the save will be postponed until
 // there is some 'breathing space' for the server to save the position.
 //
-// Read more at https://developers.eventstore.com/server/v21.6/persistent-subscriptions.
+// Read more at https://developers.eventstore.com/server/v22.10/persistent-subscriptions.
 package persistent
 
 import (
@@ -22,7 +22,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/event_reader_factory"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/grpc_subscription_client"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/internal/message_adapter"
-	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	persistentProto "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -132,7 +132,8 @@ const CreateStreamSubscription_FailedToCreateErr errors.ErrorCode = "CreateStrea
 // You must have admin permissions to create a persistent subscription group.
 func (client Client) CreateSubscriptionGroupForStream(
 	ctx context.Context,
-	request SubscriptionGroupForStreamRequest) errors.Error {
+	request SubscriptionGroupForStreamRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -162,7 +163,8 @@ const CreateAllSubscription_FailedToCreateErr errors.ErrorCode = "CreateAllSubsc
 // You must have admin permissions to create a persistent subscription group.
 func (client Client) CreateSubscriptionGroupForStreamAll(
 	ctx context.Context,
-	request SubscriptionGroupForStreamAllRequest) errors.Error {
+	request SubscriptionGroupForStreamAllRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -193,7 +195,8 @@ const UpdateStreamSubscription_FailedToUpdateErr errors.ErrorCode = "UpdateStrea
 // You must have admin permissions to update a persistent subscription group.
 func (client Client) UpdateSubscriptionGroupForStream(
 	ctx context.Context,
-	request SubscriptionGroupForStreamRequest) errors.Error {
+	request SubscriptionGroupForStreamRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -224,7 +227,8 @@ const UpdateAllSubscription_FailedToUpdateErr errors.ErrorCode = "UpdateAllSubsc
 // You must have admin permissions to update a persistent subscription group.
 func (client Client) UpdateSubscriptionGroupForStreamAll(
 	ctx context.Context,
-	request UpdateSubscriptionGroupForStreamAllRequest) errors.Error {
+	request UpdateSubscriptionGroupForStreamAllRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -255,7 +259,8 @@ const DeleteStreamSubscription_FailedToDeleteErr errors.ErrorCode = "DeleteStrea
 func (client Client) DeleteSubscriptionGroupForStream(
 	ctx context.Context,
 	streamId string,
-	groupName string) errors.Error {
+	groupName string,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -289,7 +294,8 @@ const DeleteAllSubscription_FailedToDeleteErr errors.ErrorCode = "DeleteAllSubsc
 // You must have admin permissions to delete a persistent subscription group.
 func (client Client) DeleteSubscriptionGroupForStreamAll(
 	ctx context.Context,
-	groupName string) errors.Error {
+	groupName string,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err

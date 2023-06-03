@@ -10,7 +10,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/ptr"
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 	"github.com/pivonroll/EventStore-Client-Go/persistent/persistent_event"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
 )
 
 type MessageAdapter interface {
@@ -20,7 +20,8 @@ type MessageAdapter interface {
 type MessageAdapterImpl struct{}
 
 func (adapter MessageAdapterImpl) FromProtoResponse(
-	readEvent *persistent.ReadResp_ReadEvent) persistent_event.ReadResponseEvent {
+	readEvent *persistent.ReadResp_ReadEvent,
+) persistent_event.ReadResponseEvent {
 	positionWire := readEvent.GetPosition()
 	eventWire := readEvent.GetEvent()
 	linkWire := readEvent.GetLink()
@@ -55,7 +56,8 @@ func (adapter MessageAdapterImpl) FromProtoResponse(
 }
 
 func newRecordedEventFromProto(
-	recordedEvent *persistent.ReadResp_ReadEvent_RecordedEvent) persistent_event.RecordedEvent {
+	recordedEvent *persistent.ReadResp_ReadEvent_RecordedEvent,
+) persistent_event.RecordedEvent {
 	streamIdentifier := recordedEvent.GetStreamIdentifier()
 
 	return persistent_event.RecordedEvent{

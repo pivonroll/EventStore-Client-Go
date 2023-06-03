@@ -5,8 +5,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -44,8 +44,8 @@ func (this batchAppendRequest) build() *streams2.BatchAppendReq {
 
 func (this batchAppendRequest) buildExpectedStreamPosition(
 	protoResult *streams2.BatchAppendReq,
-	position stream_revision.IsWriteStreamRevision) {
-
+	position stream_revision.IsWriteStreamRevision,
+) {
 	switch position.(type) {
 	case stream_revision.WriteStreamRevision:
 		streamPosition := position.(stream_revision.WriteStreamRevision)

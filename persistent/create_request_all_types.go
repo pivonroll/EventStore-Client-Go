@@ -2,8 +2,8 @@ package persistent
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 // SubscriptionGroupForStreamAllRequest is a struct with all data necessary to create a persistent subscription group.
@@ -45,7 +45,8 @@ func (request SubscriptionGroupForStreamAllRequest) build() *persistent.CreateRe
 
 func buildCreateRequestPosition(
 	position stream_revision.IsReadPositionAll,
-	protoOptions *persistent.CreateReq_AllOptions) {
+	protoOptions *persistent.CreateReq_AllOptions,
+) {
 	switch position.(type) {
 	case stream_revision.ReadPositionAllStart:
 		protoOptions.AllOption = &persistent.CreateReq_AllOptions_Start{

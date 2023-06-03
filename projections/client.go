@@ -12,7 +12,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/projections/internal/grpc_proto_client_factory"
 	statistics_internal "github.com/pivonroll/EventStore-Client-Go/projections/internal/statistics"
 	"github.com/pivonroll/EventStore-Client-Go/projections/statistics"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 
@@ -29,7 +29,8 @@ type Client struct {
 // CreateProjection creates a new projection on EventStoreDB.
 func (client *Client) CreateProjection(
 	ctx context.Context,
-	options CreateRequest) errors.Error {
+	options CreateRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -50,7 +51,8 @@ func (client *Client) CreateProjection(
 // UpdateProjection updates an existing projection on EventStoreDB.
 func (client *Client) UpdateProjection(
 	ctx context.Context,
-	options UpdateRequest) errors.Error {
+	options UpdateRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -71,7 +73,8 @@ func (client *Client) UpdateProjection(
 // DeleteProjection removes a projection from EventStoreDB.
 func (client *Client) DeleteProjection(
 	ctx context.Context,
-	options DeleteRequest) errors.Error {
+	options DeleteRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -92,7 +95,8 @@ func (client *Client) DeleteProjection(
 // GetProjectionStatistics returns a reader for projection's statistics.
 func (client *Client) GetProjectionStatistics(
 	ctx context.Context,
-	mode IsStatisticsProjection) (statistics.Reader, errors.Error) {
+	mode IsStatisticsProjection,
+) (statistics.Reader, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -115,7 +119,8 @@ func (client *Client) GetProjectionStatistics(
 // DisableProjection disables an existing projection.
 func (client *Client) DisableProjection(
 	ctx context.Context,
-	projectionName string) errors.Error {
+	projectionName string,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -138,7 +143,8 @@ func (client *Client) DisableProjection(
 // AbortProjection aborts an existing projection.
 func (client *Client) AbortProjection(
 	ctx context.Context,
-	projectionName string) errors.Error {
+	projectionName string,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -159,8 +165,8 @@ func (client *Client) AbortProjection(
 // EnableProjection enables a disabled projection. If projection was already enabled it does noop (no operation).
 func (client *Client) EnableProjection(
 	ctx context.Context,
-	projectionName string) errors.Error {
-
+	projectionName string,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -182,7 +188,8 @@ func (client *Client) EnableProjection(
 // ResetProjection resets an existing projection.
 func (client *Client) ResetProjection(
 	ctx context.Context,
-	options ResetRequest) errors.Error {
+	options ResetRequest,
+) errors.Error {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return err
@@ -203,7 +210,8 @@ func (client *Client) ResetProjection(
 // GetProjectionState fetches a state of the projection.
 func (client *Client) GetProjectionState(
 	ctx context.Context,
-	options StateRequest) (IsResult, errors.Error) {
+	options StateRequest,
+) (IsResult, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -224,7 +232,8 @@ func (client *Client) GetProjectionState(
 // GetProjectionResult fetches a result of a projection.
 func (client *Client) GetProjectionResult(
 	ctx context.Context,
-	options ResultRequest) (IsResult, errors.Error) {
+	options ResultRequest,
+) (IsResult, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return nil, err
@@ -264,8 +273,8 @@ func (client *Client) RestartProjectionsSubsystem(ctx context.Context) errors.Er
 
 // ListAllProjections lists details of all projections.
 func (client *Client) ListAllProjections(
-	ctx context.Context) ([]statistics.Response, errors.Error) {
-
+	ctx context.Context,
+) ([]statistics.Response, errors.Error) {
 	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsForAllProjections{})
 	if err != nil {
 		return nil, err
@@ -291,8 +300,8 @@ func (client *Client) ListAllProjections(
 
 // ListContinuousProjections lists details of all continuous projections.
 func (client *Client) ListContinuousProjections(
-	ctx context.Context) ([]statistics.Response, errors.Error) {
-
+	ctx context.Context,
+) ([]statistics.Response, errors.Error) {
 	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsForContinuousProjections{})
 	if err != nil {
 		return nil, err
@@ -317,8 +326,8 @@ func (client *Client) ListContinuousProjections(
 
 // ListOneTimeProjections lists details of all one-time projections.
 func (client *Client) ListOneTimeProjections(
-	ctx context.Context) ([]statistics.Response, errors.Error) {
-
+	ctx context.Context,
+) ([]statistics.Response, errors.Error) {
 	statisticsClient, err := client.GetProjectionStatistics(ctx, StatisticsForOneTimeProjections{})
 	if err != nil {
 		return nil, err
@@ -344,7 +353,8 @@ func (client *Client) ListOneTimeProjections(
 // NewClient creates a new client instance.
 // Grpc connection must be passed to the new client instance.
 func NewClient(
-	grpcClient connection.GrpcClient) *Client {
+	grpcClient connection.GrpcClient,
+) *Client {
 	return &Client{
 		grpcProjectionsClientFactory: grpc_proto_client_factory.FactoryImpl{},
 		grpcClient:                   grpcClient,

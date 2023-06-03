@@ -2,8 +2,8 @@ package persistent
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 )
 
 // UpdateSubscriptionGroupForStreamAllRequest is a set of data necessary to update a subscription to stream $all.
@@ -34,7 +34,8 @@ func (request UpdateSubscriptionGroupForStreamAllRequest) build() *persistent.Up
 
 func buildUpdateRequestPosition(
 	position stream_revision.IsReadPositionAll,
-	protoOptions *persistent.UpdateReq_AllOptions) {
+	protoOptions *persistent.UpdateReq_AllOptions,
+) {
 	switch position.(type) {
 	case stream_revision.ReadPositionAllStart:
 		protoOptions.AllOption = &persistent.UpdateReq_AllOptions_Start{

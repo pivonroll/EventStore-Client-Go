@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 // StreamReader is an interface which represents a reader of a stream.
@@ -32,7 +32,8 @@ type streamReaderFactoryImpl struct{}
 
 func (this streamReaderFactoryImpl) create(
 	protoClient streams2.Streams_ReadClient,
-	cancelFunc context.CancelFunc) StreamReader {
+	cancelFunc context.CancelFunc,
+) StreamReader {
 	return newReadClientImpl(
 		protoClient,
 		cancelFunc,

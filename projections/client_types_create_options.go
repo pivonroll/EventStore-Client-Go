@@ -3,8 +3,8 @@ package projections
 import (
 	"strings"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/v21.6/projections"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/v21.6/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/v22.10/projections"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/v22.10/shared"
 )
 
 type ProjectionType string

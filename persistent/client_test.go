@@ -15,7 +15,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 
 	"github.com/golang/mock/gomock"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/persistent"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/persistent"
 	"github.com/stretchr/testify/require"
 )
 
@@ -144,8 +144,8 @@ func Test_Client_CreateSyncConnection_SubscriptionClientReadErr(t *testing.T) {
 			grpc.Header(&headers), grpc.Trailer(&trailers)).
 			DoAndReturn(func(
 				_ctx context.Context,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -208,8 +208,8 @@ func Test_Client_CreateSyncConnection_SubscriptionClientSendStreamInitialization
 			grpc.Header(&headers), grpc.Trailer(&trailers)).
 			DoAndReturn(func(
 				_ctx context.Context,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -275,8 +275,8 @@ func Test_Client_CreateSyncConnection_SubscriptionClientReceiveStreamInitializat
 			grpc.Header(&headers), grpc.Trailer(&trailers)).
 			DoAndReturn(func(
 				_ctx context.Context,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -431,8 +431,8 @@ func Test_Client_CreateStreamSubscription_FailedToCreateSubscription(t *testing.
 			DoAndReturn(func(
 				_ctx context.Context,
 				_protoRequest *persistent.CreateReq,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -560,8 +560,8 @@ func Test_Client_CreateAllSubscription_CreateFailure(t *testing.T) {
 			DoAndReturn(func(
 				_ctx context.Context,
 				_protoRequest *persistent.CreateReq,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -668,8 +668,8 @@ func Test_Client_UpdateStreamSubscription_Failure(t *testing.T) {
 			DoAndReturn(func(
 				_ctx context.Context,
 				_protoRequest *persistent.UpdateReq,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -780,8 +780,8 @@ func Test_Client_UpdateAllSubscription_Failure(t *testing.T) {
 			DoAndReturn(func(
 				_ctx context.Context,
 				_protoRequest *persistent.UpdateReq,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -884,8 +884,8 @@ func Test_Client_DeleteStreamSubscription_Failure(t *testing.T) {
 			DoAndReturn(func(
 				_ctx context.Context,
 				_protoRequest *persistent.DeleteReq,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}
@@ -980,8 +980,8 @@ func Test_Client_DeleteAllSubscription_Failure(t *testing.T) {
 			DoAndReturn(func(
 				_ctx context.Context,
 				_protoRequest *persistent.DeleteReq,
-				options ...grpc.CallOption) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
-
+				options ...grpc.CallOption,
+			) (persistent.PersistentSubscriptions_ReadClient, errors.Error) {
 				*options[0].(grpc.HeaderCallOption).HeaderAddr = metadata.MD{
 					"header_key": []string{"header_value"},
 				}

@@ -11,8 +11,8 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/operations/internal/grpc_operations_client"
-	protoOperations "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	protoOperations "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/operations"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -145,8 +145,8 @@ const (
 
 // StartScavenge starts a scavenge operation.
 func (client *Client) StartScavenge(ctx context.Context,
-	request StartScavengeRequest) (ScavengeResponse, errors.Error) {
-
+	request StartScavengeRequest,
+) (ScavengeResponse, errors.Error) {
 	if request.ThreadCount <= 0 {
 		return ScavengeResponse{}, errors.NewErrorCode(StartScavenge_ThreadCountLessOrEqualZeroErr)
 	}
@@ -176,7 +176,8 @@ func (client *Client) StartScavenge(ctx context.Context,
 
 // StopScavenge stops a scavenge operation.
 func (client *Client) StopScavenge(ctx context.Context,
-	scavengeId string) (ScavengeResponse, errors.Error) {
+	scavengeId string,
+) (ScavengeResponse, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {
 		return ScavengeResponse{}, err

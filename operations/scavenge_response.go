@@ -1,6 +1,6 @@
 package operations
 
-import "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
+import "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/operations"
 
 // ScavengeResponse is a result received when scavenge operation is started and stopped.
 type ScavengeResponse struct {
@@ -27,7 +27,8 @@ type scavengeResponseAdapter interface {
 type scavengeResponseAdapterImpl struct{}
 
 func (adapter scavengeResponseAdapterImpl) create(
-	protoResponse *operations.ScavengeResp) ScavengeResponse {
+	protoResponse *operations.ScavengeResp,
+) ScavengeResponse {
 	result := ScavengeResponse{
 		ScavengeId: protoResponse.ScavengeId,
 		Status:     ScavengeStatus(protoResponse.ScavengeResult),

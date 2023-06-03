@@ -4,7 +4,7 @@ package event_streams
 // It is set through stream's metadata with Client.SetStreamMetadata.
 // User must have a write access to a stream's metadata stream in order
 // to be able to set access control list.
-// Read more about stream ACL at https://developers.eventstore.com/server/v21.6/security/acl.html#stream-acl.
+// Read more about stream ACL at https://developers.eventstore.com/server/v22.10/security/acl.html#stream-acl.
 type StreamAcl struct {
 	// ReadRoles is a list of users which can read from a stream.
 	// If ReadRoles is empty that means that any user can read from a stream.

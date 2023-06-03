@@ -4,7 +4,7 @@ import (
 	"context"
 	"sync"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/users"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/users"
 )
 
 type detailsReaderFactory interface {
@@ -16,7 +16,8 @@ type detailsReaderFactoryImpl struct{}
 
 func (factory detailsReaderFactoryImpl) Create(
 	protoStreamReader users.Users_DetailsClient,
-	cancelFunc context.CancelFunc) detailsReader {
+	cancelFunc context.CancelFunc,
+) detailsReader {
 	return &DetailsReaderImpl{
 		protoStreamReader:      protoStreamReader,
 		detailsResponseAdapter: detailsResponseAdapterImpl{},

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/users"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/users"
 )
 
 // CreateOrUpdateRequest represents the data necessary to create a user on EventStoreDB.

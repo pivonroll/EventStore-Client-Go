@@ -1,8 +1,8 @@
 package event_streams
 
 import (
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
 )
 
 type isFilter interface {
@@ -147,7 +147,8 @@ func buildProtoFilter(filterInput isFilter) *streams2.ReadReq_Options_Filter {
 }
 
 func buildProtoFilterExpression(
-	matcher filterMatcher) *streams2.ReadReq_Options_FilterOptions_Expression {
+	matcher filterMatcher,
+) *streams2.ReadReq_Options_FilterOptions_Expression {
 	result := &streams2.ReadReq_Options_FilterOptions_Expression{}
 	if regexMatcher, ok := matcher.(RegexFilterMatcher); ok {
 		result.Regex = regexMatcher.Regex

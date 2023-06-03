@@ -11,8 +11,8 @@ import (
 
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/gossip"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v21.6/shared"
+	gossipApi "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/gossip"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/codes"
 	"google.golang.org/grpc/credentials"
@@ -90,8 +90,8 @@ func (client grpcClientImpl) HandleError(
 	_header metadata.MD,
 	trailers metadata.MD,
 	stdErr error,
-	mapUnknownErrorToOtherError ...errors.ErrorCode) errors.Error {
-
+	mapUnknownErrorToOtherError ...errors.ErrorCode,
+) errors.Error {
 	err := GetErrorFromProtoException(trailers, stdErr)
 	if err != nil {
 		if err.Code() == errors.NotLeaderErr {

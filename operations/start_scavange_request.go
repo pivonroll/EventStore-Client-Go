@@ -1,6 +1,6 @@
 package operations
 
-import "github.com/pivonroll/EventStore-Client-Go/protos/v21.6/operations"
+import "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/operations"
 
 // StartScavengeRequest are set of options which can be set for a scavenge operation.
 type StartScavengeRequest struct {
