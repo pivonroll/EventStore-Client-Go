@@ -14,7 +14,7 @@ import (
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"
 )
@@ -132,7 +132,7 @@ func (client *Client) BatchAppendToStreamWithCorrelationId(ctx context.Context,
 		return BatchAppendResponse{}, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	var headers, trailers metadata.MD
 	appendClient, protoErr := grpcStreamsClient.BatchAppend(ctx,
@@ -510,7 +510,7 @@ func (client *Client) tombstoneStream(
 		return TombstoneResponse{}, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	var headers, trailers metadata.MD
 	tombstoneResponse, protoErr := grpcStreamsClient.Tombstone(context, tombstoneRequest.build(),
@@ -533,7 +533,7 @@ func (client *Client) appendToStreamWithError(
 		return AppendResponse{}, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	var headers, trailers metadata.MD
 	appendClient, protoErr := grpcStreamsClient.Append(ctx,
@@ -583,7 +583,7 @@ func (client *Client) readStreamEvents(
 		return nil, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	var headers, trailers metadata.MD
 	ctx, cancel := context.WithCancel(ctx)
@@ -647,7 +647,7 @@ func (client *Client) subscribeToStream(
 		return nil, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	readStreamClient, protoErr := grpcStreamsClient.Read(ctx, request.build(),
 		grpc.Header(&headers), grpc.Trailer(&trailers))
@@ -666,12 +666,12 @@ func (client *Client) subscribeToStream(
 	}
 
 	switch readResult.Content.(type) {
-	case *streams2.ReadResp_Confirmation:
+	case *streams.ReadResp_Confirmation:
 		{
 			readClient := client.readClientFactory.create(readStreamClient, cancel)
 			return readClient, nil
 		}
-	case *streams2.ReadResp_StreamNotFound_:
+	case *streams.ReadResp_StreamNotFound_:
 		{
 			defer cancel()
 			return nil, errors.NewErrorCode(errors.StreamNotFoundErr)
@@ -690,7 +690,7 @@ func (client *Client) getStreamEventsReader(
 		return nil, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	var headers, trailers metadata.MD
 	ctx, cancel := context.WithCancel(ctx)
@@ -716,7 +716,7 @@ func (client *Client) deleteStream(
 		return DeleteResponse{}, err
 	}
 
-	grpcStreamsClient := streams2.NewStreamsClient(handle.Connection())
+	grpcStreamsClient := streams.NewStreamsClient(handle.Connection())
 
 	var headers, trailers metadata.MD
 	deleteResponse, protoErr := grpcStreamsClient.Delete(context, deleteRequest.build(),

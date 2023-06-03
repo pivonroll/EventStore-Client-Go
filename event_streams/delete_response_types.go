@@ -1,6 +1,6 @@
 package event_streams
 
-import "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+import "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 
 // DeleteResponse is response received when stream is soft-deleted by using Client.DeleteStream.
 type DeleteResponse struct {
@@ -37,22 +37,22 @@ func (this deleteResponsePosition) isDeleteResponsePositionOption() {
 }
 
 type deleteResponseAdapter interface {
-	Create(resp *streams2.DeleteResp) DeleteResponse
+	Create(resp *streams.DeleteResp) DeleteResponse
 }
 
 type deleteResponseAdapterImpl struct{}
 
-func (this deleteResponseAdapterImpl) Create(protoResponse *streams2.DeleteResp) DeleteResponse {
+func (this deleteResponseAdapterImpl) Create(protoResponse *streams.DeleteResp) DeleteResponse {
 	result := DeleteResponse{}
 
 	switch protoResponse.PositionOption.(type) {
-	case *streams2.DeleteResp_Position_:
-		protoPosition := protoResponse.PositionOption.(*streams2.DeleteResp_Position_)
+	case *streams.DeleteResp_Position_:
+		protoPosition := protoResponse.PositionOption.(*streams.DeleteResp_Position_)
 		result.position = deleteResponsePosition{
 			CommitPosition:  protoPosition.Position.CommitPosition,
 			PreparePosition: protoPosition.Position.PreparePosition,
 		}
-	case *streams2.DeleteResp_NoPosition:
+	case *streams.DeleteResp_NoPosition:
 		result.position = nil
 	}
 

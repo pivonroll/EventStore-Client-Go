@@ -2,7 +2,7 @@ package event_streams
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 )
 
 type isFilter interface {
@@ -105,10 +105,10 @@ type PrefixFilterMatcher struct {
 func (prefix PrefixFilterMatcher) isFilterMatcher() {
 }
 
-func buildProtoFilter(filterInput isFilter) *streams2.ReadReq_Options_Filter {
+func buildProtoFilter(filterInput isFilter) *streams.ReadReq_Options_Filter {
 	filter := filterInput.(Filter)
-	result := &streams2.ReadReq_Options_Filter{
-		Filter: &streams2.ReadReq_Options_FilterOptions{
+	result := &streams.ReadReq_Options_Filter{
+		Filter: &streams.ReadReq_Options_FilterOptions{
 			CheckpointIntervalMultiplier: filter.CheckpointIntervalMultiplier,
 		},
 	}
@@ -117,14 +117,14 @@ func buildProtoFilter(filterInput isFilter) *streams2.ReadReq_Options_Filter {
 	case FilterByEventType:
 		eventTypeFilter := filter.FilterBy.(FilterByEventType)
 		filterExpression := buildProtoFilterExpression(eventTypeFilter.Matcher)
-		result.Filter.Filter = &streams2.ReadReq_Options_FilterOptions_EventType{
+		result.Filter.Filter = &streams.ReadReq_Options_FilterOptions_EventType{
 			EventType: filterExpression,
 		}
 
 	case FilterByStreamId:
 		streamIdentifierFilter := filter.FilterBy.(FilterByStreamId)
 		filterExpression := buildProtoFilterExpression(streamIdentifierFilter.Matcher)
-		result.Filter.Filter = &streams2.ReadReq_Options_FilterOptions_StreamIdentifier{
+		result.Filter.Filter = &streams.ReadReq_Options_FilterOptions_StreamIdentifier{
 			StreamIdentifier: filterExpression,
 		}
 	}
@@ -133,12 +133,12 @@ func buildProtoFilter(filterInput isFilter) *streams2.ReadReq_Options_Filter {
 	case FilterWindowMax:
 		maxWindow := filter.Window.(FilterWindowMax)
 
-		result.Filter.Window = &streams2.ReadReq_Options_FilterOptions_Max{
+		result.Filter.Window = &streams.ReadReq_Options_FilterOptions_Max{
 			Max: maxWindow.Max,
 		}
 
 	case FilterNoWindow:
-		result.Filter.Window = &streams2.ReadReq_Options_FilterOptions_Count{
+		result.Filter.Window = &streams.ReadReq_Options_FilterOptions_Count{
 			Count: &shared.Empty{},
 		}
 	}
@@ -148,8 +148,8 @@ func buildProtoFilter(filterInput isFilter) *streams2.ReadReq_Options_Filter {
 
 func buildProtoFilterExpression(
 	matcher filterMatcher,
-) *streams2.ReadReq_Options_FilterOptions_Expression {
-	result := &streams2.ReadReq_Options_FilterOptions_Expression{}
+) *streams.ReadReq_Options_FilterOptions_Expression {
+	result := &streams.ReadReq_Options_FilterOptions_Expression{}
 	if regexMatcher, ok := matcher.(RegexFilterMatcher); ok {
 		result.Regex = regexMatcher.Regex
 	} else if prefixMatcher, ok := matcher.(PrefixFilterMatcher); ok {

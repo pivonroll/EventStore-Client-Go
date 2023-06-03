@@ -6,7 +6,7 @@ import (
 
 	"github.com/golang/protobuf/ptypes/any"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 )
 
 // BatchAppendResponse is a response returned by EventStoreDB after an entire batch of events (all chunks) were appended
@@ -193,7 +193,7 @@ func (this batchAppendResponseExpectedStreamPositionStreamExists) isBatchAppendR
 }
 
 type batchResponseAdapter interface {
-	createResponseWithError(protoResponse *streams2.BatchAppendResp) (BatchAppendResponse, errors.Error)
+	createResponseWithError(protoResponse *streams.BatchAppendResp) (BatchAppendResponse, errors.Error)
 }
 
 type batchResponseAdapterImpl struct{}
@@ -207,7 +207,7 @@ const (
 )
 
 func (this batchResponseAdapterImpl) createResponseWithError(
-	protoResponse *streams2.BatchAppendResp,
+	protoResponse *streams.BatchAppendResp,
 ) (BatchAppendResponse, errors.Error) {
 	if protoResponse.Result != nil {
 		if protoResponse.GetError() != nil {
@@ -221,9 +221,9 @@ func (this batchResponseAdapterImpl) createResponseWithError(
 }
 
 func (this batchResponseAdapterImpl) buildBatchError(
-	protoResponse *streams2.BatchAppendResp,
+	protoResponse *streams.BatchAppendResp,
 ) BatchError {
-	protoError := protoResponse.Result.(*streams2.BatchAppendResp_Error)
+	protoError := protoResponse.Result.(*streams.BatchAppendResp_Error)
 	errorCode := errors.UnknownErr
 	if protoError.Error.Message == protoWrongExpectedVersion {
 		errorCode = errors.WrongExpectedStreamRevisionErr
@@ -248,7 +248,7 @@ func (this batchResponseAdapterImpl) buildBatchError(
 }
 
 func (this batchResponseAdapterImpl) buildSuccess(
-	protoResponse *streams2.BatchAppendResp,
+	protoResponse *streams.BatchAppendResp,
 ) BatchAppendResponse {
 	result := BatchAppendResponse{
 		correlationId: protobuf_uuid.GetUUID(protoResponse.GetCorrelationId()),
@@ -256,7 +256,7 @@ func (this batchResponseAdapterImpl) buildSuccess(
 	}
 
 	result.expectedStreamPosition = this.buildExpectedStreamPosition(protoResponse)
-	protoSuccess := protoResponse.Result.(*streams2.BatchAppendResp_Success_)
+	protoSuccess := protoResponse.Result.(*streams.BatchAppendResp_Success_)
 	revisionAndPosition := this.buildSuccessRevisionAndPosition(protoSuccess)
 	result.currentRevisionOption = revisionAndPosition.CurrentRevisionOption
 	result.position = revisionAndPosition.Position
@@ -278,23 +278,23 @@ func buildErrorDetails(protoDetails []*any.Any) []ErrorDetails {
 }
 
 func (this batchResponseAdapterImpl) buildSuccessRevisionAndPosition(
-	protoSuccess *streams2.BatchAppendResp_Success_,
+	protoSuccess *streams.BatchAppendResp_Success_,
 ) batchAppendResponseResultSuccess {
 	result := batchAppendResponseResultSuccess{}
 
 	switch protoSuccess.Success.CurrentRevisionOption.(type) {
-	case *streams2.BatchAppendResp_Success_CurrentRevision:
-		protoCurrentRevision := protoSuccess.Success.CurrentRevisionOption.(*streams2.BatchAppendResp_Success_CurrentRevision)
+	case *streams.BatchAppendResp_Success_CurrentRevision:
+		protoCurrentRevision := protoSuccess.Success.CurrentRevisionOption.(*streams.BatchAppendResp_Success_CurrentRevision)
 		result.CurrentRevisionOption = batchAppendResponseResultSuccessCurrentRevision{
 			CurrentRevision: protoCurrentRevision.CurrentRevision,
 		}
-	case *streams2.BatchAppendResp_Success_NoStream:
+	case *streams.BatchAppendResp_Success_NoStream:
 		result.CurrentRevisionOption = batchAppendResponseResultSuccessCurrentRevisionNoStream{}
 	}
 
 	switch protoSuccess.Success.PositionOption.(type) {
-	case *streams2.BatchAppendResp_Success_Position:
-		protoPosition := protoSuccess.Success.PositionOption.(*streams2.BatchAppendResp_Success_Position)
+	case *streams.BatchAppendResp_Success_Position:
+		protoPosition := protoSuccess.Success.PositionOption.(*streams.BatchAppendResp_Success_Position)
 		result.Position = batchAppendResponseResultSuccessPosition{
 			CommitPosition:  protoPosition.Position.CommitPosition,
 			PreparePosition: protoPosition.Position.PreparePosition,
@@ -305,23 +305,23 @@ func (this batchResponseAdapterImpl) buildSuccessRevisionAndPosition(
 }
 
 func (this batchResponseAdapterImpl) buildExpectedStreamPosition(
-	protoResponse *streams2.BatchAppendResp,
+	protoResponse *streams.BatchAppendResp,
 ) isBatchAppendResponseExpectedStreamPosition {
 	if protoResponse.ExpectedStreamPosition == nil {
 		return nil
 	}
 
 	switch protoResponse.ExpectedStreamPosition.(type) {
-	case *streams2.BatchAppendResp_StreamPosition:
-		protoPosition := protoResponse.ExpectedStreamPosition.(*streams2.BatchAppendResp_StreamPosition)
+	case *streams.BatchAppendResp_StreamPosition:
+		protoPosition := protoResponse.ExpectedStreamPosition.(*streams.BatchAppendResp_StreamPosition)
 		return batchAppendResponseExpectedStreamPosition{
 			StreamPosition: protoPosition.StreamPosition,
 		}
-	case *streams2.BatchAppendResp_NoStream:
+	case *streams.BatchAppendResp_NoStream:
 		return batchAppendResponseExpectedStreamPositionNoStream{}
-	case *streams2.BatchAppendResp_Any:
+	case *streams.BatchAppendResp_Any:
 		return batchAppendResponseExpectedStreamPositionAny{}
-	case *streams2.BatchAppendResp_StreamExists:
+	case *streams.BatchAppendResp_StreamExists:
 		return batchAppendResponseExpectedStreamPositionStreamExists{}
 	default:
 		panic("unsupported type")

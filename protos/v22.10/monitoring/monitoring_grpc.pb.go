@@ -2,8 +2,11 @@
 
 package monitoring
 
+//go:generate mockgen -source=monitoring_grpc.pb.go -destination=monitoring_grpc.pb_mock.go -package=monitoring
+
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -70,8 +73,7 @@ type MonitoringServer interface {
 }
 
 // UnimplementedMonitoringServer must be embedded to have forward compatible implementations.
-type UnimplementedMonitoringServer struct {
-}
+type UnimplementedMonitoringServer struct{}
 
 func (UnimplementedMonitoringServer) Stats(*StatsReq, Monitoring_StatsServer) error {
 	return status.Errorf(codes.Unimplemented, "method Stats not implemented")

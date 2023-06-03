@@ -2,8 +2,11 @@
 
 package users
 
+//go:generate mockgen -source=users_grpc.pb.go -destination=users_grpc.pb_mock.go -package=users
+
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -147,30 +150,36 @@ type UsersServer interface {
 }
 
 // UnimplementedUsersServer must be embedded to have forward compatible implementations.
-type UnimplementedUsersServer struct {
-}
+type UnimplementedUsersServer struct{}
 
 func (UnimplementedUsersServer) Create(context.Context, *CreateReq) (*CreateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
+
 func (UnimplementedUsersServer) Update(context.Context, *UpdateReq) (*UpdateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
+
 func (UnimplementedUsersServer) Delete(context.Context, *DeleteReq) (*DeleteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
+
 func (UnimplementedUsersServer) Disable(context.Context, *DisableReq) (*DisableResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Disable not implemented")
 }
+
 func (UnimplementedUsersServer) Enable(context.Context, *EnableReq) (*EnableResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Enable not implemented")
 }
+
 func (UnimplementedUsersServer) Details(*DetailsReq, Users_DetailsServer) error {
 	return status.Errorf(codes.Unimplemented, "method Details not implemented")
 }
+
 func (UnimplementedUsersServer) ChangePassword(context.Context, *ChangePasswordReq) (*ChangePasswordResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ChangePassword not implemented")
 }
+
 func (UnimplementedUsersServer) ResetPassword(context.Context, *ResetPasswordReq) (*ResetPasswordResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResetPassword not implemented")
 }

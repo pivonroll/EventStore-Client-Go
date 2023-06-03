@@ -7,14 +7,14 @@ import (
 
 	"github.com/pivonroll/EventStore-Client-Go/core/connection"
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 )
 
 // streamReaderImpl implements a StreamReader interface.
 // Read is implemented with request/response mechanism which guarantees that
 // go routine which initiated a read is receiving the result.
 type streamReaderImpl struct {
-	protoClient         streams2.Streams_ReadClient
+	protoClient         streams.Streams_ReadClient
 	readResponseAdapter readResponseAdapter
 	cancelFunc          context.CancelFunc
 	once                sync.Once
@@ -73,7 +73,7 @@ func (this *streamReaderImpl) Close() {
 }
 
 func newReadClientImpl(
-	protoClient streams2.Streams_ReadClient,
+	protoClient streams.Streams_ReadClient,
 	cancelFunc context.CancelFunc,
 	readResponseAdapter readResponseAdapter,
 ) *streamReaderImpl {

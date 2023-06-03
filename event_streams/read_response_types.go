@@ -14,7 +14,7 @@ import (
 	system_metadata "github.com/pivonroll/EventStore-Client-Go/core/systemmetadata"
 
 	"github.com/google/uuid"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 )
 
 // ReadResponse represents a response received when reading a stream.
@@ -76,39 +76,39 @@ func (this ReadResponseCheckpoint) isReadResponseResult() {}
 
 // readResponseAdapter is used to construct read response from received protobuf message.
 type readResponseAdapter interface {
-	create(response *streams2.ReadResp) (ReadResponse, errors.Error)
+	create(response *streams.ReadResp) (ReadResponse, errors.Error)
 }
 
 type readResponseAdapterImpl struct{}
 
-func (this readResponseAdapterImpl) create(protoResponse *streams2.ReadResp) (ReadResponse, errors.Error) {
+func (this readResponseAdapterImpl) create(protoResponse *streams.ReadResp) (ReadResponse, errors.Error) {
 	result := ReadResponse{}
 
 	switch protoResponse.Content.(type) {
-	case *streams2.ReadResp_Event:
-		protoEventResponse := protoResponse.Content.(*streams2.ReadResp_Event).Event
+	case *streams.ReadResp_Event:
+		protoEventResponse := protoResponse.Content.(*streams.ReadResp_Event).Event
 		event := ResolvedEvent{}
 
 		event.Event = createRecordedEvent(protoEventResponse.Event)
 		event.Link = createRecordedEvent(protoEventResponse.Link)
 
 		switch protoEventResponse.Position.(type) {
-		case *streams2.ReadResp_ReadEvent_CommitPosition:
-			protoPosition := protoEventResponse.Position.(*streams2.ReadResp_ReadEvent_CommitPosition)
+		case *streams.ReadResp_ReadEvent_CommitPosition:
+			protoPosition := protoEventResponse.Position.(*streams.ReadResp_ReadEvent_CommitPosition)
 			event.CommitPosition = ptr.UInt64(protoPosition.CommitPosition)
-		case *streams2.ReadResp_ReadEvent_NoPosition:
+		case *streams.ReadResp_ReadEvent_NoPosition:
 			event.CommitPosition = nil
 		}
 
 		result.result = event
-	case *streams2.ReadResp_Checkpoint_:
-		protoCheckpointResponse := protoResponse.Content.(*streams2.ReadResp_Checkpoint_).Checkpoint
+	case *streams.ReadResp_Checkpoint_:
+		protoCheckpointResponse := protoResponse.Content.(*streams.ReadResp_Checkpoint_).Checkpoint
 		result.result = ReadResponseCheckpoint{
 			CommitPosition:  protoCheckpointResponse.CommitPosition,
 			PreparePosition: protoCheckpointResponse.PreparePosition,
 		}
-	case *streams2.ReadResp_StreamNotFound_:
-		protoStreamNotFound := protoResponse.Content.(*streams2.ReadResp_StreamNotFound_).StreamNotFound
+	case *streams.ReadResp_StreamNotFound_:
+		protoStreamNotFound := protoResponse.Content.(*streams.ReadResp_StreamNotFound_).StreamNotFound
 		return ReadResponse{}, StreamNotFoundError{
 			streamId: string(protoStreamNotFound.StreamIdentifier.StreamName),
 			err:      errors.NewErrorCode(errors.StreamNotFoundErr),
@@ -124,7 +124,7 @@ func (this readResponseAdapterImpl) create(protoResponse *streams2.ReadResp) (Re
 	return result, nil
 }
 
-func createRecordedEvent(protoEvent *streams2.ReadResp_ReadEvent_RecordedEvent) *RecordedEvent {
+func createRecordedEvent(protoEvent *streams.ReadResp_ReadEvent_RecordedEvent) *RecordedEvent {
 	if protoEvent == nil {
 		return nil
 	}

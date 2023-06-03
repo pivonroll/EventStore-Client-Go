@@ -1,6 +1,6 @@
 package event_streams
 
-import "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+import "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 
 // TombstoneResponse is response received when stream is hard-deleted by using Client.TombstoneStream.
 type TombstoneResponse struct {
@@ -37,22 +37,22 @@ func (this tombstoneResponsePosition) isTombstoneResponsePosition() {
 }
 
 type tombstoneResponseAdapter interface {
-	Create(protoTombstone *streams2.TombstoneResp) TombstoneResponse
+	Create(protoTombstone *streams.TombstoneResp) TombstoneResponse
 }
 
 type tombstoneResponseAdapterImpl struct{}
 
-func (this tombstoneResponseAdapterImpl) Create(protoTombstone *streams2.TombstoneResp) TombstoneResponse {
+func (this tombstoneResponseAdapterImpl) Create(protoTombstone *streams.TombstoneResp) TombstoneResponse {
 	result := TombstoneResponse{}
 
 	switch protoTombstone.PositionOption.(type) {
-	case *streams2.TombstoneResp_Position_:
-		protoPosition := protoTombstone.PositionOption.(*streams2.TombstoneResp_Position_)
+	case *streams.TombstoneResp_Position_:
+		protoPosition := protoTombstone.PositionOption.(*streams.TombstoneResp_Position_)
 		result.position = tombstoneResponsePosition{
 			CommitPosition:  protoPosition.Position.CommitPosition,
 			PreparePosition: protoPosition.Position.PreparePosition,
 		}
-	case *streams2.TombstoneResp_NoPosition:
+	case *streams.TombstoneResp_NoPosition:
 		result.position = nil
 	}
 

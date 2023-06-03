@@ -6,7 +6,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 	"google.golang.org/protobuf/types/known/emptypb"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
@@ -18,18 +18,20 @@ type batchAppendRequest struct {
 	isFinal          bool
 }
 
-func (this batchAppendRequest) build() *streams2.BatchAppendReq {
-	result := &streams2.BatchAppendReq{
+func (this batchAppendRequest) build() *streams.BatchAppendReq {
+	result := &streams.BatchAppendReq{
 		CorrelationId: &shared.UUID{
 			Value: &shared.UUID_String_{
 				String_: this.correlationId.String(),
 			},
 		},
-		Options: &streams2.BatchAppendReq_Options{
+		Options: &streams.BatchAppendReq_Options{
 			StreamIdentifier: &shared.StreamIdentifier{
 				StreamName: []byte(this.options.streamId),
 			},
-			Deadline: timestamppb.New(this.options.deadline),
+			DeadlineOption: &streams.BatchAppendReq_Options_Deadline_21_10_0{
+				Deadline_21_10_0: timestamppb.New(this.options.deadline),
+			},
 		},
 		ProposedMessages: this.buildProposedMessages(),
 		IsFinal:          this.isFinal,
@@ -43,37 +45,37 @@ func (this batchAppendRequest) build() *streams2.BatchAppendReq {
 }
 
 func (this batchAppendRequest) buildExpectedStreamPosition(
-	protoResult *streams2.BatchAppendReq,
+	protoResult *streams.BatchAppendReq,
 	position stream_revision.IsWriteStreamRevision,
 ) {
 	switch position.(type) {
 	case stream_revision.WriteStreamRevision:
 		streamPosition := position.(stream_revision.WriteStreamRevision)
-		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_StreamPosition{
+		protoResult.Options.ExpectedStreamPosition = &streams.BatchAppendReq_Options_StreamPosition{
 			StreamPosition: streamPosition.Revision,
 		}
 	case stream_revision.WriteStreamRevisionNoStream:
-		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_NoStream{
+		protoResult.Options.ExpectedStreamPosition = &streams.BatchAppendReq_Options_NoStream{
 			NoStream: &emptypb.Empty{},
 		}
 
 	case stream_revision.WriteStreamRevisionAny:
-		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_Any{
+		protoResult.Options.ExpectedStreamPosition = &streams.BatchAppendReq_Options_Any{
 			Any: &emptypb.Empty{},
 		}
 
 	case stream_revision.WriteStreamRevisionStreamExists:
-		protoResult.Options.ExpectedStreamPosition = &streams2.BatchAppendReq_Options_StreamExists{
+		protoResult.Options.ExpectedStreamPosition = &streams.BatchAppendReq_Options_StreamExists{
 			StreamExists: &emptypb.Empty{},
 		}
 	}
 }
 
-func (this batchAppendRequest) buildProposedMessages() []*streams2.BatchAppendReq_ProposedMessage {
-	result := make([]*streams2.BatchAppendReq_ProposedMessage, len(this.proposedMessages))
+func (this batchAppendRequest) buildProposedMessages() []*streams.BatchAppendReq_ProposedMessage {
+	result := make([]*streams.BatchAppendReq_ProposedMessage, len(this.proposedMessages))
 
 	for index, value := range this.proposedMessages {
-		result[index] = &streams2.BatchAppendReq_ProposedMessage{
+		result[index] = &streams.BatchAppendReq_ProposedMessage{
 			Id: &shared.UUID{
 				Value: &shared.UUID_String_{
 					String_: value.Id.String(),

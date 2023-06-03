@@ -2,8 +2,11 @@
 
 package streams
 
+//go:generate mockgen -source=streams_grpc.pb.go -destination=streams_grpc.pb_mock.go -package=streams
+
 import (
 	context "context"
+
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
 	status "google.golang.org/grpc/status"
@@ -161,21 +164,24 @@ type StreamsServer interface {
 }
 
 // UnimplementedStreamsServer must be embedded to have forward compatible implementations.
-type UnimplementedStreamsServer struct {
-}
+type UnimplementedStreamsServer struct{}
 
 func (UnimplementedStreamsServer) Read(*ReadReq, Streams_ReadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
+
 func (UnimplementedStreamsServer) Append(Streams_AppendServer) error {
 	return status.Errorf(codes.Unimplemented, "method Append not implemented")
 }
+
 func (UnimplementedStreamsServer) Delete(context.Context, *DeleteReq) (*DeleteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
+
 func (UnimplementedStreamsServer) Tombstone(context.Context, *TombstoneReq) (*TombstoneResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Tombstone not implemented")
 }
+
 func (UnimplementedStreamsServer) BatchAppend(Streams_BatchAppendServer) error {
 	return status.Errorf(codes.Unimplemented, "method BatchAppend not implemented")
 }

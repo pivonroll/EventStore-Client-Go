@@ -2,8 +2,11 @@
 
 package persistent
 
+//go:generate mockgen -source=persistent_grpc.pb.go -destination=persistent_grpc.pb_mock.go -package=persistent
+
 import (
 	context "context"
+
 	shared "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -147,33 +150,40 @@ type PersistentSubscriptionsServer interface {
 }
 
 // UnimplementedPersistentSubscriptionsServer must be embedded to have forward compatible implementations.
-type UnimplementedPersistentSubscriptionsServer struct {
-}
+type UnimplementedPersistentSubscriptionsServer struct{}
 
 func (UnimplementedPersistentSubscriptionsServer) Create(context.Context, *CreateReq) (*CreateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) Update(context.Context, *UpdateReq) (*UpdateResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Update not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) Delete(context.Context, *DeleteReq) (*DeleteResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Delete not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) Read(PersistentSubscriptions_ReadServer) error {
 	return status.Errorf(codes.Unimplemented, "method Read not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) GetInfo(context.Context, *GetInfoReq) (*GetInfoResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetInfo not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) ReplayParked(context.Context, *ReplayParkedReq) (*ReplayParkedResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ReplayParked not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) List(context.Context, *ListReq) (*ListResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) RestartSubsystem(context.Context, *shared.Empty) (*shared.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RestartSubsystem not implemented")
 }
+
 func (UnimplementedPersistentSubscriptionsServer) mustEmbedUnimplementedPersistentSubscriptionsServer() {
 }
 

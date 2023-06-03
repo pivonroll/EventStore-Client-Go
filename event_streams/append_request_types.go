@@ -4,15 +4,15 @@ import (
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 )
 
 type appendRequest struct {
 	content isAppendRequestContent
 }
 
-func (this *appendRequest) build() *streams2.AppendReq {
-	result := &streams2.AppendReq{
+func (this *appendRequest) build() *streams.AppendReq {
+	result := &streams.AppendReq{
 		Content: nil,
 	}
 
@@ -20,8 +20,8 @@ func (this *appendRequest) build() *streams2.AppendReq {
 	case appendRequestContentOptions:
 		content := this.content.(appendRequestContentOptions)
 
-		result.Content = &streams2.AppendReq_Options_{
-			Options: &streams2.AppendReq_Options{
+		result.Content = &streams.AppendReq_Options_{
+			Options: &streams.AppendReq_Options{
 				StreamIdentifier: &shared.StreamIdentifier{
 					StreamName: []byte(content.streamId),
 				},
@@ -29,13 +29,13 @@ func (this *appendRequest) build() *streams2.AppendReq {
 			},
 		}
 
-		this.buildExpectedStreamRevision(result.Content.(*streams2.AppendReq_Options_), content)
+		this.buildExpectedStreamRevision(result.Content.(*streams.AppendReq_Options_), content)
 
 	case appendRequestContentProposedMessage:
 		content := this.content.(appendRequestContentProposedMessage)
 
-		result.Content = &streams2.AppendReq_ProposedMessage_{
-			ProposedMessage: &streams2.AppendReq_ProposedMessage{
+		result.Content = &streams.AppendReq_ProposedMessage_{
+			ProposedMessage: &streams.AppendReq_ProposedMessage{
 				Id: &shared.UUID{
 					Value: &shared.UUID_String_{
 						String_: content.eventId.String(),
@@ -52,28 +52,28 @@ func (this *appendRequest) build() *streams2.AppendReq {
 }
 
 func (this *appendRequest) buildExpectedStreamRevision(
-	options *streams2.AppendReq_Options_,
+	options *streams.AppendReq_Options_,
 	content appendRequestContentOptions,
 ) {
 	switch content.expectedStreamRevision.(type) {
 	case stream_revision.WriteStreamRevision:
 		revision := content.expectedStreamRevision.(stream_revision.WriteStreamRevision)
 
-		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_Revision{
+		options.Options.ExpectedStreamRevision = &streams.AppendReq_Options_Revision{
 			Revision: revision.Revision,
 		}
 	case stream_revision.WriteStreamRevisionNoStream:
-		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_NoStream{
+		options.Options.ExpectedStreamRevision = &streams.AppendReq_Options_NoStream{
 			NoStream: &shared.Empty{},
 		}
 
 	case stream_revision.WriteStreamRevisionAny:
-		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_Any{
+		options.Options.ExpectedStreamRevision = &streams.AppendReq_Options_Any{
 			Any: &shared.Empty{},
 		}
 
 	case stream_revision.WriteStreamRevisionStreamExists:
-		options.Options.ExpectedStreamRevision = &streams2.AppendReq_Options_StreamExists{
+		options.Options.ExpectedStreamRevision = &streams.AppendReq_Options_StreamExists{
 			StreamExists: &shared.Empty{},
 		}
 	}

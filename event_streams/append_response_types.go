@@ -2,7 +2,7 @@ package event_streams
 
 import (
 	"github.com/pivonroll/EventStore-Client-Go/core/errors"
-	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams2"
+	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 )
 
 // AppendResponse is returned from Client.AppendToStream when events are written successfully.
@@ -158,20 +158,20 @@ func (this appendResponseWrongExpectedRevisionNoStream) isAppendResponseWrongExp
 
 type appendResponseAdapter interface {
 	CreateResponseWithError(
-		protoResponse *streams2.AppendResp) (AppendResponse, errors.Error)
+		protoResponse *streams.AppendResp) (AppendResponse, errors.Error)
 }
 
 type appendResponseAdapterImpl struct{}
 
 func (this appendResponseAdapterImpl) CreateResponseWithError(
-	protoResponse *streams2.AppendResp,
+	protoResponse *streams.AppendResp,
 ) (AppendResponse, errors.Error) {
 	switch protoResponse.Result.(type) {
-	case *streams2.AppendResp_WrongExpectedVersion_:
-		wrongExpectedVersionProto := protoResponse.Result.(*streams2.AppendResp_WrongExpectedVersion_)
+	case *streams.AppendResp_WrongExpectedVersion_:
+		wrongExpectedVersionProto := protoResponse.Result.(*streams.AppendResp_WrongExpectedVersion_)
 		return AppendResponse{}, this.buildWrongExpectedVersionError(wrongExpectedVersionProto)
-	case *streams2.AppendResp_Success_:
-		successProtoResult := protoResponse.Result.(*streams2.AppendResp_Success_)
+	case *streams.AppendResp_Success_:
+		successProtoResult := protoResponse.Result.(*streams.AppendResp_Success_)
 		return this.buildSuccessResponse(successProtoResult), nil
 	}
 
@@ -179,29 +179,29 @@ func (this appendResponseAdapterImpl) CreateResponseWithError(
 }
 
 func (this appendResponseAdapterImpl) buildSuccessResponse(
-	protoSuccessResult *streams2.AppendResp_Success_,
+	protoSuccessResult *streams.AppendResp_Success_,
 ) AppendResponse {
 	result := AppendResponse{}
 
 	switch protoSuccessResult.Success.CurrentRevisionOption.(type) {
-	case *streams2.AppendResp_Success_CurrentRevision:
-		protoCurrentRevision := protoSuccessResult.Success.CurrentRevisionOption.(*streams2.AppendResp_Success_CurrentRevision)
+	case *streams.AppendResp_Success_CurrentRevision:
+		protoCurrentRevision := protoSuccessResult.Success.CurrentRevisionOption.(*streams.AppendResp_Success_CurrentRevision)
 		result.currentRevision = appendResponseSuccessCurrentRevision{
 			CurrentRevision: protoCurrentRevision.CurrentRevision,
 		}
 
-	case *streams2.AppendResp_Success_NoStream:
+	case *streams.AppendResp_Success_NoStream:
 		result.currentRevision = appendResponseSuccessCurrentRevisionNoStream{}
 	}
 
 	switch protoSuccessResult.Success.PositionOption.(type) {
-	case *streams2.AppendResp_Success_Position:
-		protoPosition := protoSuccessResult.Success.PositionOption.(*streams2.AppendResp_Success_Position)
+	case *streams.AppendResp_Success_Position:
+		protoPosition := protoSuccessResult.Success.PositionOption.(*streams.AppendResp_Success_Position)
 		result.position = appendResponseSuccessPosition{
 			commitPosition:  protoPosition.Position.CommitPosition,
 			preparePosition: protoPosition.Position.PreparePosition,
 		}
-	case *streams2.AppendResp_Success_NoPosition:
+	case *streams.AppendResp_Success_NoPosition:
 		result.position = appendResponseSuccessNoPosition{}
 	}
 
@@ -209,7 +209,7 @@ func (this appendResponseAdapterImpl) buildSuccessResponse(
 }
 
 func (this appendResponseAdapterImpl) buildWrongExpectedVersionError(
-	proto *streams2.AppendResp_WrongExpectedVersion_,
+	proto *streams.AppendResp_WrongExpectedVersion_,
 ) WrongExpectedVersion {
 	result := newWrongExpectedVersionError()
 
@@ -222,16 +222,16 @@ func (this appendResponseAdapterImpl) buildWrongExpectedVersionError(
 }
 
 func (this appendResponseAdapterImpl) buildCurrentRevision2060(
-	proto *streams2.AppendResp_WrongExpectedVersion,
+	proto *streams.AppendResp_WrongExpectedVersion,
 ) isAppendResponseWrongCurrentRevision2060 {
 	if proto.CurrentRevisionOption_20_6_0 != nil {
 		switch proto.CurrentRevisionOption_20_6_0.(type) {
-		case *streams2.AppendResp_WrongExpectedVersion_CurrentRevision_20_6_0:
-			protoWrongCurrentRevision := proto.CurrentRevisionOption_20_6_0.(*streams2.AppendResp_WrongExpectedVersion_CurrentRevision_20_6_0)
+		case *streams.AppendResp_WrongExpectedVersion_CurrentRevision_20_6_0:
+			protoWrongCurrentRevision := proto.CurrentRevisionOption_20_6_0.(*streams.AppendResp_WrongExpectedVersion_CurrentRevision_20_6_0)
 			return appendResponseWrongCurrentRevision2060{
 				currentRevision: protoWrongCurrentRevision.CurrentRevision_20_6_0,
 			}
-		case *streams2.AppendResp_WrongExpectedVersion_NoStream_20_6_0:
+		case *streams.AppendResp_WrongExpectedVersion_NoStream_20_6_0:
 			return appendResponseWrongCurrentRevisionNoStream2060{}
 		}
 	}
@@ -240,18 +240,18 @@ func (this appendResponseAdapterImpl) buildCurrentRevision2060(
 }
 
 func (this appendResponseAdapterImpl) buildExpectedRevision2060(
-	proto *streams2.AppendResp_WrongExpectedVersion,
+	proto *streams.AppendResp_WrongExpectedVersion,
 ) isAppendResponseWrongExpectedRevision2060 {
 	if proto.ExpectedRevisionOption_20_6_0 != nil {
 		switch proto.ExpectedRevisionOption_20_6_0.(type) {
-		case *streams2.AppendResp_WrongExpectedVersion_ExpectedRevision_20_6_0:
-			protoExpectedRevision2060 := proto.ExpectedRevisionOption_20_6_0.(*streams2.AppendResp_WrongExpectedVersion_ExpectedRevision_20_6_0)
+		case *streams.AppendResp_WrongExpectedVersion_ExpectedRevision_20_6_0:
+			protoExpectedRevision2060 := proto.ExpectedRevisionOption_20_6_0.(*streams.AppendResp_WrongExpectedVersion_ExpectedRevision_20_6_0)
 			return appendResponseWrongExpectedRevision2060{
 				expectedRevision: protoExpectedRevision2060.ExpectedRevision_20_6_0,
 			}
-		case *streams2.AppendResp_WrongExpectedVersion_Any_20_6_0:
+		case *streams.AppendResp_WrongExpectedVersion_Any_20_6_0:
 			return appendResponseWrongExpectedRevisionAny2060{}
-		case *streams2.AppendResp_WrongExpectedVersion_StreamExists_20_6_0:
+		case *streams.AppendResp_WrongExpectedVersion_StreamExists_20_6_0:
 			return appendResponseWrongExpectedRevisionStreamExists2060{}
 		}
 	}
@@ -260,16 +260,16 @@ func (this appendResponseAdapterImpl) buildExpectedRevision2060(
 }
 
 func (this appendResponseAdapterImpl) buildCurrentRevision(
-	proto *streams2.AppendResp_WrongExpectedVersion,
+	proto *streams.AppendResp_WrongExpectedVersion,
 ) isAppendResponseWrongCurrentRevision {
 	if proto.CurrentRevisionOption != nil {
 		switch proto.CurrentRevisionOption.(type) {
-		case *streams2.AppendResp_WrongExpectedVersion_CurrentRevision:
-			protoWrongCurrentRevision := proto.CurrentRevisionOption.(*streams2.AppendResp_WrongExpectedVersion_CurrentRevision)
+		case *streams.AppendResp_WrongExpectedVersion_CurrentRevision:
+			protoWrongCurrentRevision := proto.CurrentRevisionOption.(*streams.AppendResp_WrongExpectedVersion_CurrentRevision)
 			return appendResponseWrongCurrentRevision{
 				currentRevision: protoWrongCurrentRevision.CurrentRevision,
 			}
-		case *streams2.AppendResp_WrongExpectedVersion_CurrentNoStream:
+		case *streams.AppendResp_WrongExpectedVersion_CurrentNoStream:
 			return appendResponseWrongCurrentRevisionNoStream{}
 		}
 	}
@@ -278,20 +278,20 @@ func (this appendResponseAdapterImpl) buildCurrentRevision(
 }
 
 func (this appendResponseAdapterImpl) buildExpectedRevision(
-	proto *streams2.AppendResp_WrongExpectedVersion,
+	proto *streams.AppendResp_WrongExpectedVersion,
 ) isAppendResponseWrongExpectedRevision {
 	if proto.ExpectedRevisionOption != nil {
 		switch proto.ExpectedRevisionOption.(type) {
-		case *streams2.AppendResp_WrongExpectedVersion_ExpectedRevision:
-			protoExpectedRevision := proto.ExpectedRevisionOption.(*streams2.AppendResp_WrongExpectedVersion_ExpectedRevision)
+		case *streams.AppendResp_WrongExpectedVersion_ExpectedRevision:
+			protoExpectedRevision := proto.ExpectedRevisionOption.(*streams.AppendResp_WrongExpectedVersion_ExpectedRevision)
 			return appendResponseWrongExpectedRevision{
 				expectedRevision: protoExpectedRevision.ExpectedRevision,
 			}
-		case *streams2.AppendResp_WrongExpectedVersion_ExpectedAny:
+		case *streams.AppendResp_WrongExpectedVersion_ExpectedAny:
 			return appendResponseWrongExpectedRevisionAny{}
-		case *streams2.AppendResp_WrongExpectedVersion_ExpectedStreamExists:
+		case *streams.AppendResp_WrongExpectedVersion_ExpectedStreamExists:
 			return appendResponseWrongExpectedRevisionStreamExists{}
-		case *streams2.AppendResp_WrongExpectedVersion_ExpectedNoStream:
+		case *streams.AppendResp_WrongExpectedVersion_ExpectedNoStream:
 			return appendResponseWrongExpectedRevisionNoStream{}
 		}
 	}

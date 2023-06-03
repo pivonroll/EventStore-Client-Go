@@ -2,8 +2,11 @@
 
 package operations
 
+//go:generate mockgen -source=operations_grpc.pb.go -destination=operations_grpc.pb_mock.go -package=operations
+
 import (
 	context "context"
+
 	shared "github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	grpc "google.golang.org/grpc"
 	codes "google.golang.org/grpc/codes"
@@ -114,27 +117,32 @@ type OperationsServer interface {
 }
 
 // UnimplementedOperationsServer must be embedded to have forward compatible implementations.
-type UnimplementedOperationsServer struct {
-}
+type UnimplementedOperationsServer struct{}
 
 func (UnimplementedOperationsServer) StartScavenge(context.Context, *StartScavengeReq) (*ScavengeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StartScavenge not implemented")
 }
+
 func (UnimplementedOperationsServer) StopScavenge(context.Context, *StopScavengeReq) (*ScavengeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method StopScavenge not implemented")
 }
+
 func (UnimplementedOperationsServer) Shutdown(context.Context, *shared.Empty) (*shared.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Shutdown not implemented")
 }
+
 func (UnimplementedOperationsServer) MergeIndexes(context.Context, *shared.Empty) (*shared.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method MergeIndexes not implemented")
 }
+
 func (UnimplementedOperationsServer) ResignNode(context.Context, *shared.Empty) (*shared.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ResignNode not implemented")
 }
+
 func (UnimplementedOperationsServer) SetNodePriority(context.Context, *SetNodePriorityReq) (*shared.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SetNodePriority not implemented")
 }
+
 func (UnimplementedOperationsServer) RestartPersistentSubscriptions(context.Context, *shared.Empty) (*shared.Empty, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method RestartPersistentSubscriptions not implemented")
 }
