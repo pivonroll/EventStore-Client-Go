@@ -25,7 +25,7 @@ func Test_BatchAppendZeroEvents_ToNonExistingStream(t *testing.T) {
 				stream_revision.WriteStreamRevisionNoStream{},
 				[]event_streams.ProposedEvent{},
 				5,
-				time.Now().Add(time.Second*10),
+				time.Second*10,
 			)
 			require.NoError(t, err)
 		}
@@ -48,7 +48,7 @@ func Test_BatchAppendZeroEvents_ToNonExistingStream(t *testing.T) {
 				stream_revision.WriteStreamRevisionAny{},
 				[]event_streams.ProposedEvent{},
 				1,
-				time.Now().Add(time.Second*10),
+				time.Second*10,
 			)
 			require.NoError(t, err)
 			require.True(t, writeResult.IsCurrentRevisionNoStream())
@@ -78,7 +78,7 @@ func Test_BatchAppendToNonExistingStream_WithExpectedRevision(t *testing.T) {
 			stream_revision.WriteStreamRevisionAny{},
 			[]event_streams.ProposedEvent{testEvent},
 			1,
-			time.Now().Add(time.Second*10))
+			time.Second*10)
 		require.NoError(t, err)
 		require.False(t, writeResult.IsCurrentRevisionNoStream())
 		require.EqualValues(t, 0, writeResult.GetCurrentRevision())
@@ -103,7 +103,7 @@ func Test_BatchAppendToNonExistingStream_WithExpectedRevision(t *testing.T) {
 			stream_revision.WriteStreamRevisionAny{},
 			testEvents,
 			50,
-			time.Now().Add(time.Second*10),
+			time.Second*10,
 		)
 		require.NoError(t, err)
 		require.False(t, writeResult.IsCurrentRevisionNoStream())
@@ -134,7 +134,7 @@ func Test_BatchAppendToExistingStream_WithExpectedRevision(t *testing.T) {
 			stream_revision.WriteStreamRevision{Revision: 1},
 			batchTestEvents,
 			50,
-			time.Now().Add(time.Second*10),
+			time.Second*10,
 		)
 
 		require.NoError(t, err)
@@ -161,7 +161,8 @@ func Test_BatchAppendToExistingStream_WithExpectedRevision(t *testing.T) {
 			stream_revision.WriteStreamRevision{Revision: 2},
 			batchTestEvents,
 			50,
-			time.Now().Add(time.Second*10))
+			time.Second*10,
+		)
 
 		require.Equal(t, errors.WrongExpectedStreamRevisionErr, err.Code())
 	})
@@ -181,6 +182,7 @@ func Test_BatchAppend_WithIncorrectCredentials(t *testing.T) {
 		stream_revision.WriteStreamRevisionAny{},
 		testEvents,
 		50,
-		time.Now().Add(time.Second*10))
+		time.Second*10,
+	)
 	require.Equal(t, errors.UnauthenticatedErr, err.Code())
 }

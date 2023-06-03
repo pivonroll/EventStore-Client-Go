@@ -100,7 +100,7 @@ func (client *Client) BatchAppendToStream(ctx context.Context,
 	expectedStreamRevision stream_revision.IsWriteStreamRevision,
 	events ProposedEventList,
 	chunkSize uint64,
-	deadline time.Time,
+	deadline time.Duration,
 ) (BatchAppendResponse, errors.Error) {
 	correlationId, _ := uuid.NewRandom()
 	return client.BatchAppendToStreamWithCorrelationId(ctx,
@@ -125,7 +125,7 @@ func (client *Client) BatchAppendToStreamWithCorrelationId(ctx context.Context,
 	correlationId uuid.UUID,
 	events ProposedEventList,
 	chunkSize uint64,
-	deadline time.Time,
+	deadline time.Duration,
 ) (BatchAppendResponse, errors.Error) {
 	handle, err := client.grpcClient.GetConnectionHandle()
 	if err != nil {

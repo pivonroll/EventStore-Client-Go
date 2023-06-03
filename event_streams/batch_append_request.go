@@ -3,12 +3,13 @@ package event_streams
 import (
 	"time"
 
+	"google.golang.org/protobuf/types/known/durationpb"
+
 	"github.com/google/uuid"
 	"github.com/pivonroll/EventStore-Client-Go/core/stream_revision"
 	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/shared"
 	"github.com/pivonroll/EventStore-Client-Go/protos/v22.10/streams"
 	"google.golang.org/protobuf/types/known/emptypb"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type batchAppendRequest struct {
@@ -29,8 +30,8 @@ func (this batchAppendRequest) build() *streams.BatchAppendReq {
 			StreamIdentifier: &shared.StreamIdentifier{
 				StreamName: []byte(this.options.streamId),
 			},
-			DeadlineOption: &streams.BatchAppendReq_Options_Deadline_21_10_0{
-				Deadline_21_10_0: timestamppb.New(this.options.deadline),
+			DeadlineOption: &streams.BatchAppendReq_Options_Deadline{
+				Deadline: durationpb.New(this.options.deadline),
 			},
 		},
 		ProposedMessages: this.buildProposedMessages(),
@@ -104,5 +105,5 @@ type batchAppendRequestOptions struct {
 	// WriteStreamRevisionAny
 	// WriteStreamRevisionStreamExists
 	expectedStreamRevision stream_revision.IsWriteStreamRevision
-	deadline               time.Time
+	deadline               time.Duration
 }
